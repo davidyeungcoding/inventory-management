@@ -38,8 +38,10 @@ app.use(bodyparser.urlencoded({
 // =======================
 
 const ingredients = require('./routes/ingredients');
+const items = require('./routes/items');
 
 app.use('/ingredients', ingredients);
+app.use('/items', items);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

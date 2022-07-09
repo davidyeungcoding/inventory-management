@@ -7,7 +7,6 @@ const ingredientSchema = new mongoose.Schema({
   }
 })
 
-module.exports.ingredientSchema = ingredientSchema;
 module.exports.ingredientModel = mongoose.model('Ingredient', ingredientSchema);
 
 // =======================
