@@ -69,5 +69,5 @@ module.exports.searchItem = (term, callback) => {
 // =================
 
 module.exports.deleteItem = (id, callback) => {
-  this.itemModule.deleteOne({ _id: id }, callback);
+  this.itemModel.deleteOne({ _id: id }, callback);
 };
