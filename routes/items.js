@@ -79,12 +79,11 @@ router.get('/search', (req, res, next) => {
 // =================
 
 router.delete('/delete', (req, res, next) => {
-  console.log(req.body)
   try {
     Item.deleteItem(req.body.id, (err, _item) => {
       if (err) throw err;
 
-      return _item ? res.json({ status: 200, msg: _item })
+      return _item ? res.json({ status: 200, msg: `${req.body.name} has been deleted` })
       : res.json({ status: 400, msg: `Unable to delete item: ${req.body.name} `});
     });
   } catch {

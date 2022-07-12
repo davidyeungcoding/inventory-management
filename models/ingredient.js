@@ -1,17 +1,6 @@
 const mongoose = require('mongoose');
 
 // =======================
-// || Projection Schema ||
-// =======================
-
-const foundIn = new mongoose.Schema({
-  item: {
-    type: mongoose.Types.ObjectId,
-    ref: 'Items'
-  }
-}, { _id: false });
-
-// =======================
 // || Ingredient Schema ||
 // =======================
 
@@ -21,8 +10,8 @@ const ingredientSchema = new mongoose.Schema({
     required: true
   },
   foundIn: {
-    type: [foundIn],
-    default: []
+    type: Object,
+    default: {}
   }
 });
 
@@ -40,8 +29,9 @@ module.exports.createIngredient = (ingredient, callback) => {
 // || Edit Ingredient ||
 // =====================
 
-module.exports.editIngredient = (id, update, callback) => {
+module.exports.editIngredient = (id, payload, callback) => {
   const options = { new: true };
+  const update = { $set: payload };
   this.ingredientModel.findByIdAndUpdate(id, update, options, callback);
 };
 

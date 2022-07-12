@@ -38,10 +38,18 @@ router.post('/create', (req, res, next) => {
 
 router.put('/edit', (req, res, next) => {
   try {
+    const update = {};
+    console.log(req.body)
+    if (req.body.name) update.name = req.body.name;
+    if (req.body.foundIn) update.foundIn = req.body.foundIn;
+    if (!Object.keys(update).length) return res.json({ status: 400, msg: 'No changes found' });
     const payload = {
       id: req.body.id,
-      update: req.body.update
+      update: update
     };
+    console.log('============================')
+    console.log(update)
+    cosnole.log(payload)
   
     Ingredient.editIngredient(payload.id, payload.update, (err, _ingredient) => {
       if (err) throw err;
