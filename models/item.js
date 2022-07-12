@@ -1,11 +1,19 @@
 const mongoose = require('mongoose');
 
+// =======================
+// || Projection Schema ||
+// =======================
+
 const itemIngredient = new mongoose.Schema({
   ingredient: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ingredient'
   }
 }, { _id: false });
+
+// =================
+// || Item Schema ||
+// =================
 
 const itemSchema = new mongoose.Schema({
   name: {
@@ -48,6 +56,18 @@ module.exports.editItem = (payload, callback) => {
 // || Search Item ||
 // =================
 
+module.exports.searchItem = (term, callback) => {
+  const query = term.toString().length ? { name: term } : {};
+  
+  this.itemModel.find(query, callback)
+  .sort({ name: 1 })
+  .populate('ingredients.ingredient', 'name');
+};
+
 // =================
 // || Delete Item ||
 // =================
+
+module.exports.deleteItem = (id, callback) => {
+  this.itemModule.deleteOne({ _id: id }, callback);
+};

@@ -59,6 +59,37 @@ router.put('/edit', (req, res, next) => {
 // || Search Item ||
 // =================
 
+router.get('/search', (req, res, next) => {
+  try {
+    const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
+
+    Item.searchItem(term, (err, _item) => {
+      if (err) throw err;
+
+      return _item ? res.json({ status: 200, msg: _item })
+      : res.json({ status: 400, msg: `Unable to find item: ${req.query.term}` });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process search request' });
+  };
+});
+
 // =================
 // || Delete Item ||
 // =================
+
+router.delete('/delete', (req, res, next) => {
+  console.log(req.body)
+  try {
+    Item.delete(req.body.id, (err, _item) => {
+      if (err) throw err;
+      console.log('==============================')
+      console.log(_item)
+
+      return _item ? res.json({ status: 200, msg: _item })
+      : res.json({ status: 400, msg: `Unable to delete item: ${req.body.name} `});
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process delete request' });
+  };
+});

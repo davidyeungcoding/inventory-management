@@ -1,11 +1,30 @@
 const mongoose = require('mongoose');
 
+// =======================
+// || Projection Schema ||
+// =======================
+
+const foundIn = new mongoose.Schema({
+  item: {
+    type: mongoose.Types.ObjectId,
+    ref: 'Items'
+  }
+}, { _id: false });
+
+// =======================
+// || Ingredient Schema ||
+// =======================
+
 const ingredientSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
+  },
+  foundIn: {
+    type: [foundIn],
+    default: []
   }
-})
+});
 
 module.exports.ingredientModel = mongoose.model('Ingredient', ingredientSchema);
 
@@ -31,10 +50,9 @@ module.exports.editIngredient = (id, update, callback) => {
 // =======================
 
 module.exports.searchIngredient = (payload, callback) => {
-  const query = { [payload.type]: payload.term };
-
-  payload.term.toString().length ? this.ingredientModel.find(query, 'name', callback)
-  : this.ingredientModel.find({}, 'name', callback);
+  const query = payload.term.toString().length ? { [payload.type]: payload.term } : {};
+  this.ingredientModel.find(query, callback)
+  .sort({ name: 1 });
 };
 
 // =======================
