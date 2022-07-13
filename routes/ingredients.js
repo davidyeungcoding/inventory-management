@@ -41,7 +41,7 @@ router.put('/edit', (req, res, next) => {
     const update = {};
     if (req.body.name) update.name = req.body.name;
     if (req.body.foundIn) update.foundIn = req.body.foundIn;
-    if (!Object.keys(update).length) return res.json({ status: 400, msg: 'No changes found' });
+    if (!Object.keys(update).length) return res.json({ status: 400, msg: 'No changes detected' });
   
     Ingredient.editIngredient(req.body.id, update, (err, _ingredient) => {
       if (err) throw err;
@@ -73,6 +73,19 @@ router.get('/search', (req, res, next) => {
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process search request' });
+  };
+});
+
+router.get('/found-in', (req, res, next) => {
+  try {
+    Ingredient.searchForDeletion(req.query.id, (err, _foundIn) => {
+      if (err) throw err;
+
+      return _foundIn ? res.json({ status: 200, msg: _foundIn })
+      : res.json({ status: 400, msg: `Unable to perform search for: ${req.query.name}` })
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Could not perform found-in verification search' });
   };
 });
 

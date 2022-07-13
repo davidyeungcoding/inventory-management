@@ -45,6 +45,10 @@ module.exports.searchIngredient = (payload, callback) => {
   .sort({ name: 1 });
 };
 
+module.exports.searchForDeletion = (id, callback) => {
+  this.ingredientModel.findById(id, 'foundIn -_id', callback);
+};
+
 // =======================
 // || Delete Ingredient ||
 // =======================
