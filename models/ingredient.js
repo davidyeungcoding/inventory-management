@@ -29,10 +29,10 @@ module.exports.createIngredient = (ingredient, callback) => {
 // || Edit Ingredient ||
 // =====================
 
-module.exports.editIngredient = (id, payload, callback) => {
+module.exports.editIngredient = (payload, callback) => {
   const options = { new: true };
-  const update = { $set: payload };
-  this.ingredientModel.findByIdAndUpdate(id, update, options, callback);
+  const update = { $set: payload.update };
+  this.ingredientModel.findByIdAndUpdate(payload.id, update, options, callback);
 };
 
 // =======================

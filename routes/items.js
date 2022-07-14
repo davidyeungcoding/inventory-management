@@ -11,6 +11,41 @@ module.exports = router;
 const { itemModel } = require('../models/item');
 const Item = require('../models/item');
 
+// ======================
+// || Shared functions ||
+// ======================
+
+const buildRegExp = async objArray => {
+  const regExp = new Promise(resolve => {
+    let temp = '';
+
+    Object.keys(objArray).forEach(val => {
+      temp += temp.length > 0 ? `|${val}` : val;
+    });
+
+    return resolve(temp);
+  });
+
+  return new RegExp(regExp);
+};
+
+const getFoundInItems = async payload => {
+  const list = new Promise(resolve => {
+    try {
+      Item.searchItem(payload.target, (err, _list) => {
+        if (err) throw err;
+
+        return _list ? resolve({ status: 200, msg: _list })
+        : resolve({ status: 400, msg: `Unable to complete search for found items` });
+      });
+    } catch {
+      return resolve({ status: 400, msg: 'Unable to process list of found items' });
+    };
+  });
+  
+  return list;
+};
+
 // =================
 // || Create Item ||
 // =================
@@ -52,6 +87,28 @@ router.put('/edit', (req, res, next) => {
     });
   } catch {
     return res.json({ status: 400, msg: "Unable to process edit request" });
+  };
+});
+
+router.put('/purge-ingredient', async (req, res, next) => {
+  try{
+    const regExp = await buildRegExp(req.body.foundIn);
+    const payload = {
+      id: req.body.id,
+      name: req.body.name,
+      target: regExp
+    };
+    const foundInList = await getFoundInItems(payload);
+    return res.json(foundInList);
+
+    // Item.purgeIngredient(payload, (err, _items) => {
+    //   if (err) throw err;
+
+    //   return _items ? res.json({ status: 200, msg: _items })
+    //   : res.json({ status: 400, msg: `Unable to purge ingredient, ${payload.name}, from all items` });
+    // });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to purge ingredient form items' });
   };
 });
 

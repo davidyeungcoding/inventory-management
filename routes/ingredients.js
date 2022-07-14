@@ -42,8 +42,13 @@ router.put('/edit', (req, res, next) => {
     if (req.body.name) update.name = req.body.name;
     if (req.body.foundIn) update.foundIn = req.body.foundIn;
     if (!Object.keys(update).length) return res.json({ status: 400, msg: 'No changes detected' });
+    
+    const payload = {
+      id: req.body.id,
+      update: update
+    };
   
-    Ingredient.editIngredient(req.body.id, update, (err, _ingredient) => {
+    Ingredient.editIngredient(payload, (err, _ingredient) => {
       if (err) throw err;
   
       return _ingredient ? res.json({ status: 200, msg: _ingredient })
@@ -95,15 +100,8 @@ router.get('/found-in', (req, res, next) => {
 
 router.delete('/delete', (req, res, next) => {
   try {
-    // insert functionality for purging ingredient from items that include it as an ingredient
-      // pull virtual of items where ingredient is found
-        // if found, return with popup asking user to confirm purge and deletion
-          // if user confirms redirect to different delete request to purge and delete
-        // if not found, continue with ingredient deletion
-
     Ingredient.deleteIngredient(req.body._id, (err, _ingredient) => {
       if (err) throw err;
-      console.log(_ingredient);
 
       return _ingredient ? res.json({ status: 200, msg: `${req.body.name} has been deleted` })
       : res.json({ status: 400, msg: `Unable to delete ${req.body.name}` });
@@ -111,4 +109,4 @@ router.delete('/delete', (req, res, next) => {
   } catch {
     return res.json({ status: 400, msg: 'Unable to delete ingredient as requested' });
   };
-})
+});
