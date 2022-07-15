@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 
 module.exports = router;
 
@@ -15,24 +16,16 @@ const Item = require('../models/item');
 // || Shared functions ||
 // ======================
 
-const buildRegExp = async objArray => {
-  const regExp = new Promise(resolve => {
-    let temp = '';
-
-    Object.keys(objArray).forEach(val => {
-      temp += temp.length > 0 ? `|${val}` : val;
-    });
-
-    return resolve(temp);
+const convertToObjectId = async array => {
+  return new Promise(resolve => {
+    return resolve(array.map(val => val = mongoose.Types.ObjectId(val)));
   });
-
-  return new RegExp(regExp);
 };
 
 const getFoundInItems = async payload => {
-  const list = new Promise(resolve => {
+  return new Promise(resolve => {
     try {
-      Item.searchItem(payload.target, (err, _list) => {
+      Item.purgeSearch(payload.target, (err, _list) => {
         if (err) throw err;
 
         return _list ? resolve({ status: 200, msg: _list })
@@ -42,8 +35,6 @@ const getFoundInItems = async payload => {
       return resolve({ status: 400, msg: 'Unable to process list of found items' });
     };
   });
-  
-  return list;
 };
 
 // =================
@@ -92,14 +83,14 @@ router.put('/edit', (req, res, next) => {
 
 router.put('/purge-ingredient', async (req, res, next) => {
   try{
-    const regExp = await buildRegExp(req.body.foundIn);
+    const idArray = await convertToObjectId(Object.keys(req.body.foundIn));
     const payload = {
       id: req.body.id,
       name: req.body.name,
-      target: regExp
+      target: idArray
     };
     const foundInList = await getFoundInItems(payload);
-    return res.json(foundInList);
+    return res.json(foundInList); // continue here
 
     // Item.purgeIngredient(payload, (err, _items) => {
     //   if (err) throw err;
@@ -120,7 +111,7 @@ router.get('/search', (req, res, next) => {
   try {
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
 
-    Item.searchItem(term, (err, _item) => {
+    Item.searchItem(term, req.query.type, (err, _item) => {
       if (err) throw err;
 
       return _item ? res.json({ status: 200, msg: _item })

@@ -56,12 +56,17 @@ module.exports.editItem = (payload, callback) => {
 // || Search Item ||
 // =================
 
-module.exports.searchItem = (term, callback) => {
-  const query = term.toString().length ? { name: term } : {};
+module.exports.searchItem = (term, type, callback) => {
+  const query = term.toString().length ? { [type]: term } : {};
   
   this.itemModel.find(query, callback)
   .sort({ name: 1 })
   .populate('ingredients.ingredient', 'name');
+};
+
+module.exports.purgeSearch = (term, callback) => {
+  const query = { $in: term };
+  this.itemModel.find({ _id: query }, callback);
 };
 
 // =================
