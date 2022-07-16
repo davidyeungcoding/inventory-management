@@ -41,15 +41,9 @@ module.exports.createItem = (item, callback) => {
 // || Edit Item ||
 // ===============
 
-module.exports.editItem = (payload, callback) => {
+module.exports.editItemDetails = (payload, callback) => {
   const options = { new: true };
-  const update = {
-    $set: {
-      name: payload.name,
-      ingredients: payload.ingredients
-    }
-  };
-
+  const update = { $set: { name: payload.name } };
   this.itemModel.findByIdAndUpdate(payload.id, update, options, callback);
 };
 

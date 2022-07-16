@@ -37,15 +37,14 @@ router.post('/create', (req, res, next) => {
 // || Edit Item ||
 // ===============
 
-router.put('/edit', (req, res, next) => {
+router.put('/edit-item-details', (req, res, next) => {
   try {
     const payload = {
       id: req.body.id,
-      name: req.body.name,
-      ingredients: req.body.ingredients
+      name: req.body.name
     };
 
-    Item.editItem(payload, (err, _item) => {
+    Item.editItemDetails(payload, (err, _item) => {
       if (err) throw err;
 
       return _item ? res.json({ status: 200, msg: _item })
@@ -53,6 +52,14 @@ router.put('/edit', (req, res, next) => {
     });
   } catch {
     return res.json({ status: 400, msg: "Unable to process edit request" });
+  };
+});
+
+router.put('/edit-item-ingredients', (req, res, next) => {
+  try {
+
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process update to ingredient' });
   };
 });
 
