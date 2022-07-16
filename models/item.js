@@ -47,6 +47,14 @@ module.exports.editItemDetails = (payload, callback) => {
   this.itemModel.findByIdAndUpdate(payload.id, update, options, callback);
 };
 
+module.exports.editIngredients = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const modifier = action === '$push' ? '$each' : '$in';
+  const update = { [action]: { ingredients: { [modifier]: payload.ingredients } } };
+  const options = { new: true };
+  this.itemModel.findByIdAndUpdate(payload.id, update, options, callback);
+};
+
 module.exports.purgeIngredient = (payload, callback) => {
   const query = { $in: payload.target };
   const update = { $pull: { ingredients: payload.id } };

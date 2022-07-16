@@ -12,6 +12,21 @@ module.exports = router;
 const { itemModel } = require('../models/item');
 const Item = require('../models/item');
 
+// ======================
+// || Shared Functions ||
+// ======================
+
+const editIngredients = async payload => {
+  return new Promise(resolve => {
+    Item.editIngredients(payload, (err, _item) => {
+      if (err) throw err;
+
+      return _item ? resolve({ status: 200, msg: _item })
+      : resolve({ status: 400, msg: `Unable to ${payload.action} ingredients` });
+    });
+  });
+};
+
 // =================
 // || Create Item ||
 // =================
@@ -55,11 +70,30 @@ router.put('/edit-item-details', (req, res, next) => {
   };
 });
 
-router.put('/edit-item-ingredients', (req, res, next) => {
+router.put('/edit-item-ingredients', async (req, res, next) => {
   try {
+    if (req.body.insertion.length) {
+      const update = {
+        id: req.body.id,
+        ingredients: req.body.insertion,
+        action: 'add'
+      };
+      const additionUpdate = await editIngredients(update);
+      if (additionUpdate.status != 200 || !req.body.removal.length) return res.json(additionUpdate);
+    };
 
+    if (req.body.removal.length) {
+      const update = {
+        id: req.body.id,
+        ingredients: req.body.removal,
+        action: 'remove'
+      };
+
+      const removalUpdate = await editIngredients(update);
+      return res.json(removalUpdate);
+    };
   } catch {
-    return res.json({ status: 400, msg: 'Unable to process update to ingredient' });
+    return res.json({ status: 400, msg: 'Unable to process update to ingredients' });
   };
 });
 
