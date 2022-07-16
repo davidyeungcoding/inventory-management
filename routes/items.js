@@ -12,31 +12,6 @@ module.exports = router;
 const { itemModel } = require('../models/item');
 const Item = require('../models/item');
 
-// ======================
-// || Shared functions ||
-// ======================
-
-const convertToObjectId = async array => {
-  return new Promise(resolve => {
-    return resolve(array.map(val => val = mongoose.Types.ObjectId(val)));
-  });
-};
-
-const getFoundInItems = async payload => {
-  return new Promise(resolve => {
-    try {
-      Item.purgeSearch(payload.target, (err, _list) => {
-        if (err) throw err;
-
-        return _list ? resolve({ status: 200, msg: _list })
-        : resolve({ status: 400, msg: `Unable to complete search for found items` });
-      });
-    } catch {
-      return resolve({ status: 400, msg: 'Unable to process list of found items' });
-    };
-  });
-};
-
 // =================
 // || Create Item ||
 // =================
@@ -83,21 +58,18 @@ router.put('/edit', (req, res, next) => {
 
 router.put('/purge-ingredient', async (req, res, next) => {
   try{
-    const idArray = await convertToObjectId(Object.keys(req.body.foundIn));
     const payload = {
       id: req.body.id,
       name: req.body.name,
-      target: idArray
+      target: Object.keys(req.body.foundIn)
     };
-    const foundInList = await getFoundInItems(payload);
-    return res.json(foundInList); // continue here
 
-    // Item.purgeIngredient(payload, (err, _items) => {
-    //   if (err) throw err;
+    Item.purgeIngredient(payload, (err, _items) => {
+      if (err) throw err;
 
-    //   return _items ? res.json({ status: 200, msg: _items })
-    //   : res.json({ status: 400, msg: `Unable to purge ingredient, ${payload.name}, from all items` });
-    // });
+      return _items ? res.json({ status: 200, msg: _items })
+      : res.json({ status: 400, msg: `Unable to purge ${payload.name} from associated items` });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to purge ingredient form items' });
   };

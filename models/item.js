@@ -4,12 +4,12 @@ const mongoose = require('mongoose');
 // || Projection Schema ||
 // =======================
 
-const itemIngredient = new mongoose.Schema({
-  ingredient: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Ingredient'
-  }
-}, { _id: false });
+// const itemIngredient = new mongoose.Schema({
+//   ingredient: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: 'Ingredient'
+//   }
+// }, { _id: false });
 
 // =================
 // || Item Schema ||
@@ -21,7 +21,8 @@ const itemSchema = new mongoose.Schema({
     required: true
   },
   ingredients: {
-    type: [itemIngredient],
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Ingredient',
     default: []
   }
 });
@@ -52,6 +53,12 @@ module.exports.editItem = (payload, callback) => {
   this.itemModel.findByIdAndUpdate(payload.id, update, options, callback);
 };
 
+module.exports.purgeIngredient = (payload, callback) => {
+  const query = { $in: payload.target };
+  const update = { $pull: { ingredients: payload.id } };
+  this.itemModel.updateMany({ _id: query }, update, callback);
+};
+
 // =================
 // || Search Item ||
 // =================
@@ -61,12 +68,7 @@ module.exports.searchItem = (term, type, callback) => {
   
   this.itemModel.find(query, callback)
   .sort({ name: 1 })
-  .populate('ingredients.ingredient', 'name');
-};
-
-module.exports.purgeSearch = (term, callback) => {
-  const query = { $in: term };
-  this.itemModel.find({ _id: query }, callback);
+  .populate('ingredients', 'name');
 };
 
 // =================
@@ -75,8 +77,4 @@ module.exports.purgeSearch = (term, callback) => {
 
 module.exports.deleteItem = (id, callback) => {
   this.itemModel.deleteOne({ _id: id }, callback);
-};
-
-module.exports.purgeIngredient = (payload, callback) => {
-
 };
