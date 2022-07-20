@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="row">
+    <table>
+      <tr>
+        <th class="table-left">Name</th>
+        <th class="table-center">Price</th>
+        <th class="table-center">Active</th>
+        <th class="table-center">Available</th>
+        <th class="table-center">Edit</th>
+      </tr>
+  
+      <tr *ngFor="let item of itemList">
+        <td class="table-left">{{ item.name }}</td>
+        <td class="table-center">{{ item.price }}</td>
+        <td class="table-center">{{ item.active }}</td>
+        <td class="table-center">{{ item.available }}</td>
+
+        <td class="table-center">
+          <button type="button" class="btn btn-secondary">Edit</button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+  <div class="row">
+    <button class="btn btn-secondary">Back</button>
+  </div>
+</div>

@@ -20,10 +20,22 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  price: {
+    type: String,
+    default: '000'
+  },
   ingredients: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Ingredient',
     default: []
+  },
+  active: {
+    type: Boolean,
+    default: false
+  },
+  available: {
+    type: Boolean,
+    default: false
   }
 });
 
@@ -43,7 +55,7 @@ module.exports.createItem = (item, callback) => {
 
 module.exports.editItemDetails = (payload, callback) => {
   const options = { new: true };
-  const update = { $set: { name: payload.name } };
+  const update = { $set: payload.update };
   this.itemModel.findByIdAndUpdate(payload.id, update, options, callback);
 };
 
