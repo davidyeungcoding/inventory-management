@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
 
@@ -10,7 +11,9 @@ import { Item } from 'src/app/interfaces/item';
   styleUrls: ['./item-list.component.css']
 })
 export class ItemListComponent implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
   itemList: Item[] = [];
+  targetItem: Item|null = null;
 
   constructor(
     private itemService: ItemService
@@ -18,16 +21,18 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.retrieveItemList();
+    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // ======================
   // || Helper Functions ||
   // ======================
 
-  processPrice(list: Item[]): void {
+  convertPrice(list: Item[]): void {
     list.forEach(item => {
       const price = item.price;
       item.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
@@ -40,8 +45,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   retrieveItemList(): void {
     this.itemService.getFullItemList().subscribe(_list => {
-      this.processPrice(_list.msg);
-      this.itemList = _list.msg;
+      this.convertPrice(_list.msg);
+      this.itemService.changeItemList(_list.msg);
     });
+  };
+
+  onMarkForEdit(item: Item): void {
+    this.targetItem = item;
   };
 }

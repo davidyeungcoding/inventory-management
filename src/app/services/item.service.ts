@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, catchError, of } from 'rxjs';
 
-import { catchError, of } from 'rxjs';
+import { Item } from '../interfaces/item';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,13 @@ export class ItemService {
       'Content-Type': 'application/json'
     })
   };
+
+  // =================
+  // || Observables ||
+  // =================
+
+  private itemListSource = new BehaviorSubject<Item[]>([]);
+  itemList = this.itemListSource.asObservable();
 
   constructor(
     private http: HttpClient
@@ -26,5 +34,19 @@ export class ItemService {
     return this.http.get(`${this.api}/search?query=name`, this.httpOptions).pipe(
       catchError(err => of(err))
     );
+  };
+
+  editItemDetails(item: Item) {
+    return this.http.put(`${this.api}/edit-item-details`, item, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  // =======================
+  // || Change Observables||
+  // =======================
+
+  changeItemList(list: Item[]): void {
+    this.itemListSource.next(list);
   };
 }

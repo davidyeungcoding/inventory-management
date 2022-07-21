@@ -1,0 +1,9 @@
+.table-end {
+  display: flex;
+  justify-content: flex-end;
+  column-gap: 10px;
+}
+
+.table-end-btn {
+  width:fit-content;
+}
