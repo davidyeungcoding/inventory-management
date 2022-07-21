@@ -1,9 +1,32 @@
+/* =========== */
+/* || Table || */
+/* =========== */
+
 .table-end {
   display: flex;
   justify-content: flex-end;
-  column-gap: 10px;
+  column-gap: .65rem;
 }
 
 .table-end-btn {
   width:fit-content;
+  font-size: 1rem;
+}
+
+/* =========== */
+/* || Modal || */
+/* =========== */
+
+.confirm-text {
+  text-align: center;
+}
+
+.modal-btn-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
+}
+
+.modal-btn {
+  width: 9rem;
 }
