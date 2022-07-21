@@ -36,8 +36,20 @@ export class ItemService {
     );
   };
 
+  createItem(item: any) {
+    return this.http.post(`${this.api}/create`, item, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   editItemDetails(item: Item) {
     return this.http.put(`${this.api}/edit-item-details`, item, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  deleteItem(item: Item) {
+    return this.http.put(`${this.api}/delete`, item, this.httpOptions).pipe(
       catchError(err => of(err))
     );
   };

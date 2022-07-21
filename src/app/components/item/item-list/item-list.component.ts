@@ -39,6 +39,17 @@ export class ItemListComponent implements OnInit, OnDestroy {
     });
   };
 
+  removeItemFromList(item: Item): Item[] {
+    let temp = this.itemList;
+
+    for (let i = 0; i < temp.length; i++) {
+      const _item = temp[i];
+      if (_item._id === item._id) temp.splice(i, 1);
+    };
+
+    return temp;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -52,5 +63,23 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   onMarkForEdit(item: Item): void {
     this.targetItem = item;
+  };
+
+  onDelete(item: Item): void {
+    this.itemService.deleteItem(item).subscribe(_res => {
+      if (_res.status === 200) {
+        this.itemService.changeItemList(this.removeItemFromList(item));
+        // display success message
+      }
+      // handle error with deletion here
+    });
+  };
+
+  onBack(): void {
+    console.log('back');
+  };
+
+  onAddItem(): void {
+    console.log('new item');
   };
 }

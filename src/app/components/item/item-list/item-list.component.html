@@ -7,6 +7,7 @@
         <th class="table-center">Active</th>
         <th class="table-center">Available</th>
         <th class="table-center">Edit</th>
+        <th class="table-center">Delete</th>
       </tr>
   
       <tr *ngFor="let item of itemList">
@@ -22,14 +23,21 @@
             data-bs-target="#editItemModal"
             (click)="onMarkForEdit(item)">Edit</button>
         </td>
+
+        <td class="table-center">
+          <button class="btn btn-secondary"
+            (click)="onDelete(item)">Delete</button>
+        </td>
       </tr>
     </table>
   </div>
   
   <div class="row table-end">
-    <button class="btn btn-secondary table-end-btn">Back</button>
+    <button class="btn btn-secondary table-end-btn"
+      (click)="onBack()">Back</button>
 
-    <button class="btn btn-secondary table-end-btn">Add New Item</button>
+    <button class="btn btn-secondary table-end-btn"
+      (click)="onAddItem()">Add New Item</button>
   </div>
 </div>
 

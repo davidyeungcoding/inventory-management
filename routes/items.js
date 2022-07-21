@@ -143,9 +143,9 @@ router.get('/search', (req, res, next) => {
 // || Delete Item ||
 // =================
 
-router.delete('/delete', (req, res, next) => {
+router.put('/delete', (req, res, next) => {
   try {
-    Item.deleteItem(req.body.id, (err, _item) => {
+    Item.deleteItem(req.body._id, (err, _item) => {
       if (err) throw err;
 
       return _item ? res.json({ status: 200, msg: `${req.body.name} has been deleted` })
