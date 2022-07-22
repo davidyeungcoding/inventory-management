@@ -11,6 +11,18 @@ module.exports = router;
 const { ingredientModel } = require('../models/ingredient');
 const Ingredient = require('../models/ingredient');
 
+// ======================
+// || Shared Functions ||
+// ======================
+
+const processIngredientList = async list => {
+  const temp = list.map(ingredient => {
+    return ingredient = ingredient._id;
+  });
+  
+  return new Promise(resolve => resolve(temp));
+};
+
 // =======================
 // || Create Ingredient ||
 // =======================
@@ -56,6 +68,24 @@ router.put('/edit', (req, res, next) => {
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to update ingredient as requested' });
+  };
+});
+
+router.put('/purge-item', async (req, res, next) => {
+  try {
+    const payload = {
+      item: req.body._id,
+      ingredients: await processIngredientList(req.body.ingredients)
+    };
+
+    Ingredient.purgeItem(payload, (err, _res) => {
+      if (err) throw err;
+
+      return _res ? res.json({ status: 200, msg: `${req.body.name} has been purged from ingredients` })
+      : res.json({ status: 400, msg: 'Unable to process request to purge item from ingredients' });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to purge item from ingredients' });
   };
 });
 

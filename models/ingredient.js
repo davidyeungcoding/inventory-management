@@ -10,8 +10,9 @@ const ingredientSchema = new mongoose.Schema({
     required: true
   },
   foundIn: {
-    type: Object,
-    default: {}
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Item',
+    default: []
   }
 });
 
@@ -29,10 +30,17 @@ module.exports.createIngredient = (ingredient, callback) => {
 // || Edit Ingredient ||
 // =====================
 
+// handle changes here
 module.exports.editIngredient = (payload, callback) => {
   const options = { new: true };
   const update = { $set: payload.update };
   this.ingredientModel.findByIdAndUpdate(payload.id, update, options, callback);
+};
+
+module.exports.purgeItem = (payload, callback) => {
+  const query = { $in: payload.ingredients };
+  const update = { $pull: { foundIn: payload.item } };
+  this.ingredientModel.updateMany({ _id: query }, update, callback);
 };
 
 // =======================

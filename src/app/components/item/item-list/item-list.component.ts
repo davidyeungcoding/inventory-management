@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
+import { IngredientService } from 'src/app/services/ingredient.service';
 
 import { Item } from 'src/app/interfaces/item';
 
@@ -17,7 +18,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   deleteMessage: String = '';
 
   constructor(
-    private itemService: ItemService
+    private itemService: ItemService,
+    private ingredientService: IngredientService
   ) { }
 
   ngOnInit(): void {
@@ -40,9 +42,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
     });
   };
 
-  swapClass(remove: string, add: string, target: string): void {
+  displayMsg(remove: string, add: string, target: string): void {
     $(`${target}`).removeClass(remove);
     $(`${target}`).addClass(add);
+    $('#deleteMsgContainer').css('display', 'inline');
   };
 
   removeItemFromList(item: Item): Item[] {
@@ -57,8 +60,21 @@ export class ItemListComponent implements OnInit, OnDestroy {
   };
 
   removeItemFromIngredient(): void {
-    // handle removing item from all ingredients in ingredient list
-  }
+    this.ingredientService.purgeItem(this.targetItem!).subscribe(_res => {
+      if (_res.status !== 200) {
+        this.deleteMessage = _res.msg;
+        this.displayMsg('alert-success', 'alert-danger', '#deleteResult');
+      };
+
+      if (_res.status === 200) {
+        this.displayMsg('alert-danger', 'alert-success', '#deleteResult');
+
+        setTimeout(() => {
+          (<any>$('#deleteItem')).modal('hide');
+        }, 1500);
+      };
+    });
+  };
 
   onTargetItem(item: Item, target: string): void {
     $(`${target}`).css('display', 'none');
@@ -77,21 +93,19 @@ export class ItemListComponent implements OnInit, OnDestroy {
   };
 
   onDelete(): void {
+      $('#deleteMsgContainer').css('display', 'none');
+      this.deleteMessage = 'test';
+      this.removeItemFromIngredient();
+
     this.itemService.deleteItem(this.targetItem!).subscribe(_res => {
+      $('#deleteMsgContainer').css('display', 'none');
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
         this.itemService.changeItemList(this.removeItemFromList(this.targetItem!));
-        this.swapClass('alert-danger', 'alert-success', '#deleteResult');
-        $('#deleteMsgContainer').css('display', 'inline');
-        
-        setTimeout(() => {
-          (<any>$('#deleteItem')).modal('hide');
-        }, 1500);
+        this.removeItemFromIngredient();
       } else {
-        this.swapClass('alert-success', 'alert-danger', '#deleteResult');
-        $('#deleteMsgContainer').css('display', 'inline');
-        // handle error with deletion here
+        this.displayMsg('alert-success', 'alert-danger', '#deleteResult');
       };
     });
   };
