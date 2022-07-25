@@ -1,0 +1,66 @@
+<div class="row modal-form-container">
+  <form [formGroup]="addItem" (ngSubmit)="onCreateItem()">
+    <div class="form-group">
+      <label for="itemName">Name:</label>
+  
+      <input type="text"
+        id="itemName"
+        formControlName="name">
+    </div>
+
+    <div class="form-group">
+      <label for="itemPrice">Price:</label>
+
+      <input type="text"
+        id="itemPrice"
+        formControlName="price">
+    </div>
+
+    <div class="form-group form-section">
+      <label class="form-section-title" for="itemActive">Active:</label>
+  
+      <div class="radio-container"
+        id="itemActive">
+        <div class="radio-item">
+          <input type="radio"
+            formControlName="active"
+            value="true"> True
+        </div>
+        
+        <div class="radio-item">
+          <input type="radio"
+            formControlName="active"
+            value="false"> False
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group form-section">
+      <label class="form-section-title" for="itemAvailable">Available:</label>
+
+      <div class="radio-container"
+        id="itemAvailable">
+        <div class="radio-item">
+          <input type="radio"
+            formControlName="available"
+            value="true"> True
+        </div>
+    
+        <div class="radio-item">
+          <input type="radio"
+            formControlName="available"
+            value="false"> False
+        </div>
+      </div>
+    </div>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn">Create Item</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        (click)="onCancelCreate()">Cancel</button>
+    </div>
+  </form>
+</div>

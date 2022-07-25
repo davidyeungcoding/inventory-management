@@ -1,6 +1,6 @@
-/* :root {
-
-} */
+:root {
+  --background-color: white;
+}
 
 /* =========== */
 /* || Table || */
@@ -12,4 +12,55 @@
 
 .table-center {
   text-align: center;
+}
+
+/* ========== */
+/* || Form || */
+/* ========== */
+
+.modal-form-container {
+  margin: 0 .5rem;
+}
+
+.form-section {
+  border: solid;
+  border-radius: 10px;
+  position: static;
+}
+
+.form-section-title {
+  position: relative;
+  top: -16px;
+  width: fit-content;
+  padding: 0 1rem;
+  margin-left: 1rem;
+  background-color: var(--background-color);
+}
+
+.form-group {
+  margin: 0 0 2rem;
+}
+
+label {
+  display: block;
+}
+
+.radio-container {
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+/* =========== */
+/* || Modal || */
+/* =========== */
+
+.modal-btn-container {
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
+}
+
+.modal-btn {
+  width: 9rem;
 }

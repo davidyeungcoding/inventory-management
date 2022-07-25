@@ -20,13 +20,3 @@
 .confirm-text {
   text-align: center;
 }
-
-.modal-btn-container {
-  display: flex;
-  justify-content: center;
-  column-gap: 10px;
-}
-
-.modal-btn {
-  width: 9rem;
-}

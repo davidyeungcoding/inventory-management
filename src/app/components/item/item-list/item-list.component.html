@@ -39,7 +39,9 @@
       (click)="onBack()">Back</button>
 
     <button class="btn btn-secondary table-end-btn"
-      (click)="onAddItem()">Add New Item</button>
+      data-bs-toggle="modal"
+      data-bs-target="#createItemModal"
+      (click)="onAddItem()">Add Item</button>
   </div>
 </div>
 
@@ -57,7 +59,30 @@
           aria-label="Close"></button>
       </div>
 
-      <app-edit-item-details [targetItem]="targetItem"></app-edit-item-details>
+      <div class="modal-body">
+        <app-edit-item-details [targetItem]="targetItem"></app-edit-item-details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+  id="createItemModal"
+  tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Item</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <app-create-item></app-create-item>
+      </div>
     </div>
   </div>
 </div>
@@ -84,10 +109,12 @@
         <h4 class="confirm-text">Are you sure you want to delete {{ targetItem?.name }}?</h4>
 
         <div class="row modal-btn-container">
-          <button class="btn btn-secondary modal-btn"
+          <button type="button"
+            class="btn btn-secondary modal-btn"
             (click)="onDelete()">Yes</button>
 
-          <button class="btn btn-secondary modal-btn"
+          <button type="button"
+            class="btn btn-secondary modal-btn"
             data-bs-dismiss="modal">No</button>
         </div>
       </div>

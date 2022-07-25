@@ -34,7 +34,10 @@ const editIngredients = async payload => {
 router.post('/create', (req, res, next) => {
   try {
     const item = new itemModel({
-      name: req.body.name
+      name: req.body.name,
+      price: req.body.price,
+      active: req.body.active,
+      available: req.body.available
     });
   
     Item.createItem(item, (err, _item) => {
