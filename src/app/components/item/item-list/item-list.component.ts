@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
+import { GlobalService } from 'src/app/services/global.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
 
 import { Item } from 'src/app/interfaces/item';
@@ -19,6 +20,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   constructor(
     private itemService: ItemService,
+    private globalService: GlobalService,
     private ingredientService: IngredientService
   ) { }
 
@@ -42,12 +44,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     });
   };
 
-  displayMsg(remove: string, add: string, target: string): void {
-    $(`${target}`).removeClass(remove);
-    $(`${target}`).addClass(add);
-    $('#deleteMsgContainer').css('display', 'inline');
-  };
-
   removeItemFromList(item: Item): Item[] {
     let temp = this.itemList;
 
@@ -63,11 +59,11 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.ingredientService.purgeItem(this.targetItem!).subscribe(_res => {
       if (_res.status !== 200) {
         this.deleteMessage = _res.msg;
-        this.displayMsg('alert-success', 'alert-danger', '#deleteResult');
+        this.globalService.displayMsg('alert-danger', '#deleteResult', '#deleteMsgContainer');
       };
 
       if (_res.status === 200) {
-        this.displayMsg('alert-danger', 'alert-success', '#deleteResult');
+        this.globalService.displayMsg('alert-success', '#deleteResult', '#deleteMsgContainer');
 
         setTimeout(() => {
           (<any>$('#deleteItem')).modal('hide');
@@ -105,7 +101,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this.itemService.changeItemList(this.removeItemFromList(this.targetItem!));
         this.removeItemFromIngredient();
       } else {
-        this.displayMsg('alert-success', 'alert-danger', '#deleteResult');
+        this.globalService.displayMsg('alert-danger', '#deleteResult', '#deleteMsgContainer');
       };
     });
   };
@@ -113,10 +109,5 @@ export class ItemListComponent implements OnInit, OnDestroy {
   onBack(): void {
     console.log('back');
     // handle go back
-  };
-
-  onAddItem(): void {
-    console.log('new item');
-    // handle add new item
   };
 }

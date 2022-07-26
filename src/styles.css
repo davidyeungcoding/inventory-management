@@ -22,6 +22,11 @@
   margin: 0 .5rem;
 }
 
+.modal-group-two {
+  display: flex;
+  justify-content: space-around;
+}
+
 .form-section {
   border: solid;
   border-radius: 10px;
@@ -39,6 +44,10 @@
 
 .form-group {
   margin: 0 0 2rem;
+}
+
+.alert-msg {
+  text-align: center;
 }
 
 label {

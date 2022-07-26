@@ -1,19 +1,26 @@
 <div class="row modal-form-container">
+  <div id="addMsgContainer">
+    <h5 class="alert alert-msg" id="addMsg">{{ addMessage }}</h5>
+  </div>
+
   <form [formGroup]="addItem" (ngSubmit)="onCreateItem()">
-    <div class="form-group">
-      <label for="itemName">Name:</label>
+    <div class="modal-group-two">
+      <div class="form-group">
+        <label for="itemName">Name:</label>
+    
+        <input type="text"
+          id="itemName"
+          formControlName="name">
+      </div>
   
-      <input type="text"
-        id="itemName"
-        formControlName="name">
-    </div>
-
-    <div class="form-group">
-      <label for="itemPrice">Price:</label>
-
-      <input type="text"
-        id="itemPrice"
-        formControlName="price">
+      <div class="form-group">
+        <label for="itemPrice">Price:</label>
+  
+        <input type="text"
+          id="itemPrice"
+          formControlName="price"
+          placeholder="0.00">
+      </div>
     </div>
 
     <div class="form-group form-section">
