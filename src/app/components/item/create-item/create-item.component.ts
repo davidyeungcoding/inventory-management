@@ -73,6 +73,28 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     return true;
   };
 
+  parsePrice(price: string): string {
+    const index = price.indexOf('.');
+    const start = price.substring(0, index);
+    const end = price.substring(index + 1);
+    if (index < 0) return price.length > 0 ? `${price}00` : '000';
+    if (index === price.length - 1) return price.length > 1 ? `${start}00` : '000';
+    if (index === price.length - 2) return price.length > 2 ? `${start}${end}0` : `0${end}0`;
+    return start.length ? `${start}${end}` : `0${end}`;
+  };
+
+  convertPrice(price: string): string {
+    const breakPoint = price.length - 2;
+    return `$${price.substring(0, breakPoint)}.${price.substring(breakPoint)}`;
+  };
+
+  addItemToList(item: Item): void {
+    const temp = [...this.itemList];
+    item.price = this.convertPrice(item.price);
+    temp.push(item);
+    this.itemService.changeItemList(temp);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -80,28 +102,35 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   onCreateItem(): void {
     $('#addMsgContainer').css('display', 'none');
     const form = this.addItem.value;
+    // handle problem with exiting after failed validation
     if (!this.validateName(form.name)) return;
     if (!this.validatePrice(form.price)) return;
-    console.log('here')
-    // validate form
-    // parse price to be value in cents
+    $('#createItemBtn').prop('disabled', true);
+    form.price = this.parsePrice(form.price!);
     
-    // this.itemService.createItem(this.addItem.value).subscribe(_res => {
-    //   if (_res.status === 200) {
-    //     this.addMessage = 'Item successfully created';
-    //     this.globalService.displayMsg('alert-danger', 'alert-success', '#addMsg', '#addMsgContainer');
-    //     // display success message
-    //     // add item to list
-    //     // clear form
-    //     // remove modal
-    //   } else {
-    //     // display error message
-    //   }
-    // })
+    this.itemService.createItem(form).subscribe(_res => {
+      if (_res.status === 200) {
+        this.addMessage = 'Item successfully created';
+        this.globalService.displayMsg('alert-success', '#addMsg', '#addMsgContainer');
+        this.addItemToList(_res.msg);
+        
+        setTimeout(() => {
+          this.clearForm();
+          $('#createItemBtn').prop('disabled', false);
+          (<any>$('#createItemModal')).modal('hide');
+          $('#addMsgContainer').css('display', 'none');
+        }, 1500);
+      } else {
+        this.addMessage = _res.msg;
+        this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');
+        $('#addItemBtn').prop('disabled', false);
+      };
+    });
   };
 
   onCancelCreate(): void {
     this.clearForm();
+    $('#createItemBtn').prop('disabled', false);
     (<any>$('#createItemModal')).modal('hide');
     $('#addMsgContainer').css('display', 'none');
   };
