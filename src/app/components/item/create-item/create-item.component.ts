@@ -56,7 +56,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     if (!check) {
       this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
       this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');
-      return false;
     };
 
     return check;
@@ -69,10 +68,9 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     if (!check) {
       this.addMessage = 'Please enter a valid price.';
       this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');
-      return false;
     };
 
-    return true;
+    return check;
   };
 
   parsePrice(price: string): string {
