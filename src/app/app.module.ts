@@ -9,6 +9,7 @@ import { EditItemDetailsComponent } from './components/item/edit-item-details/ed
 import { EditItemIngredientsComponent } from './components/item/edit-item-ingredients/edit-item-ingredients.component';
 import { ItemListComponent } from './components/item/item-list/item-list.component';
 import { CreateItemComponent } from './components/item/create-item/create-item.component';
+import { DeleteItemComponent } from './components/item/delete-item/delete-item/delete-item.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { CreateItemComponent } from './components/item/create-item/create-item.c
     EditItemDetailsComponent,
     EditItemIngredientsComponent,
     ItemListComponent,
-    CreateItemComponent
+    CreateItemComponent,
+    DeleteItemComponent
   ],
   imports: [
     BrowserModule,

@@ -102,7 +102,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   onCreateItem(): void {
     $('#addMsgContainer').css('display', 'none');
     const form = this.addItem.value;
-    // handle problem with exiting after failed validation
     if (!this.validateName(form.name)) return;
     if (!this.validatePrice(form.price)) return;
     $('#createItemBtn').prop('disabled', true);

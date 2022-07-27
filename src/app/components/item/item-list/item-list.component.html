@@ -36,7 +36,7 @@
         <td class="table-center">
           <button class="btn btn-secondary"
             data-bs-toggle="modal"
-            data-bs-target="#deleteItem"
+            data-bs-target="#deleteItemModal"
             (click)="onTargetItem(item, '#deleteMsgContainer')">Delete</button>
         </td>
       </tr>
@@ -117,7 +117,7 @@
 </div>
 
 <div class="modal fade"
-  id="deleteItem"
+  id="deleteItemModal"
   tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -131,21 +131,7 @@
       </div>
 
       <div class="modal-body">
-        <div id="deleteMsgContainer">
-          <div class="alert alert-msg" id="deleteResult">{{ deleteMessage }}</div>
-        </div>
-        
-        <h4 class="confirm-text">Are you sure you want to delete {{ targetItem?.name }}?</h4>
-
-        <div class="row modal-btn-container">
-          <button type="button"
-            class="btn btn-secondary modal-btn"
-            (click)="onDelete()">Yes</button>
-
-          <button type="button"
-            class="btn btn-secondary modal-btn"
-            data-bs-dismiss="modal">No</button>
-        </div>
+        <app-delete-item [targetItem]="targetItem"></app-delete-item>
       </div>
     </div>
   </div>
