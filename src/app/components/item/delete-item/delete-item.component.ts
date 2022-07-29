@@ -82,6 +82,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
         this.itemService.changeItemList(this.removeItemFromList(this.targetItem!));
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteResult', '#deleteMsgContainer');
+        $('#deleteItemBtn').prop('disabled', false);
       };
     });
   };

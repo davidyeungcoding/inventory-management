@@ -11,18 +11,18 @@
         <th class="table-center">Delete</th>
       </tr>
   
-      <tr *ngFor="let item of itemList">
+      <tr class="table-entry" *ngFor="let item of itemList">
         <td class="table-left">{{ item.name }}</td>
         <td class="table-center">{{ item.price }}</td>
-        <td class="table-center">{{ item.active }}</td>
-        <td class="table-center">{{ item.available }}</td>
+        <td class="table-center table-data">{{ item.active }}</td>
+        <td class="table-center table-data">{{ item.available }}</td>
 
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#editItemModal"
-            (click)="onTargetItem(item, '#editMsgContainer')">Details</button>
+            (click)="onEditSetup(item, '#editMsgContainer')"><i class="far fa-edit"></i> Details</button>
         </td>
         
         <td class="table-center">
@@ -30,14 +30,14 @@
             class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#editItemIngredientsModal"
-            (click)="onTargetItem(item, '#editItemIngredientMsgContainer')">Ingredients</button>
+            (click)="onTargetItem(item, '#editItemIngredientMsgContainer')"><i class="far fa-edit"></i> Ingredients</button>
         </td>
 
         <td class="table-center">
           <button class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#deleteItemModal"
-            (click)="onTargetItem(item, '#deleteMsgContainer')">Delete</button>
+            (click)="onTargetItem(item, '#deleteMsgContainer')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     </table>
@@ -68,7 +68,7 @@
       </div>
 
       <div class="modal-body">
-        <app-edit-item-details [targetItem]="targetItem"></app-edit-item-details>
+        <app-edit-item-details [targetItem]="targetItem" [editItem]="editForm"></app-edit-item-details>
       </div>
     </div>
   </div>

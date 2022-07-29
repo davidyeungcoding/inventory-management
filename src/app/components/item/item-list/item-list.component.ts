@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
@@ -15,6 +16,12 @@ export class ItemListComponent implements OnInit, OnDestroy {
   itemList: Item[] = [];
   targetItem: Item|null = null;
   deleteMessage: String = '';
+  editForm = new FormGroup({
+    name: new FormControl(''),
+    price: new FormControl(''),
+    active: new FormControl(''),
+    available: new FormControl('')
+  });
 
   constructor(
     private itemService: ItemService
@@ -53,6 +60,18 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.itemService.getFullItemList().subscribe(_list => {
       this.convertPrice(_list.msg);
       this.itemService.changeItemList(_list.msg);
+    });
+  };
+
+  onEditSetup(item: Item, target: string): void {
+    this.onTargetItem(item, target);
+    $('#editName').attr('placeholder', this.targetItem!.name);
+    $('#editPrice').attr('placeholder', this.targetItem!.price);
+    this.editForm.setValue({
+      name: item.name,
+      price: item.price,
+      active: item.active.toString(),
+      available: item.available.toString()
     });
   };
 

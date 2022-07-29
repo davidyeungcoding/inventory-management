@@ -1,10 +1,28 @@
 :root {
   --background-color: white;
+  --table-color-secondary: hsl(0, 0%, 87%);
+  --table-color-tertiary: hsl(0, 0%, 75%);
 }
 
 /* =========== */
 /* || Table || */
 /* =========== */
+
+td {
+  padding: .5rem 0;
+}
+
+td:first-child, th:first-child {
+  padding-left: .75rem;
+}
+
+.table-entry:nth-child(even) {
+  background-color: var(--table-color-secondary);
+}
+
+.table-entry:hover {
+  background-color: var(--table-color-tertiary);
+}
 
 .table-left {
   text-align: left;
@@ -12,6 +30,10 @@
 
 .table-center {
   text-align: center;
+}
+
+.table-data {
+  text-transform: capitalize;
 }
 
 /* ========== */
@@ -58,6 +80,10 @@ label {
   padding-bottom: 1rem;
   display: flex;
   justify-content: space-evenly;
+}
+
+.radio-item:hover {
+  cursor: pointer;
 }
 
 /* =========== */

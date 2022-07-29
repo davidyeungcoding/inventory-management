@@ -1,1 +1,79 @@
-<p>edit-item-details works!</p>
+<div class="row modal-form-container">
+  <div id="editMsgContainer">
+    <h5 class="alert alert-msg" id="editMsg">{{ editMessage }}</h5>
+  </div>
+
+  <form [formGroup]="editItem" (ngSubmit)="onEditItem()">
+    <div class="modal-group-two">
+      <div class="form-group">
+        <label for="editName">Name:</label>
+  
+        <input type="text"
+          id="editName"
+          formControlName="name">
+      </div>
+
+      <div class="form-group">
+        <label for="editPrice">Price:</label>
+  
+        <input type="text"
+          id="editPrice"
+          formControlName="price">
+      </div>
+    </div>
+
+    <div class="form-group form-section">
+      <label class="form-section-title" for="#eidtActive">Active:</label>
+
+      <div class="radio-container" id="editActive">
+        <label class="radio-item" for="editActiveTrue">
+          <input type="radio"
+            class="radio-item"
+            id="editActiveTrue"
+            formControlName="active"
+            value="true"> True
+        </label>
+
+        <label class="radio-item" for="editActiveFalse">
+          <input type="radio"
+            class="radio-item"
+            id="editActiveFalse"
+            formControlName="active"
+            value="false"> False
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group form-section">
+      <label class="form-section-title" for="#editAvailable">Available:</label>
+
+      <div class="radio-container" id="editAvailable">
+        <label class="radio-item" for="editAvailableTrue">
+          <input type="radio"
+            class="radio-item"
+            id="editAvailableTrue"
+            formControlName="available"
+            value="true"> True
+        </label>
+
+        <label class="radio-item" for="editAvailableFalse">
+          <input type="radio"
+            class="radio-item"
+            id="editAvailableFalse"
+            formControlName="available"
+            value="false"> False
+        </label>
+      </div>
+    </div>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="editItemBtn">Edit Item</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        (click)="onCancelEdit()">Cancel</button>
+    </div>
+  </form>
+</div>
