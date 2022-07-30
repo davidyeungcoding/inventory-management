@@ -50,8 +50,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   };
 
   validateName(name: any): boolean {
-    const regex = new RegExp('^[\\w\\s]+$', 'gm');
-    const check = regex.test(name);
+    const check = this.itemService.testName(name);
 
     if (!check) {
       this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
@@ -62,8 +61,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   };
 
   validatePrice(price: any): boolean {
-    const regex = new RegExp('^\\d*[.]{0,1}\\d{0,2}$');
-    const check = regex.test(price);
+    const check = this.itemService.testPrice(price);
 
     if (!check) {
       this.addMessage = 'Please enter a valid price.';
@@ -71,16 +69,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     };
 
     return check;
-  };
-
-  parsePrice(price: string): string {
-    const index = price.indexOf('.');
-    const start = price.substring(0, index);
-    const end = price.substring(index + 1);
-    if (index < 0) return price.length > 0 ? `${price}00` : '000';
-    if (index === price.length - 1) return price.length > 1 ? `${start}00` : '000';
-    if (index === price.length - 2) return price.length > 2 ? `${start}${end}0` : `0${end}0`;
-    return start.length ? `${start}${end}` : `0${end}`;
   };
 
   convertPrice(price: string): string {
@@ -105,7 +93,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     if (!this.validateName(form.name)) return;
     if (!this.validatePrice(form.price)) return;
     $('#createItemBtn').prop('disabled', true);
-    form.price = this.parsePrice(form.price!);
+    form.price = this.itemService.parsePrice(form.price!);
     
     this.itemService.createItem(form).subscribe(_res => {
       if (_res.status === 200) {
@@ -115,8 +103,8 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         
         setTimeout(() => {
           this.clearForm();
-          $('#createItemBtn').prop('disabled', false);
           (<any>$('#createItemModal')).modal('hide');
+          $('#createItemBtn').prop('disabled', false);
           $('#addMsgContainer').css('display', 'none');
         }, 1500);
       } else {
@@ -129,8 +117,8 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
   onCancelCreate(): void {
     this.clearForm();
-    $('#createItemBtn').prop('disabled', false);
     (<any>$('#createItemModal')).modal('hide');
+    $('#createItemBtn').prop('disabled', false);
     $('#addMsgContainer').css('display', 'none');
   };
 }

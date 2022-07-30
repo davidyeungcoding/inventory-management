@@ -59,11 +59,7 @@ router.put('/edit-item-details', (req, res, next) => {
   try {
     const payload = {
       id: req.body.id,
-      update: {
-        name: req.body.name,
-        price: req.body.price,
-        active: req.body.active
-      }
+      update: req.body.update
     };
 
     Item.editItemDetails(payload, (err, _item) => {

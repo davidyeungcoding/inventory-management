@@ -68,8 +68,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
     $('#editName').attr('placeholder', this.targetItem!.name);
     $('#editPrice').attr('placeholder', this.targetItem!.price);
     this.editForm.setValue({
-      name: item.name,
-      price: item.price,
+      name: '',
+      price: '',
       active: item.active.toString(),
       available: item.available.toString()
     });

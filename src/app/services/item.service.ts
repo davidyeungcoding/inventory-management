@@ -42,8 +42,8 @@ export class ItemService {
     );
   };
 
-  editItemDetails(item: Item) {
-    return this.http.put(`${this.api}/edit-item-details`, item, this.httpOptions).pipe(
+  editItemDetails(payload: any) {
+    return this.http.put(`${this.api}/edit-item-details`, payload, this.httpOptions).pipe(
       catchError(err => of(err))
     );
   };
@@ -52,6 +52,30 @@ export class ItemService {
     return this.http.put(`${this.api}/delete`, item, this.httpOptions).pipe(
       catchError(err => of(err))
     );
+  };
+
+  // ======================
+  // || Shared Functions ||
+  // ======================
+
+  testName(name: any): boolean {
+    const regex = new RegExp('^[\\w\\s]+$', 'gm');
+    return regex.test(name);
+  };
+
+  testPrice(price: any): boolean {
+    const regex = new RegExp('^\\d*[.]{0,1}\\d{0,2}$');
+    return regex.test(price);
+  };
+
+  parsePrice(price: string): string {
+    const index = price.indexOf('.');
+    const start = price.substring(0, index);
+    const end = price.substring(index + 1);
+    if (index < 0) return price.length > 0 ? `${price}00` : '000';
+    if (index === price.length - 1) return price.length > 1 ? `${start}00` : '000';
+    if (index === price.length - 2) return price.length > 2 ? `${start}${end}0` : `0${end}0`;
+    return start.length ? `${start}${end}` : `0${end}`;
   };
 
   // =======================
