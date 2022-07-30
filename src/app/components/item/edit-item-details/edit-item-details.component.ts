@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-// import { FormControl, FormGroup } from '@angular/forms';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
 import { GlobalService } from 'src/app/services/global.service';
@@ -11,9 +11,11 @@ import { Item } from 'src/app/interfaces/item';
   templateUrl: './edit-item-details.component.html',
   styleUrls: ['./edit-item-details.component.css']
 })
-export class EditItemDetailsComponent implements OnInit {
+export class EditItemDetailsComponent implements OnInit, OnDestroy {
   @Input() targetItem!: Item|null;
   @Input() editItem!: any;
+  private subscriptions = new Subscription();
+  private itemList: Item[] = [];
   editMessage: string = '';
 
   constructor(
@@ -22,6 +24,11 @@ export class EditItemDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // ======================
@@ -59,6 +66,10 @@ export class EditItemDetailsComponent implements OnInit {
     return check;
   };
 
+  convertPrice(price: string): string {
+    return `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -86,10 +97,12 @@ export class EditItemDetailsComponent implements OnInit {
       if (_item.status === 200) {
         this.editMessage = 'Item successfully updated';
         this.globalService.displayMsg('alert-success', '#editMsg', '#editMsgContainer');
-        // handle update item list
+        _item.msg.price = this.convertPrice(_item.msg.price);
+        this.itemService.changeItemList(this.itemService.replaceItem(this.itemList, _item.msg));
         
         setTimeout(() => {
           (<any>$('#editItemModal')).modal('hide');
+          this.clearForm();
           $('#editItemBtn').prop('disabled', false);
           $('#editMsgContainer').css('display', 'none');
         }, 1500);

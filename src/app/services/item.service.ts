@@ -78,6 +78,17 @@ export class ItemService {
     return start.length ? `${start}${end}` : `0${end}`;
   };
 
+  replaceItem(array: Item[], item: Item): Item[] {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === item._id) {
+        array[i] = item;
+        break;
+      };
+    };
+
+    return array;
+  };
+
   // =======================
   // || Change Observables||
   // =======================

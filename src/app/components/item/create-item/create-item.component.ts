@@ -102,8 +102,8 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         this.addItemToList(_res.msg);
         
         setTimeout(() => {
-          this.clearForm();
           (<any>$('#createItemModal')).modal('hide');
+          this.clearForm();
           $('#createItemBtn').prop('disabled', false);
           $('#addMsgContainer').css('display', 'none');
         }, 1500);
