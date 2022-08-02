@@ -3,8 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
+import { IngredientService } from 'src/app/services/ingredient.service';
 
 import { Item } from 'src/app/interfaces/item';
+import { Ingredient } from 'src/app/interfaces/ingredient';
 
 @Component({
   selector: 'app-item-list',
@@ -15,6 +17,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   itemList: Item[] = [];
   targetItem: Item|null = null;
+  targetIngredients: Ingredient[] = [];
+  fullIngredientList: any[] = [];
   deleteMessage: String = '';
   editForm = new FormGroup({
     name: new FormControl(''),
@@ -24,12 +28,14 @@ export class ItemListComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private itemService: ItemService
+    private itemService: ItemService,
+    private ingredientService: IngredientService
   ) { }
 
   ngOnInit(): void {
     this.retrieveItemList();
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.fullIngredientList = _list));
   }
 
   ngOnDestroy(): void {
@@ -52,6 +58,28 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.targetItem = item;
   };
 
+  onEditItemIngredients(item: Item, target: string): void {
+    this.onTargetItem(item, target);
+    this.targetIngredients = item.ingredients;
+    this.retrieveIngredientList();
+  };
+
+  filterIngredientList(item: Ingredient[], list: Ingredient[], index: number): any {
+    if (!item.length) return list;
+    const id = item[index]._id;
+    let temp = [...list];
+
+    for (let i = 0; i < temp.length; i++) {
+      if (id === temp[i]._id) {
+        temp.splice(i, 1);
+        if (index + 1 !== item.length) temp = this.filterIngredientList(item, temp, ++index);
+        break;
+      };
+    };
+
+    return temp;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -60,6 +88,13 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.itemService.getFullItemList().subscribe(_list => {
       this.convertPrice(_list.msg);
       this.itemService.changeItemList(_list.msg);
+    });
+  };
+
+  retrieveIngredientList(): void {
+    this.ingredientService.getIngredientList().subscribe(_list => {
+      const list = this.filterIngredientList(this.targetItem!.ingredients, _list.msg, 0);
+      this.ingredientService.chagneIngredientList(list);
     });
   };
 

@@ -1,1 +1,43 @@
-<p>edit-item-ingredients works!</p>
+<div class="row">
+  <div class="modal-group-two">
+    <div>
+      <div class="item-ingredient-list">
+        <h4 class="edit-item-ingredient-title">Item</h4>
+  
+        <div *ngFor="let ingredient of ingredientList"
+          class="item-ingredient"
+          id="{{ ingredient._id }}"
+          (click)="toAdd(ingredient)">
+          {{ ingredient.name }}
+        </div>
+      </div>
+    </div>
+  
+    <div>
+      <div class="edit-ingredient-list">
+        <h4 class="edit-item-ingredient-title">Ingredients</h4>
+  
+        <div *ngFor="let ingredient of fullIngredientList"
+          class="item-ingredient"
+          id="{{ ingredient._id }}"
+          (click)="toRemove(ingredient)">
+          {{ ingredient.name }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="modal-btn-container">
+    <button type="button"
+      class="btn btn-secondary modal-btn"
+      id="addIngredient"
+      (click)="onUpdate()">Update</button>
+
+    <button type="button"
+      class="btn btn-secondary modal-btn"
+      id="removeIngredient"
+      (click)="onCancel()">Cancel</button>
+  </div>
+</div>

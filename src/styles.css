@@ -44,11 +44,6 @@ td:first-child, th:first-child {
   margin: 0 .5rem;
 }
 
-.modal-group-two {
-  display: flex;
-  justify-content: space-around;
-}
-
 .form-section {
   border: solid;
   border-radius: 10px;
@@ -89,6 +84,11 @@ label {
 /* =========== */
 /* || Modal || */
 /* =========== */
+
+.modal-group-two {
+  display: flex;
+  justify-content: space-around;
+}
 
 .modal-title {
   text-align: center;

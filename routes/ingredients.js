@@ -97,7 +97,7 @@ router.get('/search', (req, res, next) => {
   try {
     const payload = {
       term: req.query.term ? new RegExp(req.query.term, 'i') : '',
-      type: req.query.type
+      type: req.query.type ? req.query.type : ''
     };
 
     Ingredient.searchIngredient(payload, (err, _list) => {

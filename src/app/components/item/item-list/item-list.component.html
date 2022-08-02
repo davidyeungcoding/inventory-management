@@ -30,7 +30,7 @@
             class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#editItemIngredientsModal"
-            (click)="onTargetItem(item, '#editItemIngredientMsgContainer')"><i class="far fa-edit"></i> Ingredients</button>
+            (click)="onEditItemIngredients(item, '#editItemIngredientMsgContainer')"><i class="far fa-edit"></i> Ingredients</button>
         </td>
 
         <td class="table-center">
@@ -77,7 +77,7 @@
 <div class="modal fade"
   id="editItemIngredientsModal"
   tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Edit Item Ingredients</h5>
@@ -89,7 +89,9 @@
       </div>
 
       <div class="modal-body">
-        <!-- ingredient modal here -->
+        <app-edit-item-ingredients [targetItem]="targetItem"
+          [ingredientList]="targetIngredients"
+          [fullIngredientList]="fullIngredientList"></app-edit-item-ingredients>
       </div>
     </div>
   </div>

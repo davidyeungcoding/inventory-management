@@ -1,0 +1,11 @@
+.edit-item-ingredient-title {
+  text-align: center;
+}
+
+.item-ingredient {
+  text-align: left;
+}
+
+.selected {
+  background-color: var(--table-color-tertiary);
+}
