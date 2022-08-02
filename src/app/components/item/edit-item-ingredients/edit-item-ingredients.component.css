@@ -1,9 +1,20 @@
+.modal-selector-container {
+  width: 16rem;
+}
+
 .edit-item-ingredient-title {
   text-align: center;
 }
 
+.ingredient-container {
+  border: solid .15rem;
+  height: 16rem;
+  overflow-y: scroll;
+}
+
 .item-ingredient {
   text-align: left;
+  padding: .25rem .5rem;
 }
 
 .selected {

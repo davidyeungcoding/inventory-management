@@ -6,13 +6,10 @@
   display: flex;
   justify-content: flex-end;
   column-gap: .65rem;
+  margin-top: 1rem;
 }
 
 .table-end-btn {
-  width:fit-content;
+  width: 9rem;
   font-size: 1rem;
 }
-
-/* =========== */
-/* || Modal || */
-/* =========== */

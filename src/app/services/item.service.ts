@@ -21,6 +21,8 @@ export class ItemService {
 
   private itemListSource = new BehaviorSubject<Item[]>([]);
   itemList = this.itemListSource.asObservable();
+  private toChangeSource = new BehaviorSubject<any>({});
+  toChange = this.toChangeSource.asObservable();
 
   constructor(
     private http: HttpClient
@@ -89,11 +91,19 @@ export class ItemService {
     return array;
   };
 
+  clearHighlight(): void {
+    $('.item-ingredient').removeClass('selected');
+  };
+
   // =======================
   // || Change Observables||
   // =======================
 
   changeItemList(list: Item[]): void {
     this.itemListSource.next(list);
+  };
+
+  changeToChange(targets: any): void {
+    this.toChangeSource.next(targets);
   };
 }

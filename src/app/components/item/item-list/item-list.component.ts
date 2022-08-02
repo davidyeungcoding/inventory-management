@@ -62,6 +62,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.onTargetItem(item, target);
     this.targetIngredients = item.ingredients;
     this.retrieveIngredientList();
+    this.itemService.clearHighlight();
+    this.itemService.changeToChange({});
   };
 
   filterIngredientList(item: Ingredient[], list: Ingredient[], index: number): any {

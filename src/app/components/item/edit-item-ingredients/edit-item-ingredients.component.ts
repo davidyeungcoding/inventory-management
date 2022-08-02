@@ -1,22 +1,33 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+
+import { ItemService } from 'src/app/services/item.service';
 
 import { Item } from 'src/app/interfaces/item';
 import { Ingredient } from 'src/app/interfaces/ingredient';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-item-ingredients',
   templateUrl: './edit-item-ingredients.component.html',
   styleUrls: ['./edit-item-ingredients.component.css']
 })
-export class EditItemIngredientsComponent implements OnInit {
+export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   @Input() targetItem!: Item|null;
   @Input() ingredientList!: any[];
   @Input() fullIngredientList!: any[];
+  private subscriptions = new Subscription();
   private toChange: any = {};
 
-  constructor() { }
+  constructor(
+    private itemService: ItemService
+  ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.itemService.toChange.subscribe(_targets => this.toChange = _targets));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // ======================
@@ -24,9 +35,10 @@ export class EditItemIngredientsComponent implements OnInit {
   // ======================
 
   changeSelected(ingredient: Ingredient, action: string): void {
-    const target = this.toChange[ingredient._id];
-    target ? delete this.toChange[ingredient._id]
-    : this.toChange[ingredient._id] = action;
+    const temp = {...this.toChange};
+    const target = temp[ingredient._id];
+    target ? delete temp[ingredient._id] : temp[ingredient._id] = action;
+    this.itemService.changeToChange(temp);
   };
 
   highlight(ingredient: Ingredient): void {
@@ -50,10 +62,12 @@ export class EditItemIngredientsComponent implements OnInit {
 
   onUpdate(): void {
     console.log('onUpdate()')
+    console.log(this.toChange)
   };
 
   onCancel(): void {
     console.log('onCancel()')
-    this.toChange = {};
+    this.itemService.changeToChange({});
+    this.itemService.clearHighlight();
   };
 }
