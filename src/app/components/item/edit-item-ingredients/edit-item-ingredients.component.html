@@ -1,4 +1,8 @@
 <div class="row">
+  <div id="editItemIngredientMsgContainer">
+    <h5 class="alert alert-msg" id="editItemIngredientMsg">{{ editItemIngredientMsg }}</h5>
+  </div>
+
   <div class="modal-group-two">
     <div class="modal-selector-container">
       <div class="item-ingredient-list">
@@ -8,8 +12,7 @@
           <div *ngFor="let ingredient of ingredientList"
             class="item-ingredient"
             id="{{ ingredient._id }}"
-            (click)="toRemove(ingredient)">
-            {{ ingredient.name }}
+            (click)="toRemove(ingredient)">{{ ingredient.name }}
           </div>
         </div>
       </div>
@@ -23,8 +26,7 @@
           <div *ngFor="let ingredient of fullIngredientList"
             class="item-ingredient"
             id="{{ ingredient._id }}"
-            (click)="toAdd(ingredient)">
-            {{ ingredient.name }}
+            (click)="toAdd(ingredient)">{{ ingredient.name }}
           </div>
         </div>
       </div>
@@ -36,12 +38,12 @@
   <div class="modal-btn-container">
     <button type="button"
       class="btn btn-secondary modal-btn"
-      id="addIngredient"
+      id="updateIngredientBtn"
       (click)="onUpdate()">Update</button>
 
     <button type="button"
       class="btn btn-secondary modal-btn"
-      id="removeIngredient"
+      id="cancelUpdateIngredientBtn"
       (click)="onCancel()">Cancel</button>
   </div>
 </div>

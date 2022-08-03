@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { ItemService } from 'src/app/services/item.service';
+import { GlobalService } from 'src/app/services/global.service';
 
 import { Item } from 'src/app/interfaces/item';
 import { Ingredient } from 'src/app/interfaces/ingredient';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-item-ingredients',
@@ -17,12 +18,16 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   @Input() fullIngredientList!: any[];
   private subscriptions = new Subscription();
   private toChange: any = {};
+  editItemIngredientMsg: string = '';
+  itemList: Item[] = [];
 
   constructor(
-    private itemService: ItemService
+    private itemService: ItemService,
+    private globalService: GlobalService
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
     this.subscriptions.add(this.itemService.toChange.subscribe(_targets => this.toChange = _targets));
   }
 
@@ -46,6 +51,19 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
     : $(`#${ingredient._id}`).addClass('selected');
   };
 
+  updateItemList(item: Item): void {
+    const array = [...this.itemList];
+    
+    for (let i = 0; i < array.length; i++) {
+      if (array[i]._id === item._id) {
+        array[i] = item;
+        break;
+      };
+    };
+
+    this.itemService.changeItemList(array);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -61,8 +79,26 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   };
 
   onUpdate(): void {
-    console.log('onUpdate()')
-    console.log(this.toChange)
+    $('#editItemIngredientMsgContainer').css('display', 'none');
+    $('#updateIngredientBtn').prop('disabled', true);
+    const payload = {
+      id: this.targetItem?._id,
+      toChange: this.toChange
+    };
+
+    this.itemService.updateItemIngredient(payload).subscribe(_item => {
+      if (_item.status === 200) {
+        this.editItemIngredientMsg = 'Ingredients successfully updated';
+        this.globalService.displayMsg('alert-success', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
+        // this.updateItemList(_item.msg);
+        // console.log(this.itemList);
+
+      } else {
+        this.editItemIngredientMsg = _item.msg;
+        this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
+        $('#updateIngredientBtn').prop('disabled', false);
+      };
+    });
   };
 
   onCancel(): void {

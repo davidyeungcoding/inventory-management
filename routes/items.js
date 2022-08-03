@@ -27,6 +27,19 @@ const editIngredients = async payload => {
   });
 };
 
+const generateUpdateArray = async obj => {
+  return new Promise(resolve => {
+    const insertion = [];
+    const removal = [];
+  
+    Object.keys(obj).forEach(key => {
+      obj[key] === 'add' ? insertion.push(key) : removal.push(key);
+    });
+  
+    return resolve({ insertion: insertion, removal: removal });
+  });
+};
+
 // =================
 // || Create Item ||
 // =================
@@ -75,26 +88,32 @@ router.put('/edit-item-details', (req, res, next) => {
 
 router.put('/edit-item-ingredients', async (req, res, next) => {
   try {
-    if (req.body.insertion.length) {
+    const changes = await generateUpdateArray(req.body.toChange);
+    const insertion = changes.insertion;
+    const removal = changes.removal;
+
+    if (insertion.length) {
       const update = {
         id: req.body.id,
-        ingredients: req.body.insertion,
+        ingredients: insertion,
         action: 'add'
       };
       const additionUpdate = await editIngredients(update);
-      if (additionUpdate.status != 200 || !req.body.removal.length) return res.json(additionUpdate);
+      if (additionUpdate.status != 200 || !removal.length) return res.json(additionUpdate);
     };
-
-    if (req.body.removal.length) {
+    
+    if (removal.length) {
       const update = {
         id: req.body.id,
-        ingredients: req.body.removal,
+        ingredients: removal,
         action: 'remove'
       };
 
       const removalUpdate = await editIngredients(update);
       return res.json(removalUpdate);
     };
+      
+    return res.json({ status: 204, msg: 'No changes detected' });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process update to ingredients' });
   };

@@ -56,6 +56,12 @@ export class ItemService {
     );
   };
 
+  updateItemIngredient(payload: any) {
+    return this.http.put(`${this.api}/edit-item-ingredients`, payload, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // ======================
   // || Shared Functions ||
   // ======================
