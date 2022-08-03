@@ -80,7 +80,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
 
   onUpdate(): void {
     $('#editItemIngredientMsgContainer').css('display', 'none');
-    $('#updateIngredientBtn').prop('disabled', true);
+    $('#updateItemIngredientBtn').prop('disabled', true);
     const payload = {
       id: this.targetItem?._id,
       toChange: this.toChange
@@ -90,13 +90,18 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
       if (_item.status === 200) {
         this.editItemIngredientMsg = 'Ingredients successfully updated';
         this.globalService.displayMsg('alert-success', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
-        // this.updateItemList(_item.msg);
-        // console.log(this.itemList);
+        this.updateItemList(_item.msg);
+        // handle adding item to ingredient foundIn list
 
+        setTimeout(() => {
+          (<any>$('#editItemIngredientsModal')).modal('hide');
+          $('#eidtItemIngredientMsgContainer').css('display', 'none');
+          $('#updateItemIngredientBtn').prop('disabled', false);
+        }, 1500);
       } else {
         this.editItemIngredientMsg = _item.msg;
         this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
-        $('#updateIngredientBtn').prop('disabled', false);
+        $('#updateItemIngredientBtn').prop('disabled', false);
       };
     });
   };
