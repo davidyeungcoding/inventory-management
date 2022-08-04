@@ -107,7 +107,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   };
 
   onCancel(): void {
-    console.log('onCancel()')
+    (<any>$('#editItemIngredientsModal')).modal('hide');
     this.itemService.changeToChange({});
     this.itemService.clearHighlight();
   };

@@ -11,6 +11,7 @@ module.exports = router;
 
 const { itemModel } = require('../models/item');
 const Item = require('../models/item');
+const Ingredient = require('../models/ingredient');
 
 // ======================
 // || Shared Functions ||
@@ -37,6 +38,16 @@ const generateUpdateArray = async obj => {
     });
   
     return resolve({ insertion: insertion, removal: removal });
+  });
+};
+
+const updateFoundIn = async payload => {
+  return new Promise(resolve => {
+    Ingredient.updateFoundIn(payload, (err, _res) => {
+      if (err) throw err;
+      return resolve(_res ? { status: 200, msg: 'Ingredient updated successfully' }
+      : { status: 400 });
+    });
   });
 };
 
@@ -98,8 +109,10 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
         ingredients: insertion,
         action: 'add'
       };
+      const ingredientUpdate = await updateFoundIn(update);
+      if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: 'Unable to add ingredients to item' });
       const additionUpdate = await editIngredients(update);
-      if (additionUpdate.status != 200 || !removal.length) return res.json(additionUpdate);
+      if (additionUpdate.status !== 200 || !removal.length) return res.json(additionUpdate);
     };
     
     if (removal.length) {
@@ -108,7 +121,9 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
         ingredients: removal,
         action: 'remove'
       };
-
+      // handle remove from foundIn for ingredient
+      const ingredientUpdate = await updateFoundIn(update);
+      if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: 'Unable to remove ingredients from item' });
       const removalUpdate = await editIngredients(update);
       return res.json(removalUpdate);
     };

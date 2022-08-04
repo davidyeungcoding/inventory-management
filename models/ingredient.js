@@ -43,6 +43,13 @@ module.exports.purgeItem = (payload, callback) => {
   this.ingredientModel.updateMany({ _id: query }, update, callback);
 };
 
+module.exports.updateFoundIn = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const query = { $in: payload.ingredients };
+  const update = { [action]: { foundIn: payload.id } };
+  this.ingredientModel.updateMany({ _id: query }, update, callback);
+};
+
 // =======================
 // || Search Ingredient ||
 // =======================
