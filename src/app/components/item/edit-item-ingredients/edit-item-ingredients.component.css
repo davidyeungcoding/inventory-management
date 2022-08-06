@@ -10,8 +10,13 @@
 /* || Modal || */
 /* =========== */
 
+.modal-group-two {
+  overflow: auto;
+}
+
 .modal-selector-container {
   width: 16rem;
+  margin: auto;
 }
 
 .edit-item-ingredient-title {
@@ -21,7 +26,7 @@
 .ingredient-container {
   border: solid .15rem;
   height: 16rem;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .item-ingredient {

@@ -2,11 +2,23 @@
 /* || Table || */
 /* =========== */
 
+.table-body {
+  border: solid .16rem;
+}
+
 .table-end {
   display: flex;
   justify-content: flex-end;
   column-gap: .65rem;
   margin-top: 1rem;
+}
+
+.table-name {
+  min-width: 9rem;
+}
+
+.table-data {
+  min-width: 6rem;
 }
 
 .table-end-btn {

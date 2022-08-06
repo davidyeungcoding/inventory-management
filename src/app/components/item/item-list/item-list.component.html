@@ -1,12 +1,12 @@
 <div class="container">
-  <div class="row">
-    <table>
+  <div class="row scrollable">
+    <table class="table-body">
       <tr>
-        <th class="table-left">Name</th>
-        <th class="table-center">Price</th>
-        <th class="table-center">Active</th>
-        <th class="table-center">Available</th>
-        <th class="table-center">Edit Details</th>
+        <th class="table-left table-name">Name</th>
+        <th class="table-center table-data">Price</th>
+        <th class="table-center table-data">Active</th>
+        <th class="table-center table-data">Available</th>
+        <th class="table-center table-data">Edit Details</th>
         <th class="table-center">Edit Ingredients</th>
         <th class="table-center">Delete</th>
       </tr>
@@ -45,11 +45,11 @@
   
   <div class="row table-end">
     <button class="btn btn-secondary table-end-btn"
-      (click)="onBack()">Back</button>
-
-    <button class="btn btn-secondary table-end-btn"
       data-bs-toggle="modal"
       data-bs-target="#createItemModal">Add Item</button>
+    
+    <button class="btn btn-secondary table-end-btn"
+      (click)="onBack()">Back</button>
   </div>
 </div>
 

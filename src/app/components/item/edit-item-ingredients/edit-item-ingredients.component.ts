@@ -91,7 +91,6 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
         this.editItemIngredientMsg = 'Ingredients successfully updated';
         this.globalService.displayMsg('alert-success', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
         this.updateItemList(_item.msg);
-        // handle adding item to ingredient foundIn list
 
         setTimeout(() => {
           (<any>$('#editItemIngredientsModal')).modal('hide');

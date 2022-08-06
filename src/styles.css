@@ -8,12 +8,20 @@
 /* || Table || */
 /* =========== */
 
-td {
+th {
+  min-width: fit-content;
+}
+
+th, td {
   padding: .5rem 0;
 }
 
 td:first-child, th:first-child {
   padding-left: .75rem;
+}
+
+td:last-child, th:last-child {
+  padding-right: .75rem;
 }
 
 .table-entry:nth-child(even) {
@@ -34,6 +42,10 @@ td:first-child, th:first-child {
 
 .table-data {
   text-transform: capitalize;
+}
+
+td>button {
+  white-space: nowrap;
 }
 
 /* ========== */
@@ -63,6 +75,20 @@ td:first-child, th:first-child {
   margin: 0 0 2rem;
 }
 
+.form-field {
+  width: 100%;
+}
+
+.last-radio-group {
+  margin: 0;
+}
+
+@media screen and (min-width: 485px) {
+  .form-field {
+    width: auto;
+  }
+}
+
 .alert-msg {
   text-align: center;
 }
@@ -86,8 +112,14 @@ label {
 /* =========== */
 
 .modal-group-two {
-  display: flex;
-  justify-content: space-around;
+  display: block;
+}
+
+@media screen and (min-width: 485px) {
+  .modal-group-two {
+    display: flex;
+    justify-content: space-around;
+  }
 }
 
 .modal-title {
@@ -95,12 +127,37 @@ label {
 }
 
 .modal-btn-container {
-  display: flex;
-  justify-content: center;
+  display: block;
   column-gap: 10px;
-  margin-top: 2rem;
+  text-align: center;
+  margin-top: 16px;
 }
 
 .modal-btn {
-  width: 9rem;
+  width: 60%;
+  margin-top: 8px;
+}
+
+.modal-btn:first-child {
+  margin-top: 0px;
+}
+
+@media screen and (min-width: 485px) {
+  .modal-btn-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .modal-btn {
+    width: 9rem;
+    margin-top: 0;
+  }
+}
+
+/* ============= */
+/* || General || */
+/* ============= */
+
+.scrollable {
+  overflow-x: scroll;
 }
