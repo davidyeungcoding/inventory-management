@@ -17,7 +17,7 @@
         <td class="table-center table-data">{{ item.active }}</td>
         <td class="table-center table-data">{{ item.available }}</td>
 
-        <td class="table-center">
+        <td class="table-center btn-padding">
           <button type="button"
             class="btn btn-secondary"
             data-bs-toggle="modal"
@@ -25,7 +25,7 @@
             (click)="onEditSetup(item, '#editMsgContainer')"><i class="far fa-edit"></i> Details</button>
         </td>
         
-        <td class="table-center">
+        <td class="table-center btn-padding">
           <button type="button"
             class="btn btn-secondary"
             data-bs-toggle="modal"
@@ -34,7 +34,8 @@
         </td>
 
         <td class="table-center">
-          <button class="btn btn-secondary"
+          <button type="button"
+            class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#deleteItemModal"
             (click)="onTargetItem(item, '#deleteMsgContainer')"><i class="fas fa-trash"></i></button>

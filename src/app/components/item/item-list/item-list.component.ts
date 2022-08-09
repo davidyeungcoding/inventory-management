@@ -96,7 +96,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   retrieveIngredientList(): void {
     this.ingredientService.getIngredientList().subscribe(_list => {
       const list = this.filterIngredientList(this.targetItem!.ingredients, _list.msg, 0);
-      this.ingredientService.chagneIngredientList(list);
+      this.ingredientService.changeIngredientList(list);
     });
   };
 

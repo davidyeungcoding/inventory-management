@@ -10,6 +10,8 @@ import { EditItemIngredientsComponent } from './components/item/edit-item-ingred
 import { ItemListComponent } from './components/item/item-list/item-list.component';
 import { CreateItemComponent } from './components/item/create-item/create-item.component';
 import { DeleteItemComponent } from './components/item/delete-item/delete-item.component';
+import { IngredientListComponent } from './components/ingredient/ingredient-list/ingredient-list.component';
+import { EditIngredientDetailsComponent } from './components/ingredient/edit-ingredient-details/edit-ingredient-details.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { DeleteItemComponent } from './components/item/delete-item/delete-item.c
     EditItemIngredientsComponent,
     ItemListComponent,
     CreateItemComponent,
-    DeleteItemComponent
+    DeleteItemComponent,
+    IngredientListComponent,
+    EditIngredientDetailsComponent
   ],
   imports: [
     BrowserModule,

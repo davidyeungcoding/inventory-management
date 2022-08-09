@@ -2,6 +2,7 @@
   --background-color: white;
   --table-color-secondary: hsl(0, 0%, 87%);
   --table-color-tertiary: hsl(0, 0%, 75%);
+  --base-width: 650px;
 }
 
 /* =========== */
@@ -115,13 +116,6 @@ label {
   display: block;
 }
 
-@media screen and (min-width: 485px) {
-  .modal-group-two {
-    display: flex;
-    justify-content: space-around;
-  }
-}
-
 .modal-title {
   text-align: center;
 }
@@ -143,6 +137,11 @@ label {
 }
 
 @media screen and (min-width: 485px) {
+  .modal-group-two {
+    display: flex;
+    justify-content: space-around;
+  }
+
   .modal-btn-container {
     display: flex;
     justify-content: center;
@@ -159,5 +158,5 @@ label {
 /* ============= */
 
 .scrollable {
-  overflow-x: scroll;
+  overflow-x: auto;
 }

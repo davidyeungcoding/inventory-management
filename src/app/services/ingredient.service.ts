@@ -47,7 +47,7 @@ export class IngredientService {
   // || Change Observable ||
   // =======================
 
-  chagneIngredientList(list: Ingredient[]): void {
+  changeIngredientList(list: Ingredient[]): void {
     this.ingredientListSource.next(list);
   };
 }

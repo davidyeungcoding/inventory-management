@@ -2,12 +2,8 @@
 /* || Table || */
 /* =========== */
 
-.table-name {
-  min-width: 9rem;
-}
-
-.table-data {
-  min-width: 6rem;
+.table-body {
+  margin: auto;
 }
 
 .table-end {
@@ -17,16 +13,12 @@
   margin-top: 1rem;
 }
 
-@media screen and (min-width: 768px) {
-  .table-end {
-    justify-content: flex-end;
-  }
-}
-
 .table-end-btn {
   width: 9rem;
 }
 
-.btn-padding {
-  padding: 8px 4px;
+@media screen and (min-width: 485px) {
+  .table-body {
+    width: var(--base-width);
+  }
 }

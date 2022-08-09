@@ -1,0 +1,109 @@
+<div class="container">
+  <div class="row scrollable">
+    <table class="table-body">
+      <tr>
+        <th class="table-center">Edit</th>
+
+        <th class="table-left">Name</th>
+
+        <th class="table-center">Delete</th>
+      </tr>
+
+      <tr class="table-entry" *ngFor="let ingredient of ingredientList">
+        <td class="table-center">
+          <button type="button"
+            class="btn btn-secondary"
+            data-bs-toggle="modal"
+            data-bs-target="#editIngredientModal"
+            (click)="onTargetIngredient(ingredient)"><i class="far fa-edit"></i></button>
+        </td>
+
+        <td class="table-left">
+          <span class="ingredient-name">{{ ingredient.name }}</span>
+        </td>
+
+        <td class="table-center">
+          <button type="button"
+            class="btn btn-secondary"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteIngredientModal"
+            (click)="onTargetIngredient(ingredient)"><i class="fas fa-trash"></i></button>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="row table-end">
+    <button type="button"
+      class="btn btn-secondary table-end-btn"
+      data-bs-toggle="modal"
+      data-bs-target="#createIngredientModal">Add Ingredient</button>
+
+    <button type="button"
+      class="btn btn-secondary table-end-btn"
+      (click)="onBack()">Back</button>
+  </div>
+</div>
+
+<div class="modal fade"
+  id="editIngredientModal"
+  tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Ingredient</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- insert modal content here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+  id="deleteIngredientModal"
+  tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Ingredient</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- insert modal content here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+  id="createIngredientModal"
+  tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Ingredient</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- insert modal content here -->
+      </div>
+    </div>
+  </div>
+</div>
