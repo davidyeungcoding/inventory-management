@@ -84,9 +84,16 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
       active: form.active,
       available: form.available
     };
-
+    
     if (form.name) tempItem.name = form.name;
     if (form.price) tempItem.price = this.itemService.parsePrice(form.price);
+    if (!form.name && !form.price && tempItem.active === JSON.stringify(this.targetItem!.active)
+      && tempItem.available === JSON.stringify(this.targetItem!.available)) {
+      this.editMessage = 'No changes detected';
+      this.globalService.displayMsg('alert-danger', '#editMsg', '#editMsgContainer');
+      $('#editItemBtn').prop('disabled', false);
+      return;
+    };
     
     const payload = {
       id: this.targetItem?._id,
