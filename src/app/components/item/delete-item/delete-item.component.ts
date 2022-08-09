@@ -49,23 +49,6 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
     return temp;
   };
 
-  removeItemFromIngredient(): void {
-    this.ingredientService.purgeItem(this.targetItem!).subscribe(_res => {
-      if (_res.status === 200) {
-        this.globalService.displayMsg('alert-success', '#deleteResult', '#deleteMsgContainer');
-
-        setTimeout(() => {
-          (<any>$('#deleteItemModal')).modal('hide');
-          $('#deleteItemBtn').prop('disabled', false);
-        }, 1500);
-      } else {
-        this.deleteMessage = _res.msg;
-        this.globalService.displayMsg('alert-danger', '#deleteResult', '#deleteMsgContainer');
-        $('#deleteItemBtn').prop('disabled', false);
-      };
-    });
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -78,8 +61,13 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
-        this.removeItemFromIngredient();
         this.itemService.changeItemList(this.removeItemFromList(this.targetItem!));
+        this.globalService.displayMsg('alert-success', '#deleteResult', '#deleteMsgContainer');
+
+        setTimeout(() => {
+          (<any>$('#deleteItemModal')).modal('hide');
+          $('#deleteItemBtn').prop('disabled', false);
+        }, 1500);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteResult', '#deleteMsgContainer');
         $('#deleteItemBtn').prop('disabled', false);

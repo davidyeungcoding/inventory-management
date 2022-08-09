@@ -41,6 +41,14 @@ const generateUpdateArray = async obj => {
   });
 };
 
+const parseIngredientArray = async arr => {
+  return new Promise(resolve => {
+    res = [];
+    arr.forEach(val => res.push(val._id));
+    return resolve(res);
+  });
+};
+
 const updateFoundIn = async payload => {
   return new Promise(resolve => {
     Ingredient.updateFoundIn(payload, (err, _res) => {
@@ -121,7 +129,7 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
         ingredients: removal,
         action: 'remove'
       };
-      // handle remove from foundIn for ingredient
+
       const ingredientUpdate = await updateFoundIn(update);
       if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: 'Unable to remove ingredients from item' });
       const removalUpdate = await editIngredients(update);
@@ -176,8 +184,16 @@ router.get('/search', (req, res, next) => {
 // || Delete Item ||
 // =================
 
-router.put('/delete', (req, res, next) => {
+router.put('/delete', async (req, res, next) => {
   try {
+    const payload = {
+      id: req.body._id,
+      ingredients: await parseIngredientArray(req.body.ingredients),
+      action: 'remove'
+    };
+    const ingredientUpdate = await updateFoundIn(payload);
+    if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: `Unable to delete item: ${req.body.name}` });
+
     Item.deleteItem(req.body._id, (err, _item) => {
       if (err) throw err;
 
