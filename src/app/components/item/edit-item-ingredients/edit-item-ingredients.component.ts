@@ -90,6 +90,8 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
       if (_item.status === 200) {
         this.editItemIngredientMsg = 'Ingredients successfully updated';
         this.globalService.displayMsg('alert-success', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
+        let price = _item.msg.price;
+        _item.msg.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
         this.updateItemList(_item.msg);
 
         setTimeout(() => {
