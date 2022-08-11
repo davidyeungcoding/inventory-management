@@ -1,0 +1,28 @@
+<div class="row modal-form-container">
+  <div id="addIngredientMsgContainer">
+    <h5 class="alert alert-msg" id="addIngredientMsg">{{ addMessage }}</h5>
+  </div>
+
+  <form [formGroup]="addIngredient" (ngSubmit)="onCreateIngredient()">
+    <div class="modal-group-one">
+      <div class="form-group">
+        <label for="ingredientName">Name: </label>
+  
+        <input type="text"
+          calss="form-field"
+          id="ingredientName"
+          formControlName="name">
+      </div>
+    </div>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="createIngredientBtn">Create Ingredient</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        (click)="onCancelCreate()">Cancel</button>
+    </div>
+  </form>
+</div>

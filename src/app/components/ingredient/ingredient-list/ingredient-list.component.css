@@ -2,23 +2,22 @@
 /* || Table || */
 /* =========== */
 
-.table-body {
-  margin: auto;
-}
-
-.table-end {
-  display: flex;
-  justify-content: center;
-  column-gap: .65rem;
-  margin-top: 1rem;
-}
-
 .table-end-btn {
-  width: 9rem;
+  width: 60%;
+  margin-top: 16px;
+}
+
+.table-end-btn:first-of-type {
+  margin-top: 0;
 }
 
 @media screen and (min-width: 485px) {
   .table-body {
     width: var(--base-width);
+  }
+
+  .table-end-btn {
+    width: 9rem;
+    margin-top: 0;
   }
 }

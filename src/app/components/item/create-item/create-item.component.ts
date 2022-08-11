@@ -50,7 +50,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   };
 
   validateName(name: any): boolean {
-    const check = this.itemService.testName(name);
+    const check = this.globalService.testName(name);
 
     if (!check) {
       this.addMessage = 'Please enter a valid item name. Name may not include special characters.';

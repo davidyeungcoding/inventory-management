@@ -66,11 +66,6 @@ export class ItemService {
   // || Shared Functions ||
   // ======================
 
-  testName(name: any): boolean {
-    const regex = new RegExp('^[\\w\\s]+$', 'gm');
-    return regex.test(name);
-  };
-
   testPrice(price: any): boolean {
     const regex = new RegExp('^\\d*[.]{0,1}\\d{0,2}$');
     return regex.test(price);

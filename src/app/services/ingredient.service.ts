@@ -43,6 +43,12 @@ export class IngredientService {
     );
   };
 
+  createIngredient(ingredient: any) {
+    return this.http.post(`${this.api}/create`, ingredient, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // =======================
   // || Change Observable ||
   // =======================

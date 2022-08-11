@@ -45,7 +45,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   };
 
   validateName(name: string): boolean {
-    const check = this.itemService.testName(name);
+    const check = this.globalService.testName(name);
 
     if (!check) {
       this.editMessage = 'Please enter a valid item name. Name may not include special characters.';

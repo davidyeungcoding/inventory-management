@@ -9,6 +9,10 @@
 /* || Table || */
 /* =========== */
 
+.table-body {
+  margin: auto;
+}
+
 th {
   min-width: fit-content;
 }
@@ -47,6 +51,17 @@ td:last-child, th:last-child {
 
 td>button {
   white-space: nowrap;
+}
+
+.table-end {
+  display: flex;
+  justify-content: center;
+  column-gap: .65rem;
+  margin-top: 1rem;
+}
+
+.table-end-btn {
+  width: 9rem;
 }
 
 /* ========== */
@@ -112,8 +127,22 @@ label {
 /* || Modal || */
 /* =========== */
 
-.modal-group-two {
+.modal-group-one, .modal-group-two {
   display: block;
+}
+
+.modal-group-one {
+  margin: auto;
+}
+
+@media screen and (min-width: 450px) {
+  .modal-group-one {
+    width: 70%;
+  }
+}
+
+.modal-group-one>.form-group>* {
+  width: 100%;
 }
 
 .modal-title {
