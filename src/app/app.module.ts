@@ -13,6 +13,8 @@ import { DeleteItemComponent } from './components/item/delete-item/delete-item.c
 import { IngredientListComponent } from './components/ingredient/ingredient-list/ingredient-list.component';
 import { EditIngredientDetailsComponent } from './components/ingredient/edit-ingredient-details/edit-ingredient-details.component';
 import { CreateIngredientComponent } from './components/ingredient/create-ingredient/create-ingredient.component';
+import { DeleteIngredientComponent } from './components/ingredient/delete-ingredient/delete-ingredient.component';
+import { EditIngredientComponent } from './components/ingredient/edit-ingredient/edit-ingredient.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { CreateIngredientComponent } from './components/ingredient/create-ingred
     DeleteItemComponent,
     IngredientListComponent,
     EditIngredientDetailsComponent,
-    CreateIngredientComponent
+    CreateIngredientComponent,
+    DeleteIngredientComponent,
+    EditIngredientComponent
   ],
   imports: [
     BrowserModule,

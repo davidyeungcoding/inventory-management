@@ -36,17 +36,17 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
-  removeItemFromList(item: Item): Item[] {
+  removeItemFromList(): void {
     let temp = [...this.itemList];
     
     for (let i = 0; i < temp.length; i++) {
-      if (temp[i]._id === item._id) {
+      if (temp[i]._id === this.targetItem!._id) {
         temp.splice(i, 1);
         break;
       };
     };
     
-    return temp;
+    this.itemService.changeItemList(temp);
   };
 
   // =======================
@@ -61,7 +61,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
-        this.itemService.changeItemList(this.removeItemFromList(this.targetItem!));
+        this.removeItemFromList();
         this.globalService.displayMsg('alert-success', '#deleteResult', '#deleteMsgContainer');
 
         setTimeout(() => {
@@ -73,5 +73,9 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
         $('#deleteItemBtn').prop('disabled', false);
       };
     });
+  };
+
+  onCancelDelete(): void {
+    $('#deleteItemBtn').prop('disabled', false);
   };
 }

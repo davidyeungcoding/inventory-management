@@ -10,6 +10,7 @@ module.exports = router;
 
 const { ingredientModel } = require('../models/ingredient');
 const Ingredient = require('../models/ingredient');
+const Item = require('../models/item');
 
 // ======================
 // || Shared Functions ||
@@ -21,6 +22,16 @@ const processIngredientList = async list => {
   });
   
   return new Promise(resolve => resolve(temp));
+};
+
+const purgeFromItem = async payload => {
+  return new Promise(resolve => {
+    Item.purgeIngredient(payload, (err, _res) => {
+      if (err) throw err;
+      return resolve(_res ? { status: 200, msg: 'Updated related items' }
+      : { status: 400 });
+    });
+  });
 };
 
 // =======================
@@ -128,8 +139,15 @@ router.get('/found-in', (req, res, next) => {
 // || Delete Ingredient ||
 // =======================
 
-router.delete('/delete', (req, res, next) => {
+router.put('/delete', async (req, res, next) => {
   try {
+    const payload = {
+      target: req.body.foundIn,
+      id: req.body._id
+    };
+    const itemUpdate = await purgeFromItem(payload);
+    if (itemUpdate.status !== 200) return res.json({ status: itemUpdate.status, msg: `Unable to delete ${req.body.name} from associated items` });
+
     Ingredient.deleteIngredient(req.body._id, (err, _ingredient) => {
       if (err) throw err;
 

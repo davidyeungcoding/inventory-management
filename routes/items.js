@@ -142,25 +142,6 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
   };
 });
 
-router.put('/purge-ingredient', async (req, res, next) => {
-  try{
-    const payload = {
-      id: req.body.id,
-      name: req.body.name,
-      target: Object.keys(req.body.foundIn)
-    };
-
-    Item.purgeIngredient(payload, (err, _items) => {
-      if (err) throw err;
-
-      return _items ? res.json({ status: 200, msg: _items })
-      : res.json({ status: 400, msg: `Unable to purge ${payload.name} from associated items` });
-    });
-  } catch {
-    return res.json({ status: 400, msg: 'Unable to process request to purge ingredient form items' });
-  };
-});
-
 // =================
 // || Search Item ||
 // =================

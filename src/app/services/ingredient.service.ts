@@ -49,6 +49,12 @@ export class IngredientService {
     );
   };
 
+  deleteIngredient(ingredient: Ingredient) {
+    return this.http.put(`${this.api}/delete`, ingredient, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // =======================
   // || Change Observable ||
   // =======================

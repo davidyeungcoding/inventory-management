@@ -27,7 +27,7 @@
             class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#deleteIngredientModal"
-            (click)="onTargetIngredient(ingredient)"><i class="fas fa-trash"></i></button>
+            (click)="onDeleteIngredient(ingredient)"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     </table>
@@ -81,7 +81,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- insert modal content here -->
+        <app-delete-ingredient [targetIngredient]="targetIngredient"></app-delete-ingredient>
       </div>
     </div>
   </div>

@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 export class IngredientListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   ingredientList: Ingredient[] = [];
+  targetIngredient: Ingredient|null = null;
 
   constructor(
     private ingredientService: IngredientService
@@ -27,6 +28,14 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  // ======================
+  // || Helper Functions ||
+  // ======================
+
+  onTargetIngredient(ingredient: Ingredient): void {
+    this.targetIngredient = ingredient;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -37,8 +46,9 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     });
   };
 
-  onTargetIngredient(ingredient: Ingredient): void {
-    console.log(ingredient)
+  onDeleteIngredient(ingredient: Ingredient): void {
+    this.onTargetIngredient(ingredient);
+    $('#deleteIngredientMsgContainer').css('display', 'none');
   };
 
   onBack(): void {

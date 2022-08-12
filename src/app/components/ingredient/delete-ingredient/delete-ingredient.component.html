@@ -1,0 +1,17 @@
+<div id="deleteIngredientMsgContainer">
+  <div class="alert alert-msg" id="deleteIngredientMsg">{{ deleteMessage }}</div>
+</div>
+
+<h4 class="modal-title">Are you sure you want to delete {{ targetIngredient?.name }}</h4>
+
+<div class="row modal-btn-container">
+  <button type="button"
+    class="btn btn-secondary modal-btn"
+    id="deleteIngredientBtn"
+    (click)="onDeleteIngredient()">Yes</button>
+
+  <button type="button"
+    class="btn btn-secondary modal-btn"
+    data-bs-dismiss="modal"
+    (click)="onCancelDelete()">No</button>
+</div>

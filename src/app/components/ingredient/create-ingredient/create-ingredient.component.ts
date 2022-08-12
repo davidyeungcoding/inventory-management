@@ -85,7 +85,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
       } else {
         this.addMessage = _ingredient.msg;
         this.globalService.displayMsg('alert-danger', '#addIngredientMsg', '#addIngredientMsgContainer');
-        $('#addIngredientMsgContainer').prop('disabled', false);
+        $('#createIngredientBtn').prop('disabled', false);
       };
     });
   };
