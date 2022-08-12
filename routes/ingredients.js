@@ -60,15 +60,10 @@ router.post('/create', (req, res, next) => {
 // =====================
 
 router.put('/edit', (req, res, next) => {
-  try {
-    const update = {};
-    if (req.body.name) update.name = req.body.name;
-    if (req.body.foundIn) update.foundIn = req.body.foundIn;
-    if (!Object.keys(update).length) return res.json({ status: 400, msg: 'No changes detected' });
-    
+  try { 
     const payload = {
       id: req.body.id,
-      update: update
+      update: req.body.update
     };
   
     Ingredient.editIngredient(payload, (err, _ingredient) => {

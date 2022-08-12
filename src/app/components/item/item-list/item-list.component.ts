@@ -102,6 +102,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   onEditSetup(item: Item, target: string): void {
     this.onTargetItem(item, target);
+    $('#editItemBtn').prop('disabled', false);
     $('#editName').attr('placeholder', this.targetItem!.name);
     $('#editPrice').attr('placeholder', this.targetItem!.price);
     this.editForm.setValue({

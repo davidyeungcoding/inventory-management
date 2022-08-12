@@ -49,6 +49,12 @@ export class IngredientService {
     );
   };
 
+  editIngredient(ingredient: any) {
+    return this.http.put(`${this.api}/edit`, ingredient, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   deleteIngredient(ingredient: Ingredient) {
     return this.http.put(`${this.api}/delete`, ingredient, this.httpOptions).pipe(
       catchError(err => of(err))

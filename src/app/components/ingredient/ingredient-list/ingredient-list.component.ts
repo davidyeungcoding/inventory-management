@@ -4,6 +4,7 @@ import { IngredientService } from 'src/app/services/ingredient.service';
 
 import { Ingredient } from 'src/app/interfaces/ingredient';
 import { Subscription } from 'rxjs';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-ingredient-list',
@@ -14,6 +15,9 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   ingredientList: Ingredient[] = [];
   targetIngredient: Ingredient|null = null;
+  editIngredientForm = new FormGroup({
+    name: new FormControl('')
+  });
 
   constructor(
     private ingredientService: IngredientService
@@ -46,9 +50,17 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     });
   };
 
+  onEditIngredient(ingredient: Ingredient): void {
+    this.onTargetIngredient(ingredient);
+    $('#editIngredientBtn').prop('disabled', false);
+    $('#editIngredientName').attr('placeholder', this.targetIngredient!.name);
+    this.editIngredientForm.setValue({
+      name: ''
+    });
+  };
+
   onDeleteIngredient(ingredient: Ingredient): void {
     this.onTargetIngredient(ingredient);
-    $('#deleteIngredientMsgContainer').css('display', 'none');
   };
 
   onBack(): void {

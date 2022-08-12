@@ -80,7 +80,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     if (form.price.length && !this.validatePrice(form.price)) return;
     $('#editItemBtn').prop('disabled', true);
 
-    const tempItem:any = {
+    const tempItem: any = {
       active: form.active,
       available: form.available
     };

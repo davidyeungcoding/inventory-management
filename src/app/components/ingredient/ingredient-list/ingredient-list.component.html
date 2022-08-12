@@ -15,7 +15,7 @@
             class="btn btn-secondary"
             data-bs-toggle="modal"
             data-bs-target="#editIngredientModal"
-            (click)="onTargetIngredient(ingredient)"><i class="far fa-edit"></i></button>
+            (click)="onEditIngredient(ingredient)"><i class="far fa-edit"></i></button>
         </td>
 
         <td class="table-left">
@@ -60,7 +60,7 @@
       </div>
 
       <div class="modal-body">
-        <!-- insert modal content here -->
+        <app-edit-ingredient [targetIngredient]="targetIngredient" [editIngredient]="editIngredientForm"></app-edit-ingredient>
       </div>
     </div>
   </div>

@@ -1,1 +1,28 @@
-<p>edit-ingredient works!</p>
+<div class="row modal-form-container">
+  <div id="editIngredientMsgContainer">
+    <h5 class="alert alert-msg" id="editIngredientMsg">{{ editMessage }}</h5>
+  </div>
+
+  <form [formGroup]="editIngredient" (ngSubmit)="onEditIngredient()">
+    <div class="modal-group-one">
+      <div class="form-group">
+        <label for="#editIngredientName">Name: </label>
+
+        <input type="text"
+          class="form-field"
+          id="editIngredientName"
+          formControlName="name">
+      </div>
+    </div>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="editIngredientBtn">Edit Ingredient</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        (click)="onCancelIngredientEdit()">Cancel</button>
+    </div>
+  </form>
+</div>

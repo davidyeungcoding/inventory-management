@@ -30,7 +30,6 @@ module.exports.createIngredient = (ingredient, callback) => {
 // || Edit Ingredient ||
 // =====================
 
-// handle changes here
 module.exports.editIngredient = (payload, callback) => {
   const options = { new: true };
   const update = { $set: payload.update };

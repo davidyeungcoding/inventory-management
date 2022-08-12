@@ -65,6 +65,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#deleteIngredientModal')).modal('hide');
           $('#deleteIngredientBtn').prop('disabled', false);
+          $('#deleteIngredientMsgContainer').css('display', 'none');
         }, 1500);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg', '#deleteIngredientMsgContainer');
