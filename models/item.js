@@ -1,16 +1,5 @@
 const mongoose = require('mongoose');
 
-// =======================
-// || Projection Schema ||
-// =======================
-
-// const itemIngredient = new mongoose.Schema({
-//   ingredient: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'Ingredient'
-//   }
-// }, { _id: false });
-
 // =================
 // || Item Schema ||
 // =================

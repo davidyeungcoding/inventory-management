@@ -1,13 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
 
 module.exports = router;
 
-// ==================
-// || Model Import ||
-// ==================
+// ===================
+// || Model Imports ||
+// ===================
 
 const { itemModel } = require('../models/item');
 const Item = require('../models/item');
