@@ -29,6 +29,15 @@ const authUser = async username => {
   : { status: 404, msg: 'User not found' };
 };
 
+const duplicateCheck = async username => {
+  return new Promise(resolve => {
+    User.authSearch(username, (err, _user) => {
+      if (err) throw err;
+      return _user ? resolve(true) : resolve(false);
+    });
+  });
+};
+
 const verifyPassword = async (password, hash) => {
   const match = await new Promise(resolve => {
     User.comparePassword(password, hash, (err, _match) => {
@@ -44,7 +53,6 @@ const verifyPassword = async (password, hash) => {
 const buildResUser = user => {
   return {
     _id: user._id,
-    name: user.name,
     username: user.username,
     accountType: user.accountType,
     stores: user.stores
@@ -153,10 +161,11 @@ const adminCheck = (req, res, next) => {
 // || Create User ||
 // =================
 
-router.post('/create', (req, res, next) => {
+router.post('/create', async (req, res, next) => {
   try {
+    const duplicate = await duplicateCheck(req.body.username);
+    if (duplicate) return res.json({ status: 400, msg: 'Duplicate username' });
     const payload = new userModel({
-      name: req.body.name,
       username: req.body.username,
       password: req.body.password,
       accountType: 'general'
