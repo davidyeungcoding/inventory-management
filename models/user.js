@@ -66,10 +66,21 @@ module.exports.comparePassword = (password, hash, callback) => {
 };
 
 module.exports.assignRefreshToken = (id, token, callback) => {
-  this.userModel.findByIdAndUpdate({ _id: id }, { $set: { refreshToken: token } }, callback);
+  this.userModel.findByIdAndUpdate(id, { $set: { refreshToken: token } }, callback);
 };
 
 module.exports.getRefreshToken = (id, callback) => {
-  this.userModel.findById(id, callback)
-  .populate('refreshToken');
+  this.userModel.aggregate([{ $match: { _id: id } }, { $project: { refreshToken: 1 } }], callback);
 };
+
+// ===============
+// || Edit User ||
+// ===============
+
+module.exports.editUser = () => {}
+
+module.exports.changeAccountType = (payload, callback) => {
+  this.userModel.findByIdAndUpdate(payload.id, { $set: { accountType: payload.accountType } }, callback);
+};
+
+module.exports.updateStores = () => {}

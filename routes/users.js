@@ -51,6 +51,10 @@ const buildResUser = user => {
   };
 };
 
+// ========================
+// || Token Verification ||
+// ========================
+
 const generateAuthToken = user => {
   return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 };
@@ -74,7 +78,7 @@ const getRefreshToken = async id => {
   return new Promise(resolve => {
     User.getRefreshToken(id, (err, _user) => {
       if (err) throw err;
-      return resolve(_user.refreshToken);
+      return resolve(_user[0].refreshToken);
     });
   });
 };
@@ -117,6 +121,34 @@ const authenticateToken = (req, res, next) => {
   };
 };
 
+// ========================
+// || Account Type Check ||
+// ========================
+
+const managerCheck = (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const tokenUser = jwt.decode(authHeader);
+    const type = tokenUser.accountType;
+    if (type !== 'manager' && type !== 'admin') return res.json({ status: 401, msg: 'User does not have manager permission' });
+    next();
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to verify account type' });
+  };
+};
+
+const adminCheck = (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const tokenUser = jwt.decode(authHeader);
+    const type = tokenUser.accountType;
+    if (type !== 'admin') return res.json({ status: 401, msg: 'User does not have admin permissions' });
+    next();
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to verify account type' });
+  };
+};
+
 // =================
 // || Create User ||
 // =================
@@ -141,8 +173,6 @@ router.post('/create', (req, res, next) => {
   };
 });
 
-// 
-
 // =======================
 // || Authenticate User ||
 // =======================
@@ -165,6 +195,64 @@ router.post('/login', async (req, res, next) => {
   };
 });
 
-router.put('/test', authenticateToken, (req, res, next) => {
-  res.json({ user: req.user, token: req.token })
-})
+// ===============
+// || Edit User ||
+// ===============
+
+router.put('/edit-user', authenticateToken, (req, res, next) => {
+  try {
+    res.send('Can edit user account')
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to edit user' });
+  };
+});
+
+router.put('/change-account-type', authenticateToken, managerCheck, (req, res, next) => {
+  try {
+    const payload = {
+      id: req.body.id,
+      accountType: req.body.accountType
+    };
+
+    User.changeAccountType(payload, (err, _user) => {
+      if (err) throw err;
+
+      return _user ? res.json({ status: 200, msg: 'User account type updated', token: req.token })
+      : res.json({ status: 400, msg: 'Unable to update account type, user not found', token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to change account type' });
+  };
+});
+
+router.put('/update-stores', authenticateToken, managerCheck, (req, res, next) => {
+  try {
+    res.send('Can update stores')
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to update stores' });
+  };
+});
+
+// =================
+// || Search User ||
+// =================
+
+router.get('/search', authenticateToken, managerCheck, (req, res, next) => {
+  try {
+    res.send('Can search users')
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to complete search for user' });
+  };
+});
+
+// =================
+// || Delete User ||
+// =================
+
+router.put('/delete', authenticateToken, adminCheck, (req, res, next) => {
+  try {
+    return res.send('Can delete account')
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to delete user' });
+  };
+});
