@@ -68,3 +68,8 @@ module.exports.comparePassword = (password, hash, callback) => {
 module.exports.assignRefreshToken = (id, token, callback) => {
   this.userModel.findByIdAndUpdate({ _id: id }, { $set: { refreshToken: token } }, callback);
 };
+
+module.exports.getRefreshToken = (id, callback) => {
+  this.userModel.findById(id, callback)
+  .populate('refreshToken');
+};

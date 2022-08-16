@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 module.exports = router;
 
@@ -59,7 +60,6 @@ const generateRefreshToken = user => {
 };
 
 const assignRefreshToken = async user => {
-  console.log(user)
   const token = generateRefreshToken(user);
 
   return new Promise(resolve => {
@@ -70,20 +70,46 @@ const assignRefreshToken = async user => {
   });
 };
 
+const getRefreshToken = async id => {
+  return new Promise(resolve => {
+    User.getRefreshToken(id, (err, _user) => {
+      if (err) throw err;
+      return resolve(_user.refreshToken);
+    });
+  });
+};
+
+const authenticateRefreshToken = token => {
+  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, _uesr) => {
+    return err ? false : true;
+  });
+};
+
+const refreshAuthToken = async tokenUser => {
+  const refreshToken = await getRefreshToken(mongoose.Types.ObjectId(tokenUser._id));
+  if (!refreshToken) return false;
+  const validRefreshToken = authenticateRefreshToken(refreshToken);
+  if (!validRefreshToken) return false;
+  return generateAuthToken(buildResUser(tokenUser));
+};
+
 const authenticateToken = (req, res, next) => {
   try {
-    const authHeader = req.headers['authentication'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.headers['authorization'];
     if (!token) return res.json({ status: 401, msg: 'Missing authorization credentials' });
     
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, _user) => {
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, _user) => {
       if (err && err.name !== 'TokenExpiredError') {
         return res.json({ status: 403, msg: 'User is not authorized for access' });
       } else if (err && err.name === 'TokenExpiredError') {
-        // handle refresh token here
+        const tokenUser = jwt.decode(token);
+        const resToken = await refreshAuthToken(tokenUser);
+        if (!resToken) return res.json({ status: 403, msg: 'User is not authorized for access' });
+        req.token = resToken;
+        _user = tokenUser;
       };
-
-      req.user = _user;
+      
+      req.user = buildResUser(_user);
       next();
     });
   } catch {
@@ -121,7 +147,7 @@ router.post('/create', (req, res, next) => {
 // || Authenticate User ||
 // =======================
 
-router.post('/authenticate', async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
   try {
     const username = req.body.username;
     const password = req.body.password;
@@ -138,3 +164,7 @@ router.post('/authenticate', async (req, res, next) => {
     return res.json({ status: 400, msg: 'Unable to authenticate user' });
   };
 });
+
+router.put('/test', authenticateToken, (req, res, next) => {
+  res.json({ user: req.user, token: req.token })
+})
