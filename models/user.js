@@ -32,6 +32,12 @@ const userSchema = new mongoose.Schema({
 
 module.exports.userModel = mongoose.model('User', userSchema);
 
+// ======================
+// || Shared Variables ||
+// ======================
+
+const aggregateExclusions = { password: 0, refreshToken: 0 };
+
 // =================
 // || Create User ||
 // =================
@@ -73,10 +79,30 @@ module.exports.getRefreshToken = (id, callback) => {
 // || Edit User ||
 // ===============
 
-module.exports.editUser = () => {}
+module.exports.editUser = (id, payload, callback) => {
+  if (payload.password) {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(payload.password, salt, (err, hash) => {
+        if (err) throw err;
+        payload.password = hash;
+        this.userModel.findByIdAndUpdate(id, { $set: payload }, { new: true }, callback);
+      });
+    });
+  } else {
+    this.userModel.findByIdAndUpdate(id, { $set: payload }, { new: true }, callback);
+  };
+};
 
 module.exports.changeAccountType = (payload, callback) => {
   this.userModel.findByIdAndUpdate(payload.id, { $set: { accountType: payload.accountType } }, callback);
 };
 
 module.exports.updateStores = () => {}
+
+// =================
+// || Search User ||
+// =================
+
+module.exports.getHash = (id, callback) => {
+  this.userModel.aggregate([{ $match: { _id: id } }, { $project: { password: 1 } }], callback);
+};

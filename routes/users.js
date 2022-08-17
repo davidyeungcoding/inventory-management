@@ -29,6 +29,17 @@ const authUser = async username => {
   : { status: 404, msg: 'User not found' };
 };
 
+const getHash = async id => {
+  return new Promise(resolve => {
+    User.getHash(id, (err, _hash) => {
+      if (err) throw err;
+
+      return _hash[0] ? resolve({ status: 200, msg: _hash[0] })
+      : resolve({ status: 400, msg: 'User not found' });
+    });
+  });
+};
+
 const duplicateCheck = async username => {
   return new Promise(resolve => {
     User.authSearch(username, (err, _user) => {
@@ -133,6 +144,22 @@ const authenticateToken = (req, res, next) => {
 // || Account Type Check ||
 // ========================
 
+const personalOrAdminCheck = (req, res, next) => {
+  try {
+    const authHeader = req.headers['authorization'];
+    const tokenUser = jwt.decode(authHeader);
+    const toChange = req.body.toChange;
+    
+    if (tokenUser._id !== toChange._id && tokenUser.accountType !== 'admin') {
+      return res.json({ status: 403, msg: 'User does not have permission to edit this account' });
+    };
+
+    next();
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to verify user' });
+  };
+};
+
 const managerCheck = (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
@@ -208,15 +235,38 @@ router.post('/login', async (req, res, next) => {
 // || Edit User ||
 // ===============
 
-router.put('/edit-user', authenticateToken, (req, res, next) => {
+router.put('/edit-user', authenticateToken, personalOrAdminCheck, async (req, res, next) => {
   try {
-    res.send('Can edit user account')
+    const credentials = req.body.credentials;
+    const toChange = req.body.toChange;
+    const authHeader = req.headers['authorization'];
+    const tokenUser = jwt.decode(authHeader);
+    const hash = await getHash(mongoose.Types.ObjectId(tokenUser._id));
+    if (hash.status !== 200) return res.json(hash);
+    const match = await verifyPassword(credentials.password, hash.msg.password);
+    if (match.status !== 200) return res.json(match);
+    const change = {};
+    if (toChange.username) change.username = toChange.username;
+    if (toChange.password) change.password = toChange.password;
+
+    User.editUser(toChange._id, change, (err, _user) => {
+      if (err) throw err;
+      const resUser = buildResUser(_user);
+      if (tokenUser._id === resUser._id) req.token = generateAuthToken(resUser);
+
+      return _user ? res.json({ status: 200, msg: resUser, token: req.token })
+      : res.json({ status: 400, msg: 'Unable to update user information', token: req.token });
+    })
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to edit user' });
   };
 });
 
-router.put('/change-account-type', authenticateToken, managerCheck, (req, res, next) => {
+router.put('/reset-password', authenticateToken, personalOrAdminCheck, (req, res, next) => {
+  res.send('can reset password')
+});
+
+router.put('/change-account-type', authenticateToken, adminCheck, (req, res, next) => {
   try {
     const payload = {
       id: req.body.id,
