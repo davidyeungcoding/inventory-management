@@ -18,15 +18,14 @@ const User = require('../models/user');
 // ======================
 
 const authUser = async username => {
-  const user = await new Promise(resolve => {
+  return new Promise(resolve => {
     User.authSearch(username, (err, _user) => {
       if (err) throw err;
-      return resolve(_user);
+
+      return _user[0] ? resolve({ status: 200, msg: _user[0] })
+      : resolve({ status: 404, msg: 'User not found' });
     });
   });
-
-  return user ? { status: 200, msg: user }
-  : { status: 404, msg: 'User not found' };
 };
 
 const getHash = async id => {
