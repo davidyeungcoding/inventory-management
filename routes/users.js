@@ -238,10 +238,10 @@ router.post('/login', async (req, res, next) => {
 router.put('/edit-user', authenticateToken, personalOrAdminCheck, async (req, res, next) => {
   try {
     const credentials = req.body.credentials;
-    const toChange = req.body.toChange;
-    const authHeader = req.headers['authorization'];
-    const tokenUser = jwt.decode(authHeader);
-    const hash = await getHash(mongoose.Types.ObjectId(tokenUser._id));
+    const toChange = req.body.toChange;;
+    const user = await authUser(credentials.username);
+    if (user.status !== 200) return res.json(user);
+    const hash = await getHash(mongoose.Types.ObjectId(user.msg._id));
     if (hash.status !== 200) return res.json(hash);
     const match = await verifyPassword(credentials.password, hash.msg.password);
     if (match.status !== 200) return res.json(match);
@@ -252,7 +252,7 @@ router.put('/edit-user', authenticateToken, personalOrAdminCheck, async (req, re
     User.editUser(toChange._id, change, (err, _user) => {
       if (err) throw err;
       const resUser = buildResUser(_user);
-      if (tokenUser._id === resUser._id) req.token = generateAuthToken(resUser);
+      if (user.msg._id === resUser._id) req.token = generateAuthToken(resUser);
 
       return _user ? res.json({ status: 200, msg: resUser, token: req.token })
       : res.json({ status: 400, msg: 'Unable to update user information', token: req.token });
