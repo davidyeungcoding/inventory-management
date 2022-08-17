@@ -37,6 +37,12 @@ module.exports.userModel = mongoose.model('User', userSchema);
 // ======================
 
 const aggregateExclusions = { password: 0, refreshToken: 0 };
+const importStores = {
+  from: 'stores',
+  localField: 'stores',
+  foreignField: '_id',
+  as: 'stores'
+};
 
 // =================
 // || Create User ||
@@ -110,4 +116,14 @@ module.exports.updateStores = () => {}
 
 // =================
 // || Search User ||
+// =================
+
+module.exports.searchUser = (term, callback) => {
+  const query = term.toString().length ? { username: term } : {};
+  const sort = { username: 1 };
+  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $sort: sort }, { $lookup: importStores }], callback);
+};
+
+// =================
+// || Delete User ||
 // =================

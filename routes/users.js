@@ -33,7 +33,7 @@ const duplicateCheck = async username => {
   return new Promise(resolve => {
     User.authSearch(username, (err, _user) => {
       if (err) throw err;
-      return _user ? resolve(true) : resolve(false);
+      return _user.length ? resolve(true) : resolve(false);
     });
   });
 };
@@ -246,8 +246,13 @@ router.put('/edit-user', authenticateToken, personalOrAdminCheck, verifyCredenti
   try {
     const toChange = req.body.toChange;
     const change = {};
-    if (toChange.username) change.username = toChange.username;
     if (toChange.password) change.password = toChange.password;
+    
+    if (toChange.username) {
+      const duplicate = await duplicateCheck(toChange.username);
+      if (duplicate) return res.json({ status: 400, msg: 'Duplicate username' });
+      change.username = toChange.username;
+    };
 
     User.editUser(toChange._id, change, (err, _user) => {
       if (err) throw err;
@@ -312,7 +317,14 @@ router.put('/update-stores', authenticateToken, managerCheck, (req, res, next) =
 
 router.get('/search', authenticateToken, managerCheck, (req, res, next) => {
   try {
-    res.send('Can search users')
+    const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
+    
+    User.searchUser(term, (err, _user) => {
+      if (err) throw err;
+
+      return _user ? res.json({ status: 200, msg: _user, token: req.token })
+      : res.json({ status: 400, msg: 'Unable to find users matching term', token: req.token });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to complete search for user' });
   };
