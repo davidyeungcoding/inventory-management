@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
 
 module.exports = router;
 
@@ -24,17 +25,6 @@ const authUser = async username => {
 
       return _user[0] ? resolve({ status: 200, msg: _user[0] })
       : resolve({ status: 404, msg: 'User not found' });
-    });
-  });
-};
-
-const getHash = async id => {
-  return new Promise(resolve => {
-    User.getHash(id, (err, _hash) => {
-      if (err) throw err;
-
-      return _hash[0] ? resolve({ status: 200, msg: _hash[0] })
-      : resolve({ status: 400, msg: 'User not found' });
     });
   });
 };
@@ -183,6 +173,24 @@ const adminCheck = (req, res, next) => {
   };
 };
 
+// ========================
+// || Verificatoin Check ||
+// ========================
+
+const verifyCredentials = async (req, res, next) => {
+  try {
+    const credentials = req.body.credentials;
+    const user = await authUser(credentials.username);
+    if (user.status !== 200) return res.json({ status: 400, msg: 'Unable to verify user credentials' });
+    const match = await verifyPassword(credentials.password, user.msg.password);
+    if (match.status !== 200) return res.json(match);
+    req.verifiedUser = user.msg._id;
+    next();
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to verify user credentials' });
+  };
+};
+
 // =================
 // || Create User ||
 // =================
@@ -234,16 +242,9 @@ router.post('/login', async (req, res, next) => {
 // || Edit User ||
 // ===============
 
-router.put('/edit-user', authenticateToken, personalOrAdminCheck, async (req, res, next) => {
+router.put('/edit-user', authenticateToken, personalOrAdminCheck, verifyCredentials, async (req, res, next) => {
   try {
-    const credentials = req.body.credentials;
-    const toChange = req.body.toChange;;
-    const user = await authUser(credentials.username);
-    if (user.status !== 200) return res.json(user);
-    const hash = await getHash(mongoose.Types.ObjectId(user.msg._id));
-    if (hash.status !== 200) return res.json(hash);
-    const match = await verifyPassword(credentials.password, hash.msg.password);
-    if (match.status !== 200) return res.json(match);
+    const toChange = req.body.toChange;
     const change = {};
     if (toChange.username) change.username = toChange.username;
     if (toChange.password) change.password = toChange.password;
@@ -251,18 +252,32 @@ router.put('/edit-user', authenticateToken, personalOrAdminCheck, async (req, re
     User.editUser(toChange._id, change, (err, _user) => {
       if (err) throw err;
       const resUser = buildResUser(_user);
-      if (user.msg._id === resUser._id) req.token = generateAuthToken(resUser);
+      if (req.verifiedUser.toString() === resUser._id.toString()) req.token = generateAuthToken(resUser);
 
       return _user ? res.json({ status: 200, msg: resUser, token: req.token })
       : res.json({ status: 400, msg: 'Unable to update user information', token: req.token });
-    })
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to edit user' });
   };
 });
 
-router.put('/reset-password', authenticateToken, personalOrAdminCheck, (req, res, next) => {
-  res.send('can reset password')
+router.put('/reset-password', authenticateToken, personalOrAdminCheck, verifyCredentials, (req, res, next) => {
+  try {
+    const toChange = req.body.toChange;
+    const password = crypto.randomBytes(10).toString('hex');
+
+    User.resetPassword(toChange._id, password, (err, _user) => {
+      if (err) throw err;
+      const resUser = buildResUser(_user);
+      if (req.verifiedUser.toString() === toChange._id.toString()) req.token = generateAuthToken(resUser);
+
+      return _user ? res.json({ status: 200, msg: password, token: req.token })
+      : res.json({ status: 400, msg: 'Unable to reset password', token: req.token });
+    })
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to rest password' });
+  };
 });
 
 router.put('/change-account-type', authenticateToken, adminCheck, (req, res, next) => {

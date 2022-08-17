@@ -56,6 +56,10 @@ module.exports.createUser = (payload, callback) => {
 // || Authenticate User ||
 // =======================
 
+module.exports.authSearch = (username, callback) => {
+  this.userModel.aggregate([{ $match: { username: username } }, { $project: { refreshToken: 0 } }], callback);
+};
+
 module.exports.comparePassword = (password, hash, callback) => {
   bcrypt.compare(password, hash, (err, _match) => {
     if (err) throw err;
@@ -89,6 +93,15 @@ module.exports.editUser = (id, payload, callback) => {
   };
 };
 
+module.exports.resetPassword = (id, password, callback) => {
+  bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+      if (err) throw err;
+      this.userModel.findByIdAndUpdate(id, { $set: { password: hash } }, { new: true }, callback);
+    });
+  });
+};
+
 module.exports.changeAccountType = (payload, callback) => {
   this.userModel.findByIdAndUpdate(payload.id, { $set: { accountType: payload.accountType } }, callback);
 };
@@ -98,11 +111,3 @@ module.exports.updateStores = () => {}
 // =================
 // || Search User ||
 // =================
-
-module.exports.authSearch = (username, callback) => {
-  this.userModel.aggregate([{ $match: { username: username } }, { $project: { refreshToken: 0 } }], callback);
-};
-
-module.exports.getHash = (id, callback) => {
-  this.userModel.aggregate([{ $match: { _id: id } }, { $project: { password: 1 } }], callback);
-};
