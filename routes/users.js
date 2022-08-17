@@ -238,6 +238,14 @@ router.post('/login', async (req, res, next) => {
   };
 });
 
+router.get('/logout', (req, res, next) => {
+  try {
+    return res.send('Can logout')
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to logout' });
+  };
+});
+
 // ===============
 // || Edit User ||
 // ===============
@@ -334,9 +342,14 @@ router.get('/search', authenticateToken, managerCheck, (req, res, next) => {
 // || Delete User ||
 // =================
 
-router.put('/delete', authenticateToken, adminCheck, (req, res, next) => {
+router.put('/delete', authenticateToken, adminCheck, verifyCredentials, (req, res, next) => {
   try {
-    return res.send('Can delete account')
+    User.deleteUser(req.body.targetId, (err, _user) => {
+      if (err) throw err;
+
+      return _user ? res.json({ status: 200, msg: 'User successfully deleted', token: req.token })
+      : res.json({ status: 400, msg: 'Unable to delete user', token: req.token });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to delete user' });
   };

@@ -127,3 +127,7 @@ module.exports.searchUser = (term, callback) => {
 // =================
 // || Delete User ||
 // =================
+
+module.exports.deleteUser = (id, callback) => {
+  this.userModel.remove({ _id: id }, callback);
+};
