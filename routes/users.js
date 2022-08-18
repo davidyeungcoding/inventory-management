@@ -238,9 +238,14 @@ router.post('/login', async (req, res, next) => {
   };
 });
 
-router.get('/logout', (req, res, next) => {
+router.get('/logout', authenticateToken, (req, res, next) => {
   try {
-    return res.send('Can logout')
+    User.clearRefreshToken(req.user._id, (err, _user) => {
+      if (err) throw err;
+
+      return _user ? res.json({ status: 200, msg: 'User successfully logged out' })
+      : res.json({ status: 400, msg: 'Unable to log user out' });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to logout' });
   };

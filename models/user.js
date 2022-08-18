@@ -81,6 +81,10 @@ module.exports.getRefreshToken = (id, callback) => {
   this.userModel.aggregate([{ $match: { _id: id } }, { $project: { refreshToken: 1 } }], callback);
 };
 
+module.exports.clearRefreshToken = (id, callback) => {
+  this.userModel.findByIdAndUpdate(id, { $set: { refreshToken: '' } }, callback);
+};
+
 // ===============
 // || Edit User ||
 // ===============
