@@ -1,9 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const crypto = require('crypto');
+const auth = require('../routes-middleware/user-authorization');
 
 module.exports = router;
 
@@ -59,138 +58,6 @@ const buildResUser = user => {
   };
 };
 
-// ========================
-// || Token Verification ||
-// ========================
-
-const generateAuthToken = user => {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-};
-
-const generateRefreshToken = user => {
-  return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '3d' });
-};
-
-const assignRefreshToken = async user => {
-  const token = generateRefreshToken(user);
-
-  return new Promise(resolve => {
-    User.assignRefreshToken(user._id, token, (err, _token) => {
-      if (err) return resolve({ status: 500, msg: 'Unable to assign refresh token' });
-      return resolve({ status: 200, msg: 'Successfully added refresh token' });
-    });
-  });
-};
-
-const getRefreshToken = async id => {
-  return new Promise(resolve => {
-    User.getRefreshToken(id, (err, _user) => {
-      if (err) throw err;
-      return resolve(_user[0].refreshToken);
-    });
-  });
-};
-
-const authenticateRefreshToken = token => {
-  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, _uesr) => {
-    return err ? false : true;
-  });
-};
-
-const refreshAuthToken = async tokenUser => {
-  const refreshToken = await getRefreshToken(mongoose.Types.ObjectId(tokenUser._id));
-  if (!refreshToken) return false;
-  const validRefreshToken = authenticateRefreshToken(refreshToken);
-  if (!validRefreshToken) return false;
-  return generateAuthToken(buildResUser(tokenUser));
-};
-
-const authenticateToken = (req, res, next) => {
-  try {
-    const token = req.headers['authorization'];
-    if (!token) return res.json({ status: 401, msg: 'Missing authorization credentials' });
-    
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, _user) => {
-      if (err && err.name !== 'TokenExpiredError') {
-        return res.json({ status: 403, msg: 'User is not authorized for access' });
-      } else if (err && err.name === 'TokenExpiredError') {
-        const tokenUser = jwt.decode(token);
-        const resToken = await refreshAuthToken(tokenUser);
-        if (!resToken) return res.json({ status: 403, msg: 'User is not authorized for access' });
-        req.token = resToken;
-        _user = tokenUser;
-      };
-      
-      req.user = buildResUser(_user);
-      next();
-    });
-  } catch {
-    return res.json({ status: 400, msg: 'Missing authorization credentials' });
-  };
-};
-
-// ========================
-// || Account Type Check ||
-// ========================
-
-const personalOrAdminCheck = (req, res, next) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    const tokenUser = jwt.decode(authHeader);
-    const toChange = req.body.toChange;
-    
-    if (tokenUser._id !== toChange._id && tokenUser.accountType !== 'admin') {
-      return res.json({ status: 403, msg: 'User does not have permission to edit this account' });
-    };
-
-    next();
-  } catch {
-    return res.json({ status: 400, msg: 'Unable to verify user' });
-  };
-};
-
-const managerCheck = (req, res, next) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    const tokenUser = jwt.decode(authHeader);
-    const type = tokenUser.accountType;
-    if (type !== 'manager' && type !== 'admin') return res.json({ status: 401, msg: 'User does not have manager permission' });
-    next();
-  } catch {
-    return res.json({ status: 400, msg: 'Unable to verify account type' });
-  };
-};
-
-const adminCheck = (req, res, next) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    const tokenUser = jwt.decode(authHeader);
-    const type = tokenUser.accountType;
-    if (type !== 'admin') return res.json({ status: 401, msg: 'User does not have admin permissions' });
-    next();
-  } catch {
-    return res.json({ status: 400, msg: 'Unable to verify account type' });
-  };
-};
-
-// ========================
-// || Verificatoin Check ||
-// ========================
-
-const verifyCredentials = async (req, res, next) => {
-  try {
-    const credentials = req.body.credentials;
-    const user = await authUser(credentials.username);
-    if (user.status !== 200) return res.json({ status: 400, msg: 'Unable to verify user credentials' });
-    const match = await verifyPassword(credentials.password, user.msg.password);
-    if (match.status !== 200) return res.json(match);
-    req.verifiedUser = user.msg._id;
-    next();
-  } catch {
-    return res.json({ status: 400, msg: 'Unable to verify user credentials' });
-  };
-};
-
 // =================
 // || Create User ||
 // =================
@@ -229,8 +96,8 @@ router.post('/login', async (req, res, next) => {
     const match = await verifyPassword(password, user.msg.password);
     if (match.status !== 200) return res.json(match);
     const resUser = buildResUser(user.msg);
-    const token = generateAuthToken(resUser);
-    const refreshTokenStatus = await assignRefreshToken(resUser);
+    const token = auth.generateAuthToken(resUser);
+    const refreshTokenStatus = await auth.assignRefreshToken(resUser);
     if (refreshTokenStatus.status !== 200) return res.json(refreshTokenStatus);
     return res.json({ status: 200, msg: resUser, token: token });
   } catch {
@@ -238,7 +105,7 @@ router.post('/login', async (req, res, next) => {
   };
 });
 
-router.get('/logout', authenticateToken, (req, res, next) => {
+router.get('/logout', auth.authenticateToken, (req, res, next) => {
   try {
     User.clearRefreshToken(req.user._id, (err, _user) => {
       if (err) throw err;
@@ -255,7 +122,7 @@ router.get('/logout', authenticateToken, (req, res, next) => {
 // || Edit User ||
 // ===============
 
-router.put('/edit-user', authenticateToken, personalOrAdminCheck, verifyCredentials, async (req, res, next) => {
+router.put('/edit-user', auth.authenticateToken, auth.personalCheck, async (req, res, next) => {
   try {
     const toChange = req.body.toChange;
     const change = {};
@@ -270,7 +137,7 @@ router.put('/edit-user', authenticateToken, personalOrAdminCheck, verifyCredenti
     User.editUser(toChange._id, change, (err, _user) => {
       if (err) throw err;
       const resUser = buildResUser(_user);
-      if (req.verifiedUser.toString() === resUser._id.toString()) req.token = generateAuthToken(resUser);
+      if (req.user._id === resUser._id) req.token = auth.generateAuthToken(resUser);
 
       return _user ? res.json({ status: 200, msg: resUser, token: req.token })
       : res.json({ status: 400, msg: 'Unable to update user information', token: req.token });
@@ -280,7 +147,7 @@ router.put('/edit-user', authenticateToken, personalOrAdminCheck, verifyCredenti
   };
 });
 
-router.put('/reset-password', authenticateToken, personalOrAdminCheck, verifyCredentials, (req, res, next) => {
+router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, res, next) => {
   try {
     const toChange = req.body.toChange;
     const password = crypto.randomBytes(10).toString('hex');
@@ -288,7 +155,7 @@ router.put('/reset-password', authenticateToken, personalOrAdminCheck, verifyCre
     User.resetPassword(toChange._id, password, (err, _user) => {
       if (err) throw err;
       const resUser = buildResUser(_user);
-      if (req.verifiedUser.toString() === toChange._id.toString()) req.token = generateAuthToken(resUser);
+      if (req.user._id === toChange._id) req.token = auth.generateAuthToken(resUser);
 
       return _user ? res.json({ status: 200, msg: password, token: req.token })
       : res.json({ status: 400, msg: 'Unable to reset password', token: req.token });
@@ -298,7 +165,7 @@ router.put('/reset-password', authenticateToken, personalOrAdminCheck, verifyCre
   };
 });
 
-router.put('/change-account-type', authenticateToken, adminCheck, (req, res, next) => {
+router.put('/change-account-type', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
   try {
     const payload = {
       id: req.body.id,
@@ -316,7 +183,7 @@ router.put('/change-account-type', authenticateToken, adminCheck, (req, res, nex
   };
 });
 
-router.put('/update-stores', authenticateToken, managerCheck, (req, res, next) => {
+router.put('/update-stores', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   try {
     res.send('Can update stores')
   } catch {
@@ -328,7 +195,7 @@ router.put('/update-stores', authenticateToken, managerCheck, (req, res, next) =
 // || Search User ||
 // =================
 
-router.get('/search', authenticateToken, managerCheck, (req, res, next) => {
+router.get('/search', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   try {
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
     
@@ -347,7 +214,7 @@ router.get('/search', authenticateToken, managerCheck, (req, res, next) => {
 // || Delete User ||
 // =================
 
-router.put('/delete', authenticateToken, adminCheck, verifyCredentials, (req, res, next) => {
+router.put('/delete', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
   try {
     User.deleteUser(req.body.targetId, (err, _user) => {
       if (err) throw err;

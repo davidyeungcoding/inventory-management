@@ -46,6 +46,7 @@ router.post('/create', (req, res, next) => {
   
     Ingredient.createIngredient(ingredient, (err, _ingredient) => {
       if (err) throw err;
+      // handle add ingredient to store
   
       return _ingredient ? res.json({ status: 200, msg: _ingredient })
       : res.json({ status: 400, msg: `Failed to create new ingredient: ${ingredient.name}` });
@@ -99,6 +100,7 @@ router.put('/purge-item', async (req, res, next) => {
 // || Search Ingredients ||
 // ========================
 
+// handle limit to associated store for user
 router.get('/search', (req, res, next) => {
   try {
     const payload = {
@@ -142,6 +144,7 @@ router.put('/delete', async (req, res, next) => {
     };
     const itemUpdate = await purgeFromItem(payload);
     if (itemUpdate.status !== 200) return res.json({ status: itemUpdate.status, msg: `Unable to delete ${req.body.name} from associated items` });
+    // handle remove ingredient from store
 
     Ingredient.deleteIngredient(req.body._id, (err, _ingredient) => {
       if (err) throw err;

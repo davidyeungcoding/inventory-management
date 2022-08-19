@@ -13,11 +13,6 @@ const itemSchema = new mongoose.Schema({
     type: String,
     default: '000'
   },
-  ingredients: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Ingredient',
-    default: []
-  },
   active: {
     type: Boolean,
     default: false
@@ -25,6 +20,16 @@ const itemSchema = new mongoose.Schema({
   available: {
     type: Boolean,
     default: false
+  },
+  ingredients: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Ingredient',
+    default: []
+  },
+  store: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Store',
+    required: true
   }
 });
 

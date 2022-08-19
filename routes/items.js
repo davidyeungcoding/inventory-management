@@ -73,6 +73,7 @@ router.post('/create', (req, res, next) => {
   
     Item.createItem(item, (err, _item) => {
       if (err) throw err;
+      // handle adding item to store
   
       return _item ? res.json({ status: 200, msg: _item })
       : res.json({ status: 400, msg: `Unable to creat item: ${req.body.name}` });
@@ -145,6 +146,7 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
 // || Search Item ||
 // =================
 
+// handle search to limit with store associated with account
 router.get('/search', (req, res, next) => {
   try {
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
@@ -173,6 +175,7 @@ router.put('/delete', async (req, res, next) => {
     };
     const ingredientUpdate = await updateFoundIn(payload);
     if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: `Unable to delete item: ${req.body.name}` });
+    // handle removal from store collection
 
     Item.deleteItem(req.body._id, (err, _item) => {
       if (err) throw err;

@@ -133,5 +133,5 @@ module.exports.searchUser = (term, callback) => {
 // =================
 
 module.exports.deleteUser = (id, callback) => {
-  this.userModel.remove({ _id: id }, callback);
+  this.userModel.deleteOne({ _id: id }, callback);
 };
