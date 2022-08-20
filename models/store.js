@@ -51,3 +51,19 @@ module.exports.storeModel = mongoose.model('Store', storeSchema);
 module.exports.createStore = (store, callback) => {
   store.save(callback);
 };
+
+// ================
+// || Edit Store ||
+// ================
+
+module.exports.editStoreDetails = (id, payload, callback) => {
+  this.storeModel.findByIdAndUpdate(id, { $set: payload }, { new: true }, callback);
+};
+
+// ==================
+// || Search Store ||
+// ==================
+
+// ==================
+// || Delete Store ||
+// ==================

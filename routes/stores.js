@@ -77,6 +77,38 @@ router.post('/create', auth.authenticateToken, auth.managerCheck, (req, res, nex
 // || Edit Store ||
 // ================
 
+router.put('/edit-details', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  try {
+    const payload = {};
+    if (req.body.name) payload.name = req.body.name;
+    if (req.body.street) payload.street = req.body.street;
+    if (req.body.city) payload.city = req.body.city;
+    if (req.body.state) payload.state = req.body.state;
+    if (req.body.zip) payload.zip = req.body.zip;
+  
+    Store.editStoreDetails(req.body._id, payload, (err, _store) => {
+      if (err) throw err;
+
+      return _store ? res.json({ status: 200, msg: _store, token: req.token })
+      : res.json({ status: 400, msg: 'Unable to update store details' });
+    })
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to edit store details' });
+  };
+});
+
+router.put('edit-users', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  return res.send('can eidt user')
+});
+
+router.put('edit-items', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  return res.send('can edit items')
+});
+
+router.put('edit-ingredients', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  return res.send('can edit ingredients')
+});
+
 // ===================
 // || Search Stores ||
 // ===================
