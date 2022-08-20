@@ -116,7 +116,9 @@ module.exports.changeAccountType = (payload, callback) => {
   this.userModel.findByIdAndUpdate(payload.id, { $set: { accountType: payload.accountType } }, callback);
 };
 
-module.exports.updateStores = () => {}
+module.exports.updateStores = (userId, storeId, callback) => {
+  this.userModel.findByIdAndUpdate(userId, { $push: { stores: storeId } }, { new: true }, callback);
+};
 
 // =================
 // || Search User ||
