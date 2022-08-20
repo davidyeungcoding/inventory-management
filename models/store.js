@@ -60,6 +60,13 @@ module.exports.editStoreDetails = (id, payload, callback) => {
   this.storeModel.findByIdAndUpdate(id, { $set: payload }, { new: true }, callback);
 };
 
+module.exports.editStoreUsers = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const modifier = action === '$push' ? '$each' : '$in';
+  const update = { [action]: { users: { [modifier]: payload.update } } };
+  this.storeModel.findByIdAndUpdate(payload._id, update, { new: true }, callback);
+};
+
 // ==================
 // || Search Store ||
 // ==================

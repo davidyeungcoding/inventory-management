@@ -122,7 +122,7 @@ router.get('/logout', auth.authenticateToken, (req, res, next) => {
 // || Edit User ||
 // ===============
 
-router.put('/edit-user', auth.authenticateToken, auth.personalCheck, async (req, res, next) => {
+router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (req, res, next) => {
   try {
     const toChange = req.body.toChange;
     const change = {};

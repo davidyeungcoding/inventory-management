@@ -38,6 +38,35 @@ const updateUser = async (userId, storeId, store, token) => {
   });
 };
 
+const editStoreUsers = async (payload, token) => {
+  return new Promise(resolve => {
+    Store.editStoreUsers(payload, (err, _store) => {
+      if (err) throw err;
+  
+      return _store ? resolve({ status: 200, msg: _store, token: token })
+      : resolve({ status: 400, msg: 'Unable to update store\'s user list' });
+    });
+  });
+};
+
+const editUserStoreList = async (store, userList, action) => {
+  return new Promise(resolve => {
+    const storeList = [store];
+    const payload = {
+      userList: userList,
+      storeList: storeList,
+      action: action
+    };
+
+    User.editStoreList(payload, (err, _user) => {
+      if (err) throw err;
+
+      return _user ? resolve({ status: 200, msg: 'User\'s store list successfully updated' })
+      : resolve({ status: 400, msg: 'Unable to update user\'s store list' });
+    });
+  });
+};
+
 // ==================
 // || Create Store ||
 // ==================
@@ -97,15 +126,46 @@ router.put('/edit-details', auth.authenticateToken, auth.managerCheck, (req, res
   };
 });
 
-router.put('edit-users', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
-  return res.send('can eidt user')
+router.put('/edit-users', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
+  try {
+    const insertion = req.body.insertion;
+    const removal = req.body.removal;
+
+    if (insertion.length) {
+      const payload = {
+        _id: req.body._id,
+        update: insertion,
+        action: 'add'
+      };
+
+      const insertionListUser = await editUserStoreList(payload._id, insertion, payload.action);
+      if (insertionListUser.status !== 200) return res.json(insertionListUser);
+      const insertionUpdate = await editStoreUsers(payload, req.token);
+      if (insertionUpdate.status !== 200 || !removal.length) return res.json(insertionUpdate);
+    };
+
+    if (removal.length) {
+      const payload = {
+        _id: req.body._id,
+        update: removal,
+        action: 'remove'
+      };
+
+      const removalListUser = await editUserStoreList(payload._id, removal, payload.action);
+      if (removalListUser.status !== 200) return res.json(removalListUser);
+      const removalUpdate = await editStoreUsers(payload, req.token);
+      return res.json(removalUpdate);
+    };
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to update store\'s user information' });
+  };
 });
 
-router.put('edit-items', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+router.put('/edit-items', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   return res.send('can edit items')
 });
 
-router.put('edit-ingredients', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+router.put('/edit-ingredients', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   return res.send('can edit ingredients')
 });
 

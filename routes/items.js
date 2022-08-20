@@ -117,6 +117,7 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
         ingredients: insertion,
         action: 'add'
       };
+      
       const ingredientUpdate = await updateFoundIn(update);
       if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: 'Unable to add ingredients to item' });
       const additionUpdate = await editIngredients(update);
