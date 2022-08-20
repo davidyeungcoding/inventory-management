@@ -38,9 +38,9 @@ const updateUser = async (userId, storeId, store, token) => {
   });
 };
 
-const editStoreUsers = async (payload, token) => {
+const editStoreUserList = async (payload, token) => {
   return new Promise(resolve => {
-    Store.editStoreUsers(payload, (err, _store) => {
+    Store.editStoreUserList(payload, (err, _store) => {
       if (err) throw err;
   
       return _store ? resolve({ status: 200, msg: _store, token: token })
@@ -49,16 +49,9 @@ const editStoreUsers = async (payload, token) => {
   });
 };
 
-const editUserStoreList = async (store, userList, action) => {
+const editUserStoreList = async payload => {
   return new Promise(resolve => {
-    const storeList = [store];
-    const payload = {
-      userList: userList,
-      storeList: storeList,
-      action: action
-    };
-
-    User.editStoreList(payload, (err, _user) => {
+    User.editStoreListFromStore(payload, (err, _user) => {
       if (err) throw err;
 
       return _user ? resolve({ status: 200, msg: 'User\'s store list successfully updated' })
@@ -134,26 +127,26 @@ router.put('/edit-users', auth.authenticateToken, auth.managerCheck, async (req,
     if (insertion.length) {
       const payload = {
         _id: req.body._id,
-        update: insertion,
+        userList: insertion,
         action: 'add'
       };
 
-      const insertionListUser = await editUserStoreList(payload._id, insertion, payload.action);
+      const insertionListUser = await editUserStoreList(payload);
       if (insertionListUser.status !== 200) return res.json(insertionListUser);
-      const insertionUpdate = await editStoreUsers(payload, req.token);
-      if (insertionUpdate.status !== 200 || !removal.length) return res.json(insertionUpdate);
+      const insertionUpdate = await editStoreUserList(payload, req.token);
+      if (!removal.length || insertionUpdate.status !== 200) return res.json(insertionUpdate);
     };
 
     if (removal.length) {
       const payload = {
         _id: req.body._id,
-        update: removal,
+        userList: removal,
         action: 'remove'
       };
 
-      const removalListUser = await editUserStoreList(payload._id, removal, payload.action);
+      const removalListUser = await editUserStoreList(payload);
       if (removalListUser.status !== 200) return res.json(removalListUser);
-      const removalUpdate = await editStoreUsers(payload, req.token);
+      const removalUpdate = await editStoreUserList(payload, req.token);
       return res.json(removalUpdate);
     };
   } catch {

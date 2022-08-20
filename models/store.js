@@ -60,11 +60,18 @@ module.exports.editStoreDetails = (id, payload, callback) => {
   this.storeModel.findByIdAndUpdate(id, { $set: payload }, { new: true }, callback);
 };
 
-module.exports.editStoreUsers = (payload, callback) => {
+module.exports.editStoreUserList = (payload, callback) => {
   const action = payload.action === 'add' ? '$push' : '$pull';
   const modifier = action === '$push' ? '$each' : '$in';
-  const update = { [action]: { users: { [modifier]: payload.update } } };
+  const update = { [action]: { users: { [modifier]: payload.userList } } };
   this.storeModel.findByIdAndUpdate(payload._id, update, { new: true }, callback);
+};
+
+module.exports.editUserListFromUser = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const query = { $in: payload.storeList };
+  const update = { [action]: { users: payload._id } };
+  this.storeModel.updateMany({ _id: query}, update, callback);
 };
 
 // ==================

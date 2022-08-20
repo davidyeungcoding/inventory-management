@@ -12,6 +12,7 @@ module.exports = router;
 
 const { userModel } = require('../models/user');
 const User = require('../models/user');
+const Store = require('../models/store');
 
 // ======================
 // || Shared Functions ||
@@ -56,6 +57,28 @@ const buildResUser = user => {
     accountType: user.accountType,
     stores: user.stores
   };
+};
+
+const editStoreUserList = async payload => {
+  return new Promise(resolve => {
+    Store.editUserListFromUser(payload, (err, _store) => {
+      if (err) throw err;
+
+      return _store ? resolve({ status: 200, msg: 'Store\'s user list uppdated' })
+      : resolve({ status: 400, msg: 'Unable to update store\'s user list' });
+    });
+  });
+};
+
+const editUserStoreList = async (payload, token) => {
+  return new Promise(resolve => {
+    User.editStoreList(payload, (err, _user) => {
+      if (err) throw err;
+      if (!_user) return resolve({ status: 400, msg: 'Unable to update store list for user' });
+      const user = buildResUser(_user);
+      return resolve({ status: 200, msg: user, token: token });
+    });
+  });
 };
 
 // =================
@@ -136,11 +159,10 @@ router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (r
 
     User.editUser(toChange._id, change, (err, _user) => {
       if (err) throw err;
+      if (!_user) return res.json({ status: 400, msg: 'Unable to update user information' });
       const resUser = buildResUser(_user);
       if (req.user._id === resUser._id) req.token = auth.generateAuthToken(resUser);
-
-      return _user ? res.json({ status: 200, msg: resUser, token: req.token })
-      : res.json({ status: 400, msg: 'Unable to update user information', token: req.token });
+      return res.json({ status: 200, msg: resUser, token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to edit user' });
@@ -152,14 +174,13 @@ router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, 
     const toChange = req.body.toChange;
     const password = crypto.randomBytes(10).toString('hex');
 
-    User.resetPassword(toChange._id, password, (err, _user) => {
+    User.resetPassword(toChange, password, (err, _user) => {
       if (err) throw err;
+      if (!_user) return res.json({ status: 400, msg: 'Unable to reset password' });
       const resUser = buildResUser(_user);
       if (req.user._id === toChange._id) req.token = auth.generateAuthToken(resUser);
-
-      return _user ? res.json({ status: 200, msg: password, token: req.token })
-      : res.json({ status: 400, msg: 'Unable to reset password', token: req.token });
-    })
+      return res.json({ status: 200, msg: password, token: req.token });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to rest password' });
   };
@@ -176,16 +197,43 @@ router.put('/change-account-type', auth.authenticateToken, auth.adminCheck, (req
       if (err) throw err;
 
       return _user ? res.json({ status: 200, msg: 'User account type updated', token: req.token })
-      : res.json({ status: 400, msg: 'Unable to update account type, user not found', token: req.token });
+      : res.json({ status: 400, msg: 'Unable to update account type, user not found' });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to change account type' });
   };
 });
 
-router.put('/update-stores', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+router.put('/edit-stores', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
-    res.send('Can update stores')
+    const insertion = req.body.insertion;
+    const removal = req.body.removal;
+
+    if (insertion.length) {
+      const payload = {
+        _id: req.body._id,
+        storeList: insertion,
+        action: 'add'
+      };
+
+      const insertStore = await editStoreUserList(payload);
+      if (insertStore.status !== 200) return res.json(insertStore);
+      const insertUser = await editUserStoreList(payload, req.token);
+      if (!removal.length || insertUser.status !== 200) return res.json(insertUser);
+    };
+
+    if (removal.length) {
+      const payload = {
+        _id: req.body._id,
+        storeList: removal,
+        action: 'remove'
+      };
+
+      const removeStore = await editStoreUserList(payload);
+      if (removeStore.status !== 200) return res.json(removeStore);
+      const removeUser = await editUserStoreList(payload, req.token);
+      return res.json(removeUser);
+    };
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to update stores' });
   };
@@ -203,7 +251,7 @@ router.get('/search', auth.authenticateToken, auth.managerCheck, (req, res, next
       if (err) throw err;
 
       return _user ? res.json({ status: 200, msg: _user, token: req.token })
-      : res.json({ status: 400, msg: 'Unable to find users matching term', token: req.token });
+      : res.json({ status: 400, msg: 'Unable to find users matching term' });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to complete search for user' });
@@ -220,7 +268,7 @@ router.put('/delete', auth.authenticateToken, auth.adminCheck, (req, res, next) 
       if (err) throw err;
 
       return _user ? res.json({ status: 200, msg: 'User successfully deleted', token: req.token })
-      : res.json({ status: 400, msg: 'Unable to delete user', token: req.token });
+      : res.json({ status: 400, msg: 'Unable to delete user' });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to delete user' });

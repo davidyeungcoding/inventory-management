@@ -120,12 +120,18 @@ module.exports.updateStores = (userId, storeId, callback) => {
   this.userModel.findByIdAndUpdate(userId, { $push: { stores: storeId } }, { new: true }, callback);
 };
 
+module.exports.editStoreListFromStore = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const query = { $in: payload.userList }
+  const update = { [action]: { stores: payload._id } };
+  this.userModel.updateMany({ _id: query }, update, callback);
+};
+
 module.exports.editStoreList = (payload, callback) => {
   const action = payload.action === 'add' ? '$push' : '$pull';
-  const modifier = action === '$push' ? '$each' : '$in';
-  const query = { $in: payload.userList }
+  const modifier = action === '$push' ? '$each': '$in';
   const update = { [action]: { stores: { [modifier]: payload.storeList } } };
-  this.userModel.updateMany({ _id: query }, update, { new: true }, callback);
+  this.userModel.findByIdAndUpdate(payload._id, update, { new: true }, callback);
 };
 
 // =================
