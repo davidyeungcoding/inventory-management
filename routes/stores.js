@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const auth = require('../routes-middleware/user-authorization');
 
 module.exports = router;
@@ -56,6 +57,17 @@ const editUserStoreList = async payload => {
 
       return _user ? resolve({ status: 200, msg: 'User\'s store list successfully updated' })
       : resolve({ status: 400, msg: 'Unable to update user\'s store list' });
+    });
+  });
+};
+
+const adminSearch = async (term, token) => {
+  return new Promise(resolve => {
+    Store.adminSearchStores(term, (err, _list) => {
+      if (err) throw err;
+
+      return _list ? resolve({ status: 200, msg: _list, token: token })
+      : resolve({ status: 400, msg: `Unable to perform search for: ${term.toString()}` });
     });
   });
 };
@@ -154,18 +166,39 @@ router.put('/edit-users', auth.authenticateToken, auth.managerCheck, async (req,
   };
 });
 
-router.put('/edit-items', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
-  return res.send('can edit items')
-});
-
-router.put('/edit-ingredients', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
-  return res.send('can edit ingredients')
-});
-
 // ===================
 // || Search Stores ||
 // ===================
 
+router.get('/search', auth.authenticateToken, async (req, res, next) => {
+  try {
+    const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
+    const id = mongoose.Types.ObjectId(req.user._id);
+    
+    if (req.user.accountType === 'admin') {
+      const storeList = await adminSearch(term, req.token);
+      return res.json(storeList);
+    };
+
+    Store.searchStores(term, id, (err, _list) => {
+      if (err) throw err;
+
+      return _list ? res.json({ status: 200, msg: _list, token: req.token })
+      : res.json({ status: 400, msg: `Unable to search for store: ${term.toString()}` });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to search for stores' });
+  };
+});
+
 // ==================
 // || Delete Store ||
 // ==================
+
+router.put('/delete', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
+  try {
+    return res.send('can delete store');
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to delete store' });
+  };
+});
