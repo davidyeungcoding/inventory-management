@@ -14,8 +14,7 @@ const port = process.env.PORT || 3000;
 
 mongoose.connect(process.env.DATABASE, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  // useFindAndModify: false
+  useUnifiedTopology: true
 });
 
 mongoose.connection.on('error', err => {

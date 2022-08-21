@@ -99,3 +99,7 @@ module.exports.adminSearchStores = (term, callback) => {
 // ==================
 // || Delete Store ||
 // ==================
+
+module.exports.deleteStore = (id, callback) => {
+  this.storeModel.deleteOne({ _id: id }, callback);
+};

@@ -72,6 +72,10 @@ const adminSearch = async (term, token) => {
   });
 };
 
+const buildUserList = list => {
+  return list.map(user => user._id);
+};
+
 // ==================
 // || Create Store ||
 // ==================
@@ -195,9 +199,29 @@ router.get('/search', auth.authenticateToken, async (req, res, next) => {
 // || Delete Store ||
 // ==================
 
-router.put('/delete', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
+router.put('/delete', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
-    return res.send('can delete store');
+    const storeId = req.body.storeId;
+    const users = req.body.users;
+    
+    if (users.length) {
+      const userList = buildUserList(users);
+      const payload = {
+        _id: storeId,
+        userList: userList,
+        action: 'remove'
+      };
+
+      const purgeStore = await editUserStoreList(payload);
+      if (purgeStore.status !== 200) return res.json(purgeStore);
+    };
+
+    Store.deleteStore(storeId, (err, _res) => {
+      if (err) throw err;
+
+      return _res ? res.json({ status: 200, msg: 'Store has been deleted', token: req.token })
+      : res.json({ status: 400, msg: 'Unable to delete store' });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to delete store' });
   };
