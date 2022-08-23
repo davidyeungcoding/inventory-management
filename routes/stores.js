@@ -165,6 +165,8 @@ router.put('/edit-users', auth.authenticateToken, auth.managerCheck, async (req,
       const removalUpdate = await editStoreUserList(payload, req.token);
       return res.json(removalUpdate);
     };
+
+    return res.json({ status: 204, msg: 'No changes detected' });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to update store\'s user information' });
   };

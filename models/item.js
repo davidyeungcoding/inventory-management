@@ -73,8 +73,8 @@ module.exports.purgeIngredient = (payload, callback) => {
 // || Search Item ||
 // =================
 
-module.exports.searchItem = (term, type, callback) => {
-  const query = term.toString().length ? { [type]: term } : {};
+module.exports.searchItem = (term, storeId, callback) => {
+  const query = term.toString().length ? { name: term, store: storeId } : { store: storeId };
   
   this.itemModel.find(query, callback)
   .sort({ name: 1 })

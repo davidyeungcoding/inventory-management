@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
+const auth = require('../routes-middleware/user-authorization');
 
 module.exports = router;
 
@@ -11,17 +12,18 @@ module.exports = router;
 const { itemModel } = require('../models/item');
 const Item = require('../models/item');
 const Ingredient = require('../models/ingredient');
+const Store = require('../models/store');
 
 // ======================
 // || Shared Functions ||
 // ======================
 
-const editIngredients = async payload => {
+const editIngredients = async (payload, token) => {
   return new Promise(resolve => {
     Item.editIngredients(payload, (err, _item) => {
       if (err) throw err;
 
-      return _item ? resolve({ status: 200, msg: _item })
+      return _item ? resolve({ status: 200, msg: _item, token: token })
       : resolve({ status: 400, msg: `Unable to ${payload.action} ingredients` });
     });
   });
@@ -50,10 +52,21 @@ const parseIngredientArray = async arr => {
 
 const updateFoundIn = async payload => {
   return new Promise(resolve => {
-    Ingredient.updateFoundIn(payload, (err, _res) => {
+    Ingredient.updateFoundInFromItem(payload, (err, _res) => {
       if (err) throw err;
       return resolve(_res ? { status: 200, msg: 'Ingredient updated successfully' }
       : { status: 400 });
+    });
+  });
+};
+
+const editItemInStore = async payload => {
+  return new Promise(resolve => {
+    Store.editItemFromItem(payload, (err, _store) => {
+      if (err) throw err;
+
+      return _store ? resolve({ status: 200, msg: 'Item successfully modified in store' })
+      : resolve({ status: 400, msg: `Unable to edit item in store` });
     });
   });
 };
@@ -62,20 +75,28 @@ const updateFoundIn = async payload => {
 // || Create Item ||
 // =================
 
-router.post('/create', (req, res, next) => {
+router.post('/create', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   try {
     const item = new itemModel({
       name: req.body.name,
       price: req.body.price,
       active: req.body.active,
-      available: req.body.available
+      available: req.body.available,
+      store: req.body.storeId
     });
   
-    Item.createItem(item, (err, _item) => {
+    Item.createItem(item, async (err, _item) => {
       if (err) throw err;
-      // handle adding item to store
+      const payload = {
+        itemId: _item._id,
+        storeId: _item.store,
+        action: 'add'
+      };
+
+      const storeUpdate = await editItemInStore(payload);
+      if (storeUpdate.status !== 200) return res.json(storeUpdate);
   
-      return _item ? res.json({ status: 200, msg: _item })
+      return _item ? res.json({ status: 200, msg: _item, token: req.token })
       : res.json({ status: 400, msg: `Unable to creat item: ${req.body.name}` });
     });
   } catch {
@@ -87,7 +108,7 @@ router.post('/create', (req, res, next) => {
 // || Edit Item ||
 // ===============
 
-router.put('/edit-item-details', (req, res, next) => {
+router.put('/edit-item-details', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   try {
     const payload = {
       id: req.body.id,
@@ -98,42 +119,42 @@ router.put('/edit-item-details', (req, res, next) => {
       if (err) throw err;
 
       return _item ? res.json({ status: 200, msg: _item })
-      : res.json({ status: 400, msg: `Unable to edit item: ${payload.name} `});
+      : res.json({ status: 400, msg: `Unable to edit item: ${payload.name}`, token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: "Unable to process edit request" });
   };
 });
 
-router.put('/edit-item-ingredients', async (req, res, next) => {
+router.put('/edit-item-ingredients', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
     const changes = await generateUpdateArray(req.body.toChange);
     const insertion = changes.insertion;
     const removal = changes.removal;
 
     if (insertion.length) {
-      const update = {
+      const payload = {
         id: req.body.id,
         ingredients: insertion,
         action: 'add'
       };
       
-      const ingredientUpdate = await updateFoundIn(update);
+      const ingredientUpdate = await updateFoundIn(payload);
       if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: 'Unable to add ingredients to item' });
-      const additionUpdate = await editIngredients(update);
+      const additionUpdate = await editIngredients(payload, req.token);
       if (additionUpdate.status !== 200 || !removal.length) return res.json(additionUpdate);
     };
     
     if (removal.length) {
-      const update = {
+      const payload = {
         id: req.body.id,
         ingredients: removal,
         action: 'remove'
       };
 
-      const ingredientUpdate = await updateFoundIn(update);
+      const ingredientUpdate = await updateFoundIn(payload);
       if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: 'Unable to remove ingredients from item' });
-      const removalUpdate = await editIngredients(update);
+      const removalUpdate = await editIngredients(payload, req.token);
       return res.json(removalUpdate);
     };
       
@@ -147,15 +168,15 @@ router.put('/edit-item-ingredients', async (req, res, next) => {
 // || Search Item ||
 // =================
 
-// handle search to limit with store associated with account
-router.get('/search', (req, res, next) => {
+router.get('/search', auth.authenticateToken, (req, res, next) => {
   try {
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
+    const storeId = req.query.storeId;
 
-    Item.searchItem(term, req.query.type, (err, _item) => {
+    Item.searchItem(term, storeId, (err, _item) => {
       if (err) throw err;
 
-      return _item ? res.json({ status: 200, msg: _item })
+      return _item ? res.json({ status: 200, msg: _item, token: req.token })
       : res.json({ status: 400, msg: `Unable to find item: ${req.query.term}` });
     });
   } catch {
@@ -167,21 +188,24 @@ router.get('/search', (req, res, next) => {
 // || Delete Item ||
 // =================
 
-router.put('/delete', async (req, res, next) => {
+router.put('/delete', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
     const payload = {
-      id: req.body._id,
+      itemId: req.body.itemId,
       ingredients: await parseIngredientArray(req.body.ingredients),
+      storeId: req.body.storeId,
       action: 'remove'
     };
+
     const ingredientUpdate = await updateFoundIn(payload);
     if (ingredientUpdate.status !== 200) return res.json({ status: ingredientUpdate.status, msg: `Unable to delete item: ${req.body.name}` });
-    // handle removal from store collection
+    const storeUpdate = await editItemInStore(payload);
+    if (storeUpdate.status !== 200) return res.json(storeUpdate);
 
-    Item.deleteItem(req.body._id, (err, _item) => {
+    Item.deleteItem(payload.itemId, (err, _item) => {
       if (err) throw err;
 
-      return _item ? res.json({ status: 200, msg: `${req.body.name} has been deleted` })
+      return _item ? res.json({ status: 200, msg: `${req.body.name} has been deleted`, token: req.token })
       : res.json({ status: 400, msg: `Unable to delete item: ${req.body.name} `});
     });
   } catch {

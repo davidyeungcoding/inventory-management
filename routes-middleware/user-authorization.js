@@ -40,8 +40,7 @@ const buildResUser = user => {
   return {
     _id: user._id,
     username: user.username,
-    accountType: user.accountType,
-    stores: user.stores
+    accountType: user.accountType
   };
 };
 

@@ -24,7 +24,7 @@ const authUser = async username => {
       if (err) throw err;
 
       return _user[0] ? resolve({ status: 200, msg: _user[0] })
-      : resolve({ status: 404, msg: 'User not found' });
+      : resolve({ status: 404, msg: 'Invalid username or password' });
     });
   });
 };
@@ -54,8 +54,7 @@ const buildResUser = user => {
   return {
     _id: user._id,
     username: user.username,
-    accountType: user.accountType,
-    stores: user.stores
+    accountType: user.accountType
   };
 };
 
@@ -75,7 +74,14 @@ const editUserStoreList = async (payload, token) => {
     User.editStoreList(payload, (err, _user) => {
       if (err) throw err;
       if (!_user) return resolve({ status: 400, msg: 'Unable to update store list for user' });
-      const user = buildResUser(_user);
+      
+      const user = {
+        _id: _user._id,
+        username: _user.username,
+        accountType: _user.accountType,
+        stores: _user.stores
+      };
+
       return resolve({ status: 200, msg: user, token: token });
     });
   });
@@ -234,6 +240,8 @@ router.put('/edit-stores', auth.authenticateToken, auth.managerCheck, async (req
       const removeUser = await editUserStoreList(payload, req.token);
       return res.json(removeUser);
     };
+
+    return res.json({ status: 204, msg: 'No changes detected' });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to update stores' });
   };

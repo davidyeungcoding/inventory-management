@@ -74,6 +74,12 @@ module.exports.editUserListFromUser = (payload, callback) => {
   this.storeModel.updateMany({ _id: query}, update, callback);
 };
 
+module.exports.editItemFromItem = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const update = { [action]: { items: payload.itemId } };
+  this.storeModel.findByIdAndUpdate(payload.storeId, update, callback);
+};
+
 // ==================
 // || Search Store ||
 // ==================
