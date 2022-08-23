@@ -134,7 +134,7 @@ router.put('/edit-item-ingredients', auth.authenticateToken, auth.managerCheck, 
 
     if (insertion.length) {
       const payload = {
-        id: req.body.id,
+        itemId: req.body.id,
         ingredients: insertion,
         action: 'add'
       };
@@ -147,7 +147,7 @@ router.put('/edit-item-ingredients', auth.authenticateToken, auth.managerCheck, 
     
     if (removal.length) {
       const payload = {
-        id: req.body.id,
+        itemId: req.body.id,
         ingredients: removal,
         action: 'remove'
       };

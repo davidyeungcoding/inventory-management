@@ -83,7 +83,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
     if (!this.validateName(form.name)) return;
     $('#editIngredientBtn').prop('disabled', true);
     const payload = {
-      id: this.targetIngredient!._id,
+      _id: this.targetIngredient!._id,
       update: {
         name: form.name
       }

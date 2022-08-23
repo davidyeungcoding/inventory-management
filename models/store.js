@@ -80,6 +80,12 @@ module.exports.editItemFromItem = (payload, callback) => {
   this.storeModel.findByIdAndUpdate(payload.storeId, update, callback);
 };
 
+module.exports.editIngredientFromIngredient = (payload, callback) => {
+  const action = payload.action === 'add' ? '$push' : '$pull';
+  const update = { [action]: { ingredients: payload.ingredientId } };
+  this.storeModel.findByIdAndUpdate(payload.storeId, update, callback);
+};
+
 // ==================
 // || Search Store ||
 // ==================

@@ -38,13 +38,7 @@ module.exports.createIngredient = (ingredient, callback) => {
 module.exports.editIngredient = (payload, callback) => {
   const options = { new: true };
   const update = { $set: payload.update };
-  this.ingredientModel.findByIdAndUpdate(payload.id, update, options, callback);
-};
-
-module.exports.purgeItem = (payload, callback) => {
-  const query = { $in: payload.ingredients };
-  const update = { $pull: { foundIn: payload.item } };
-  this.ingredientModel.updateMany({ _id: query }, update, callback);
+  this.ingredientModel.findByIdAndUpdate(payload._id, update, options, callback);
 };
 
 module.exports.updateFoundInFromItem = (payload, callback) => {
@@ -59,13 +53,10 @@ module.exports.updateFoundInFromItem = (payload, callback) => {
 // =======================
 
 module.exports.searchIngredient = (payload, callback) => {
-  const query = payload.term.toString().length ? { [payload.type]: payload.term } : {};
+  const query = payload.term.toString().length ? { name: payload.term, store: payload.storeId }
+  : { store: payload.storeId };
   this.ingredientModel.find(query, callback)
   .sort({ name: 1 });
-};
-
-module.exports.searchForDeletion = (id, callback) => {
-  this.ingredientModel.findById(id, 'foundIn -_id', callback);
 };
 
 // =======================

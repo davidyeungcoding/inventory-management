@@ -50,14 +50,14 @@ export class ItemService {
     );
   };
 
-  deleteItem(item: Item) {
-    return this.http.put(`${this.api}/delete`, item, this.httpOptions).pipe(
+  updateItemIngredient(payload: any) {
+    return this.http.put(`${this.api}/edit-item-ingredients`, payload, this.httpOptions).pipe(
       catchError(err => of(err))
     );
   };
 
-  updateItemIngredient(payload: any) {
-    return this.http.put(`${this.api}/edit-item-ingredients`, payload, this.httpOptions).pipe(
+  deleteItem(item: Item) {
+    return this.http.put(`${this.api}/delete`, item, this.httpOptions).pipe(
       catchError(err => of(err))
     );
   };

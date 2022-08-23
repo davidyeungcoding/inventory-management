@@ -37,12 +37,6 @@ export class IngredientService {
     );
   };
 
-  purgeItem(item: Item) {
-    return this.http.put(`${this.api}/purge-item`, item, this.httpOptions).pipe(
-      catchError(err => of(err))
-    );
-  };
-
   createIngredient(ingredient: any) {
     return this.http.post(`${this.api}/create`, ingredient, this.httpOptions).pipe(
       catchError(err => of(err))

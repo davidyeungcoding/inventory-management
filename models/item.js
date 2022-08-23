@@ -59,13 +59,13 @@ module.exports.editIngredients = (payload, callback) => {
   const modifier = action === '$push' ? '$each' : '$in';
   const update = { [action]: { ingredients: { [modifier]: payload.ingredients } } };
   const options = { new: true };
-  this.itemModel.findByIdAndUpdate(payload.id, update, options, callback)
+  this.itemModel.findByIdAndUpdate(payload.itemId, update, options, callback)
   .populate('ingredients', 'name');
 };
 
-module.exports.purgeIngredient = (payload, callback) => {
+module.exports.purgeIngredientFromIngredient = (payload, callback) => {
   const query = { $in: payload.target };
-  const update = { $pull: { ingredients: payload.id } };
+  const update = { $pull: { ingredients: payload.ingredientId } };
   this.itemModel.updateMany({ _id: query }, update, callback);
 };
 
