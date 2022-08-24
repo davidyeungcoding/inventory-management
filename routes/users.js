@@ -21,10 +21,8 @@ const Store = require('../models/store');
 const authUser = async username => {
   return new Promise(resolve => {
     User.authSearch(username, (err, _user) => {
-      if (err) throw err;
-
-      return _user[0] ? resolve({ status: 200, msg: _user[0] })
-      : resolve({ status: 404, msg: 'Invalid username or password' });
+      return err ? resolve({ status: 404, msg: 'Invalid username or password' })
+      : resolve({ status: 200, msg: _user[0] });
     });
   });
 };
@@ -41,8 +39,7 @@ const duplicateCheck = async username => {
 const verifyPassword = async (password, hash) => {
   const match = await new Promise(resolve => {
     User.comparePassword(password, hash, (err, _match) => {
-      if (err) throw err;
-      return resolve(_match);
+      return err ? resolve(false) : resolve(_match);
     });
   });
 
@@ -61,10 +58,8 @@ const buildResUser = user => {
 const editStoreUserList = async payload => {
   return new Promise(resolve => {
     Store.editUserListFromUser(payload, (err, _store) => {
-      if (err) throw err;
-
-      return _store ? resolve({ status: 200, msg: 'Store\'s user list uppdated' })
-      : resolve({ status: 400, msg: 'Unable to update store\'s user list' });
+      return err ? resolve({ status: 400, msg: 'Unable to update store\'s user list' })
+      : resolve({ status: 200, msg: 'Store\'s user list uppdated' });
     });
   });
 };
@@ -72,8 +67,7 @@ const editStoreUserList = async payload => {
 const editUserStoreList = async (payload, token) => {
   return new Promise(resolve => {
     User.editStoreList(payload, (err, _user) => {
-      if (err) throw err;
-      if (!_user) return resolve({ status: 400, msg: 'Unable to update store list for user' });
+      if (err || !_user) return resolve({ status: 400, msg: 'Unable to update store list for user' });
       
       const user = {
         _id: _user._id,
@@ -102,11 +96,9 @@ router.post('/create', async (req, res, next) => {
     });
 
     User.createUser(payload, (err, _user) => {
-      if (err) throw err;
-
-      return _user ? res.json({ status: 200, msg: _user })
-      : res.json({ status: 400, msg: 'Unable to create new user' });
-    })
+      return err ? res.json({ status: 400, msg: 'Unable to create new user' })
+      : res.json({ status: 201, msg: _user });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request for new user' });
   };
@@ -137,10 +129,8 @@ router.post('/login', async (req, res, next) => {
 router.get('/logout', auth.authenticateToken, (req, res, next) => {
   try {
     User.clearRefreshToken(req.user._id, (err, _user) => {
-      if (err) throw err;
-
-      return _user ? res.json({ status: 200, msg: 'User successfully logged out' })
-      : res.json({ status: 400, msg: 'Unable to log user out' });
+      return err ? res.json({ status: 400, msg: 'Unable to log user out' })
+      : res.json({ status: 200, msg: 'User successfully logged out' });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to logout' });
@@ -164,8 +154,7 @@ router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (r
     };
 
     User.editUser(toChange._id, change, (err, _user) => {
-      if (err) throw err;
-      if (!_user) return res.json({ status: 400, msg: 'Unable to update user information' });
+      if (err) return res.json({ status: 400, msg: 'Unable to update user information' });
       const resUser = buildResUser(_user);
       if (req.user._id === resUser._id) req.token = auth.generateAuthToken(resUser);
       return res.json({ status: 200, msg: resUser, token: req.token });
@@ -181,8 +170,7 @@ router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, 
     const password = crypto.randomBytes(10).toString('hex');
 
     User.resetPassword(toChange, password, (err, _user) => {
-      if (err) throw err;
-      if (!_user) return res.json({ status: 400, msg: 'Unable to reset password' });
+      if (err) return res.json({ status: 400, msg: 'Unable to reset password' });
       const resUser = buildResUser(_user);
       if (req.user._id === toChange._id) req.token = auth.generateAuthToken(resUser);
       return res.json({ status: 200, msg: password, token: req.token });
@@ -200,10 +188,8 @@ router.put('/change-account-type', auth.authenticateToken, auth.adminCheck, (req
     };
 
     User.changeAccountType(payload, (err, _user) => {
-      if (err) throw err;
-
-      return _user ? res.json({ status: 200, msg: 'User account type updated', token: req.token })
-      : res.json({ status: 400, msg: 'Unable to update account type, user not found' });
+      return err ? res.json({ status: 400, msg: 'Unable to update account type, user not found' })
+      : res.json({ status: 200, msg: 'User account type updated', token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to change account type' });
@@ -256,10 +242,8 @@ router.get('/search', auth.authenticateToken, auth.managerCheck, (req, res, next
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
     
     User.searchUser(term, (err, _user) => {
-      if (err) throw err;
-
-      return _user ? res.json({ status: 200, msg: _user, token: req.token })
-      : res.json({ status: 400, msg: 'Unable to find users matching term' });
+      return err ? res.json({ status: 400, msg: 'Unable to find users matching term' })
+      : res.json({ status: 200, msg: _user, token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to complete search for user' });
@@ -273,10 +257,8 @@ router.get('/search', auth.authenticateToken, auth.managerCheck, (req, res, next
 router.put('/delete', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
   try {
     User.deleteUser(req.body.targetId, (err, _user) => {
-      if (err) throw err;
-
-      return _user ? res.json({ status: 200, msg: 'User successfully deleted', token: req.token })
-      : res.json({ status: 400, msg: 'Unable to delete user' });
+      return err ? res.json({ status: 400, msg: 'Unable to delete user' })
+      : res.json({ status: 200, msg: 'User successfully deleted', token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to delete user' });

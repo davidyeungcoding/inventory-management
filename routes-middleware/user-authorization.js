@@ -15,9 +15,8 @@ const User = require('../models/user');
 const getRefreshToken = async id => {
   return new Promise(resolve => {
     User.getRefreshToken(id, (err, _user) => {
-      if (err) throw err;
-      return _user[0] ? resolve({ status: 200, msg: _user[0].refreshToken })
-      : resolve({ status: 400, msg: 'User not found '});
+      return err ? resolve({ status: 400, msg: 'User not found '})
+      : resolve({ status: 200, msg: _user[0].refreshToken });
     });
   });
 };
@@ -61,8 +60,8 @@ module.exports.assignRefreshToken = async user => {
 
   return new Promise(resolve => {
     User.assignRefreshToken(user._id, token, (err, _token) => {
-      if (err) return resolve({ status: 500, msg: 'Unable to assign refresh token' });
-      return resolve({ status: 200, msg: 'Successfully added refresh token' });
+      return err ? resolve({ status: 500, msg: 'Unable to assign refresh token' })
+      : resolve({ status: 200, msg: 'Successfully added refresh token' });
     });
   });
 };

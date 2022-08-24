@@ -30,11 +30,9 @@ const buildResUser = user => {
 const updateUser = async (userId, storeId, store, token) => {
   return new Promise(resolve => {
     User.updateStores(userId, storeId, (err, _user) => {
-      if (err) throw err;
+      if (err) return resolve({ status: 400, msg: store, token: token });
       const user = buildResUser(_user);
-
-      return _user ? resolve({ status: 200, msg: store, user: user, token: token })
-      : resolve({ status: 400, msg: store, token: token });
+      return resolve({ status: 200, msg: store, user: user, token: token });
     });
   });
 };
@@ -42,10 +40,8 @@ const updateUser = async (userId, storeId, store, token) => {
 const editStoreUserList = async (payload, token) => {
   return new Promise(resolve => {
     Store.editStoreUserList(payload, (err, _store) => {
-      if (err) throw err;
-  
-      return _store ? resolve({ status: 200, msg: _store, token: token })
-      : resolve({ status: 400, msg: 'Unable to update store\'s user list' });
+      return err ? resolve({ status: 400, msg: 'Unable to update store\'s user list' })
+      : resolve({ status: 200, msg: _store, token: token });
     });
   });
 };
@@ -53,10 +49,8 @@ const editStoreUserList = async (payload, token) => {
 const editUserStoreList = async payload => {
   return new Promise(resolve => {
     User.editStoreListFromStore(payload, (err, _user) => {
-      if (err) throw err;
-
-      return _user ? resolve({ status: 200, msg: 'User\'s store list successfully updated' })
-      : resolve({ status: 400, msg: 'Unable to update user\'s store list' });
+      return err ? resolve({ status: 400, msg: 'Unable to update user\'s store list' })
+      : resolve({ status: 200, msg: 'User\'s store list successfully updated' });
     });
   });
 };
@@ -64,10 +58,8 @@ const editUserStoreList = async payload => {
 const adminSearch = async (term, token) => {
   return new Promise(resolve => {
     Store.adminSearchStores(term, (err, _list) => {
-      if (err) throw err;
-
-      return _list ? resolve({ status: 200, msg: _list, token: token })
-      : resolve({ status: 400, msg: `Unable to perform search for: ${term.toString()}` });
+      return err ? resolve({ status: 400, msg: `Unable to perform search for: ${term.toString()}` })
+      : resolve({ status: 200, msg: _list, token: token });
     });
   });
 };
@@ -95,7 +87,7 @@ router.post('/create', auth.authenticateToken, auth.managerCheck, (req, res, nex
     if (accountType === 'manager') store.users.push(req.user._id);
 
     Store.createStore(store, async (err, _store) => {
-      if (err) throw err;
+      if (err) return res.json({ status: 400, msg: 'Unable to create new store' });
 
       if (_store && accountType === 'manager') {
         const userId = req.user._id;
@@ -103,8 +95,7 @@ router.post('/create', auth.authenticateToken, auth.managerCheck, (req, res, nex
         return res.json(userUpdate);
       };
 
-      return _store ? res.json({ status: 200, msg: _store, token: req.token })
-      : res.json({ status: 400, msg: 'Unable to create new store' });
+      return res.json({ status: 201, msg: _store, token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to create new store' });
@@ -125,11 +116,9 @@ router.put('/edit-details', auth.authenticateToken, auth.managerCheck, (req, res
     if (req.body.zip) payload.zip = req.body.zip;
   
     Store.editStoreDetails(req.body._id, payload, (err, _store) => {
-      if (err) throw err;
-
-      return _store ? res.json({ status: 200, msg: _store, token: req.token })
-      : res.json({ status: 400, msg: 'Unable to update store details' });
-    })
+      return err ? res.json({ status: 400, msg: 'Unable to update store details' })
+      : res.json({ status: 200, msg: _store, token: req.token });
+    });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to edit store details' });
   };
@@ -187,10 +176,8 @@ router.get('/search', auth.authenticateToken, async (req, res, next) => {
     };
 
     Store.searchStores(term, id, (err, _list) => {
-      if (err) throw err;
-
-      return _list ? res.json({ status: 200, msg: _list, token: req.token })
-      : res.json({ status: 400, msg: `Unable to search for store: ${term.toString()}` });
+      return err ? res.json({ status: 400, msg: `Unable to search for store: ${term.toString()}` })
+      : res.json({ status: 200, msg: _list, token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to search for stores' });
@@ -219,10 +206,8 @@ router.put('/delete', auth.authenticateToken, auth.managerCheck, async (req, res
     };
 
     Store.deleteStore(storeId, (err, _res) => {
-      if (err) throw err;
-
-      return _res ? res.json({ status: 200, msg: 'Store has been deleted', token: req.token })
-      : res.json({ status: 400, msg: 'Unable to delete store' });
+      return err ? res.json({ status: 400, msg: 'Unable to delete store' })
+      : res.json({ status: 200, msg: 'Store has been deleted', token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to delete store' });
