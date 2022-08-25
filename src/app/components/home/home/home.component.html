@@ -1,0 +1,31 @@
+<div class="main-grid">
+  <div class="side-content">
+    <p>Here</p>
+  </div>
+
+  <div class="main-content">
+    <div id="homeMsgContainer">
+      <h5 class="alert alert-msg" id="homeMsg">{{ addMessage }}</h5>
+    </div>
+
+    <div class="form-container">
+      <div class="tabs">
+        <h6 class="tab-header active-tab"
+          id="loginTab"
+          (click)="onShowContent('login')">Login</h6>
+
+        <h6 class="tab-header"
+          id="registerTab"
+          (click)="onShowContent('register')">Register</h6>
+      </div>
+
+      <div id="loginContainer">
+        <app-login></app-login>
+      </div>
+
+      <div id="registerContainer">
+        <app-create-user></app-create-user>
+      </div>
+    </div>
+  </div>
+</div>

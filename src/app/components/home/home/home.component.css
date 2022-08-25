@@ -1,0 +1,74 @@
+/* ========== */
+/* || Grid || */
+/* ========== */
+
+.main-grid {
+  display: grid;
+  grid-template-columns: minmax(1rem, 1fr) minmax(0, 30rem) minmax(0, 60rem) minmax(1rem, 1fr);
+  grid-template-rows: minmax(1rem, 1fr) auto minmax(1rem, 1fr);
+  overflow: hidden;
+}
+
+.side-content {
+  grid-area: 1 / 1 / span 3 / span 2;
+}
+
+.main-content {
+  grid-area: 2 / 3 / span 1 / span 1;
+  width: 70%;
+  margin: auto;
+}
+
+/* ========== */
+/* || Form || */
+/* ========== */
+
+.form-container {
+  width: 20vw;
+  margin: auto;
+}
+
+#homeMsgContainer {
+  display: none;
+}
+
+#registerContainer {
+  display: none;
+}
+
+/* ========== */
+/* || Tabs || */
+/* ========== */
+
+.tabs {
+  display: flex;
+}
+
+.tab-header {
+  width: 30%;
+  text-align: center;
+}
+
+.tab-header:hover {
+  cursor: pointer;
+}
+
+.tab-header::after {
+  height: 3px;
+  width: 0;
+  margin: 11px auto 0;
+  display: block;
+  content: '';
+  background: transparent;
+  transition: .3s;
+}
+
+.tab-header:hover::after {
+  width: 100%;
+  background: var(--color-secondary);
+}
+
+.active-tab {
+  box-shadow: 0 -3px 0 0 var(--color-secondary) inset;
+  transition: .3 ease-out;
+}

@@ -16,5 +16,6 @@ export class GlobalService {
     $(`${target}`).removeClass('alert-success alert-danger');
     $(`${target}`).addClass(add);
     $(`${container}`).css('display', 'inline');
+    console.log(container)
   };
 }

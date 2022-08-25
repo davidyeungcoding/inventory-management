@@ -11,10 +11,14 @@ import { ItemListComponent } from './components/item/item-list/item-list.compone
 import { CreateItemComponent } from './components/item/create-item/create-item.component';
 import { DeleteItemComponent } from './components/item/delete-item/delete-item.component';
 import { IngredientListComponent } from './components/ingredient/ingredient-list/ingredient-list.component';
-import { EditIngredientDetailsComponent } from './components/ingredient/edit-ingredient-details/edit-ingredient-details.component';
 import { CreateIngredientComponent } from './components/ingredient/create-ingredient/create-ingredient.component';
 import { DeleteIngredientComponent } from './components/ingredient/delete-ingredient/delete-ingredient.component';
 import { EditIngredientComponent } from './components/ingredient/edit-ingredient/edit-ingredient.component';
+import { CreateUserComponent } from './components/user/create-user/create-user.component';
+import { EditUserComponent } from './components/user/edit-user/edit-user.component';
+import { UserListComponent } from './components/user/user-list/user-list.component';
+import { HomeComponent } from './components/home/home/home.component';
+import { LoginComponent } from './components/home/login/login.component';
 
 @NgModule({
   declarations: [
@@ -25,10 +29,14 @@ import { EditIngredientComponent } from './components/ingredient/edit-ingredient
     CreateItemComponent,
     DeleteItemComponent,
     IngredientListComponent,
-    EditIngredientDetailsComponent,
     CreateIngredientComponent,
     DeleteIngredientComponent,
-    EditIngredientComponent
+    EditIngredientComponent,
+    CreateUserComponent,
+    EditUserComponent,
+    UserListComponent,
+    HomeComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

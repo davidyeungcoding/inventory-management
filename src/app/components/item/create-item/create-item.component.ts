@@ -15,13 +15,13 @@ import { Item } from 'src/app/interfaces/item';
 export class CreateItemComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
+  addMessage: string = '';
   addItem = new FormGroup({
     name: new FormControl(''),
     price: new FormControl(''),
     active: new FormControl('false'),
     available: new FormControl('false')
   });
-  addMessage: string = '';
 
   constructor(
     private itemService: ItemService,

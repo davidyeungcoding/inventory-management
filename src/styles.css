@@ -2,6 +2,7 @@
   --background-color: white;
   --table-color-secondary: hsl(0, 0%, 87%);
   --table-color-tertiary: hsl(0, 0%, 75%);
+  --color-secondary: hsl(27, 100%, 62%);
   --base-width: 650px;
 }
 
@@ -97,12 +98,6 @@ td>button {
 
 .last-radio-group {
   margin: 0;
-}
-
-@media screen and (min-width: 485px) {
-  .form-field {
-    width: auto;
-  }
 }
 
 .alert-msg {
