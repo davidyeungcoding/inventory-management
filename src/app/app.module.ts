@@ -19,6 +19,7 @@ import { EditUserComponent } from './components/user/edit-user/edit-user.compone
 import { UserListComponent } from './components/user/user-list/user-list.component';
 import { HomeComponent } from './components/home/home/home.component';
 import { LoginComponent } from './components/home/login/login.component';
+import { StoreListComponent } from './components/store/store-list/store-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { LoginComponent } from './components/home/login/login.component';
     EditUserComponent,
     UserListComponent,
     HomeComponent,
-    LoginComponent
+    LoginComponent,
+    StoreListComponent
   ],
   imports: [
     BrowserModule,

@@ -94,18 +94,12 @@ module.exports.searchStores = (term, id, callback) => {
   const query = term.toString().length ? { name: term, users: id } : { users: id };
   this.storeModel.find(query, callback)
   .sort({ name: 1 })
-  .populate('users', '_id username accountType')
-  .populate('items')
-  .populate('ingredients');
 };
 
 module.exports.adminSearchStores = (term, callback) => {
   const query = term.toString().length ? { name: term } : {};
   this.storeModel.find(query, callback)
   .sort({ name: 1 })
-  .populate('users', '_id username accountType')
-  .populate('items')
-  .populate('ingredients');
 };
 
 // ==================

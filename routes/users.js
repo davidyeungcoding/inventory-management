@@ -137,6 +137,14 @@ router.get('/logout', auth.authenticateToken, (req, res, next) => {
   };
 });
 
+router.get('/retrieve-user', auth.authenticateToken, (req, res, next) => {
+  try {
+    return res.json({ status: 200, msg: req.user, token: req.token });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to retrieve user' });
+  };
+});
+
 // ===============
 // || Edit User ||
 // ===============

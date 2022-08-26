@@ -1,0 +1,39 @@
+#storeMsgContainer {
+  display: none;
+}
+
+/* =================== */
+/* || Store Details || */
+/* =================== */
+
+.store-container {
+  margin-bottom: 2rem;
+  background-color: var(--color-secondary);
+}
+
+.store-details {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* =================== */
+/* || Store Actions || */
+/* =================== */
+
+.store-actions-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0;
+  text-align: center;
+}
+
+.store-action {
+  width: 30%;
+  list-style: none;
+}
+
+.store-action:hover {
+  cursor: pointer;
+  color: var(--color-tertiary);
+}

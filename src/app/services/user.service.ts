@@ -2,6 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 
+import { GlobalService } from './global.service';
+
+import { User } from '../interfaces/user';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +18,8 @@ export class UserService {
   };
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private globalService: GlobalService
   ) { }
 
   // =================
@@ -23,6 +28,8 @@ export class UserService {
 
   private homeMessageSource = new BehaviorSubject<string>('');
   homeMessage = this.homeMessageSource.asObservable();
+  private activeUserSource = new BehaviorSubject<User|null>(null);
+  activeUser = this.activeUserSource.asObservable();
 
   // =====================
   // || Router Requests ||
@@ -34,11 +41,44 @@ export class UserService {
     );
   };
 
+  loginUser(form: any) {
+    return this.http.post(`${this.api}/login`, form, this.httpOptions).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  retrieveUserData(token: string) {
+    const validateHeader = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': token
+      })
+    };
+
+    return this.http.get(`${this.api}/retrieve-user`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  // =======================
+  // || General Functions ||
+  // =======================
+
+  logout(): void {
+    this.changeActiveUser(null);
+    localStorage.removeItem('token');
+    this.globalService.redirectUser('home');
+  };
+
   // ========================
   // || Change Observables ||
   // ========================
 
   changeHomeMessage(msg: string): void {
     this.homeMessageSource.next(msg);
+  };
+
+  changeActiveUser(user: User|null): void {
+    this.activeUserSource.next(user);
   };
 }

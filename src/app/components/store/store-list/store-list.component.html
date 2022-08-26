@@ -1,0 +1,41 @@
+<div class="container">
+  <div id="storeMsgContainer">
+    <h5 class="alert alert-msg" id="storeMsg">{{ storeListMessage }}</h5>
+  </div>
+
+  <div class="row store-container" *ngFor="let store of storeList">
+    <div class="container store-details">
+      <h3 class="store-title">{{ store.name }}</h3>
+  
+      <h5 class="store-location">{{ store.street }}</h5>
+      
+      <h5 class="store-location">{{ store.city }}, {{ store.state }} {{ store.zip }}</h5>
+    </div>
+
+    <div class="container store-actions-container">
+      <ul class="store-actions-list">
+        <li class="store-action" 
+          id="orders"
+          (click)="onRedirect('order-list')">View/Edit Orders</li>
+
+        <li class="store-action" 
+          id="items"
+          (click)="onRedirect('item-list')">View/Edit Items</li>
+
+        <li class="store-action" 
+          id="ingredients"
+          (click)="onRedirect('ingredient-list')">View/Edit Ingredients</li>
+
+        <li class="store-action" 
+          id="details"
+          (click)="onRedirect('store-details')">Store Details</li>
+
+        <li class="store-action" 
+          id="users"
+          (click)="onRedirect('user-list')">Manage Users</li>
+
+        <li class="store-action" id="delete">Delete Store</li>
+      </ul>
+    </div>
+  </div>
+</div>

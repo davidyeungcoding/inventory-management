@@ -32,6 +32,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const show = element === 'login' ? '#loginContainer' : '#registerContainer';
     const hide = element === 'login' ? '#registerContainer' : '#loginContainer';
     const showTab = element === 'login' ? '#loginTab' : '#registerTab';
+    $('#homeMsgContainer').css('display', 'none');
     $(show).css('display', 'inline');
     $(hide).css('display', 'none');
     $('.tab-header').removeClass('active-tab');

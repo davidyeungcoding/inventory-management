@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GlobalService {
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   testName(name: any): boolean {
     const regex = new RegExp('^[\\w\\s]+$', 'gm');
@@ -16,6 +19,9 @@ export class GlobalService {
     $(`${target}`).removeClass('alert-success alert-danger');
     $(`${target}`).addClass(add);
     $(`${container}`).css('display', 'inline');
-    console.log(container)
+  };
+
+  redirectUser(route: string): void {
+    this.router.navigate([`/${route}`]);
   };
 }

@@ -2,7 +2,9 @@
   --background-color: white;
   --table-color-secondary: hsl(0, 0%, 87%);
   --table-color-tertiary: hsl(0, 0%, 75%);
-  --color-secondary: hsl(27, 100%, 62%);
+  --color-primary: hsl(0, 0%, 70%);
+  --color-secondary: hsl(0, 0%, 85%);
+  --color-tertiary: hsl(27, 100%, 62%);
   --base-width: 650px;
 }
 
@@ -31,7 +33,7 @@ td:last-child, th:last-child {
 }
 
 .table-entry:nth-child(even) {
-  background-color: var(--table-color-secondary);
+  background-color: var(--table-color-tertiary);
 }
 
 .table-entry:hover {
@@ -183,4 +185,13 @@ label {
 
 .scrollable {
   overflow-x: auto;
+}
+
+/* ============ */
+/* || Button || */
+/* ============ */
+
+.btn-home {
+  width: 80%;
+  margin: auto;
 }

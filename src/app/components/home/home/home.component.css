@@ -15,8 +15,13 @@
 
 .main-content {
   grid-area: 2 / 3 / span 1 / span 1;
-  width: 70%;
+  width: 60%;
+  min-width: 375px;
+  max-width: 460px;
   margin: auto;
+  padding: 2rem 0;
+  background-color: var(--color-secondary);
+  border: solid 2px var(--color-primary);
 }
 
 /* ========== */
@@ -24,7 +29,7 @@
 /* ========== */
 
 .form-container {
-  width: 20vw;
+  width: 75%;
   margin: auto;
 }
 
@@ -51,6 +56,8 @@
 
 .tab-header:hover {
   cursor: pointer;
+  color: var(--color-tertiary);
+  transition: .3s;
 }
 
 .tab-header::after {
@@ -65,10 +72,11 @@
 
 .tab-header:hover::after {
   width: 100%;
-  background: var(--color-secondary);
+  background: var(--color-tertiary);
 }
 
 .active-tab {
-  box-shadow: 0 -3px 0 0 var(--color-secondary) inset;
+  box-shadow: 0 -3px 0 0 var(--color-tertiary) inset;
+  color: var(--color-tertiary);
   transition: .3 ease-out;
 }
