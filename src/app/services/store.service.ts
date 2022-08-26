@@ -21,17 +21,25 @@ export class StoreService {
   private storeListSource = new BehaviorSubject<Store[]>([]);
   storeList = this.storeListSource.asObservable();
 
-  // =====================
-  // || Router Requests ||
-  // =====================
+  // ======================
+  // || Shared Functions ||
+  // ======================
 
-  getStoreList(token: string) {
-    const validateHeader = {
+  buildValidateHeaders(token: string) {
+    return {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': token
       })
     };
+  };
+
+  // =====================
+  // || Router Requests ||
+  // =====================
+
+  getStoreList(token: string) {
+    const validateHeader = this.buildValidateHeaders(token);
 
     return this.http.get(`${this.api}/search`, validateHeader).pipe(
       catchError(err => of(err))

@@ -9,13 +9,21 @@
         formControlName="username">
     </div>
 
-    <div class="form-group">
+    <div class="form-group password-group">
       <label for="password">Password:</label>
 
       <input type="password"
         class="form-field"
         id="password"
         formControlName="password">
+
+      <i class="far fa-eye show-password"
+        aria-label="Show Password"
+        (click)="onTogglePassword('#password')"></i>
+
+      <i class="far fa-eye-slash hide-password"
+        aria-label="Hide Password"
+        (click)="onTogglePassword('#password')"></i>
     </div>
 
     <div class="row home-btn-container">

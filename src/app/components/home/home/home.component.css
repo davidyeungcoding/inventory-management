@@ -4,7 +4,7 @@
 
 .main-grid {
   display: grid;
-  grid-template-columns: minmax(1rem, 1fr) minmax(0, 30rem) minmax(0, 60rem) minmax(1rem, 1fr);
+  grid-template-columns: minmax(1rem, 1fr) minmax(0, 25rem) minmax(0, 65rem) minmax(1rem, 1fr);
   grid-template-rows: minmax(1rem, 1fr) auto minmax(1rem, 1fr);
   overflow: hidden;
 }
@@ -15,9 +15,7 @@
 
 .main-content {
   grid-area: 2 / 3 / span 1 / span 1;
-  width: 60%;
-  min-width: 375px;
-  max-width: 460px;
+  width: clamp(375px, 60%, 460px);
   margin: auto;
   padding: 2rem 0;
   background-color: var(--color-secondary);

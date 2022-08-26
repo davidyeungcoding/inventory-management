@@ -120,6 +120,23 @@ label {
   cursor: pointer;
 }
 
+.password-group {
+  position: relative;
+}
+
+.show-password {
+  position: absolute;
+  top: 31px;
+  right: 10px;
+}
+
+.hide-password {
+  display: none;
+  position: absolute;
+  top: 31px;
+  right: 10px;
+}
+
 /* =========== */
 /* || Modal || */
 /* =========== */

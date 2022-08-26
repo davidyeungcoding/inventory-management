@@ -31,6 +31,19 @@ export class UserService {
   private activeUserSource = new BehaviorSubject<User|null>(null);
   activeUser = this.activeUserSource.asObservable();
 
+  // ======================
+  // || Helper Functions ||
+  // ======================
+
+  buildValidateHeaders(token: string) {
+    return  {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': token
+      })
+    };
+  };
+
   // =====================
   // || Router Requests ||
   // =====================
@@ -48,14 +61,17 @@ export class UserService {
   };
 
   retrieveUserData(token: string) {
-    const validateHeader = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': token
-      })
-    };
+    const validateHeader =this.buildValidateHeaders(token);
 
     return this.http.get(`${this.api}/retrieve-user`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  logoutFromDB(token: string) {
+    const validateHeader = this.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/logout`, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
@@ -65,9 +81,18 @@ export class UserService {
   // =======================
 
   logout(): void {
-    this.changeActiveUser(null);
-    localStorage.removeItem('token');
-    this.globalService.redirectUser('home');
+    const token = localStorage.getItem('token');
+    if (!token) return this.globalService.redirectUser('home');
+
+    this.logoutFromDB(token).subscribe(_res => {
+      if (_res.status === 200) {
+        this.changeActiveUser(null);
+        localStorage.removeItem('token');
+        this.globalService.redirectUser('home');
+      } else {
+        // handle failure to logout
+      };
+    });
   };
 
   // ========================

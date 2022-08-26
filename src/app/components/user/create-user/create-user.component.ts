@@ -83,4 +83,8 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       $('#createUserBtn').prop('disabled', false);
     });
   };
+
+  onTogglePassword(field: string): void {
+    this.globalService.togglePassword(field);
+  };
 }

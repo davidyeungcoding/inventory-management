@@ -69,4 +69,8 @@ export class LoginComponent implements OnInit {
       $('#loginUserBtn').prop('disabled', false);
     })
   };
+
+  onTogglePassword(field: string): void {
+    this.globalServvice.togglePassword(field);
+  };
 }

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { GlobalService } from 'src/app/services/global.service';
 
 import { UserService } from 'src/app/services/user.service';
 
@@ -13,11 +14,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   addMessage: string = '';
 
   constructor(
+    private globalService: GlobalService,
     private userService: UserService
   ) { }
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.homeMessage.subscribe(_msg => this.addMessage = _msg));
+    this.globalService.resetPasswordVisability('#password');
   }
 
   ngOnDestroy(): void {
@@ -28,7 +31,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // || General Functions ||
   // =======================
 
-  onShowContent(element: string): void {
+  onShowContent(element: string, field: string): void {
     const show = element === 'login' ? '#loginContainer' : '#registerContainer';
     const hide = element === 'login' ? '#registerContainer' : '#loginContainer';
     const showTab = element === 'login' ? '#loginTab' : '#registerTab';
@@ -37,5 +40,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     $(hide).css('display', 'none');
     $('.tab-header').removeClass('active-tab');
     $(showTab).addClass('active-tab');
+    this.globalService.resetPasswordVisability(field);
   };
 }
