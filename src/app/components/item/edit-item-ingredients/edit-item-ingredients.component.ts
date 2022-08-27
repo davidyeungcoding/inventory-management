@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { ItemService } from 'src/app/services/item.service';
 import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
+import { ItemService } from 'src/app/services/item.service';
 
 import { Item } from 'src/app/interfaces/item';
 import { Ingredient } from 'src/app/interfaces/ingredient';
@@ -22,8 +23,9 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   itemList: Item[] = [];
 
   constructor(
-    private itemService: ItemService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private userService: UserService,
+    private itemService: ItemService
   ) { }
 
   ngOnInit(): void {
@@ -81,12 +83,15 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   onUpdate(): void {
     $('#editItemIngredientMsgContainer').css('display', 'none');
     $('#updateItemIngredientBtn').prop('disabled', true);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    if (!this.targetItem) return (<any>$('#editItemIngredientModal')).modal('hide');
     const payload = {
-      id: this.targetItem?._id,
+      id: this.targetItem._id,
       toChange: this.toChange
     };
 
-    this.itemService.updateItemIngredient(payload).subscribe(_item => {
+    this.itemService.updateItemIngredient(payload, token).subscribe(_item => {
       if (_item.status === 200) {
         this.editItemIngredientMsg = 'Ingredients successfully updated';
         this.globalService.displayMsg('alert-success', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');

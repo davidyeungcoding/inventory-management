@@ -1,8 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { ItemService } from 'src/app/services/item.service';
 import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
+import { ItemService } from 'src/app/services/item.service';
 
 import { Item } from 'src/app/interfaces/item';
 
@@ -19,8 +20,9 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   editMessage: string = '';
 
   constructor(
-    private itemService: ItemService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private userService: UserService,
+    private itemService: ItemService
   ) { }
 
   ngOnInit(): void {
@@ -95,12 +97,15 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
       return;
     };
     
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    if (!this.targetItem) return (<any>$('#editItemModal')).modal('hide');
     const payload = {
-      id: this.targetItem?._id,
+      id: this.targetItem._id,
       update: tempItem
     };
 
-    this.itemService.editItemDetails(payload).subscribe(_item => {
+    this.itemService.editItemDetails(payload, token).subscribe(_item => {
       if (_item.status === 200) {
         this.editMessage = 'Item successfully updated';
         this.globalService.displayMsg('alert-success', '#editMsg', '#editMsgContainer');

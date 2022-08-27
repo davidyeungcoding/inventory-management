@@ -58,8 +58,9 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
     $('#deleteItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.userService.logout();
+    if (!this.targetItem) return (<any>$('#deleteItemModal')).modal('hide');
 
-    this.itemService.deleteItem(this.targetItem!, token).subscribe(_res => {
+    this.itemService.deleteItem(this.targetItem, token).subscribe(_res => {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {

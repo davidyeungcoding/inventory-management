@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 
 import { GlobalService } from './global.service';
@@ -11,11 +11,6 @@ import { Item } from '../interfaces/item';
 })
 export class ItemService {
   private api = 'http://localhost:3000/items';
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
 
   // =================
   // || Observables ||
@@ -51,14 +46,18 @@ export class ItemService {
     );
   };
 
-  editItemDetails(payload: any) {
-    return this.http.put(`${this.api}/edit-item-details`, payload, this.httpOptions).pipe(
+  editItemDetails(payload: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/edit-item-details`, payload, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
 
-  updateItemIngredient(payload: any) {
-    return this.http.put(`${this.api}/edit-item-ingredients`, payload, this.httpOptions).pipe(
+  updateItemIngredient(payload: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/edit-item-ingredients`, payload, validateHeader).pipe(
       catchError(err => of(err))
     );
   };

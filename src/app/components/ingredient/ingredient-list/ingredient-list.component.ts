@@ -71,6 +71,10 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.onTargetIngredient(ingredient);
   };
 
+  onAddIngredient(): void {
+    $('#addIngredientMsgContainer').css('display', 'none');
+  };
+
   onBack(): void {
     this.globalService.redirectUser('store-list');
   };

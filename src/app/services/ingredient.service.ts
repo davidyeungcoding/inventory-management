@@ -41,8 +41,10 @@ export class IngredientService {
     );
   };
 
-  createIngredient(ingredient: any) {
-    return this.http.post(`${this.api}/create`, ingredient, this.httpOptions).pipe(
+  createIngredient(ingredient: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.post(`${this.api}/create`, ingredient, validateHeader).pipe(
       catchError(err => of(err))
     );
   };

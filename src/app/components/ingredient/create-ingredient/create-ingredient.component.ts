@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
 
 import { Ingredient } from 'src/app/interfaces/ingredient';
 
@@ -17,12 +18,14 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   ingredientList: Ingredient[] = [];
   addMessage: string = '';
   addIngredient = new FormGroup({
-    name: new FormControl('')
+    name: new FormControl(''),
+    storeId: new FormControl('')
   });
 
   constructor(
     private ingredientService: IngredientService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -39,7 +42,8 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
 
   clearForm(): void {
     this.addIngredient.setValue({
-      name: ''
+      name: '',
+      storeId: ''
     });
   };
 
@@ -69,9 +73,12 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     const form = this.addIngredient.value;
     if (!this.validateName(form.name)) return;
     $('#createIngredientBtn').prop('disabled', true);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
-    this.ingredientService.createIngredient(form).subscribe(_ingredient => {
-      if (_ingredient.status === 200) {
+    this.ingredientService.createIngredient(form, token).subscribe(_ingredient => {
+      if (_ingredient.status === 201) {
         this.addMessage = 'Ingredient successfully created';
         this.globalService.displayMsg('alert-success', '#addIngredientMsg', '#addIngredientMsgContainer');
         this.addIngredientToList(_ingredient.msg);
