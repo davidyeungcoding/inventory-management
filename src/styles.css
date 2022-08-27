@@ -33,7 +33,7 @@ td:last-child, th:last-child {
 }
 
 .table-entry:nth-child(even) {
-  background-color: var(--table-color-tertiary);
+  background-color: var(--table-color-secondary);
 }
 
 .table-entry:hover {
@@ -124,17 +124,15 @@ label {
   position: relative;
 }
 
-.show-password {
-  position: absolute;
-  top: 31px;
-  right: 10px;
-}
-
 .hide-password {
   display: none;
+}
+
+.show-password, .hide-password {
   position: absolute;
   top: 31px;
   right: 10px;
+  color: var(--color-primary);
 }
 
 /* =========== */

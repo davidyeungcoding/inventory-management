@@ -56,7 +56,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
     });
   };
 
-  onRedirect(destination: string): void {
-    this.globalService.redirectUser(destination);
+  onStoreActionRedirect(route: string, storeId: string): void {
+    this.globalService.storeActionRedirect(route, storeId);
   };
 }

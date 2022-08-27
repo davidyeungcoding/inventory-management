@@ -159,10 +159,10 @@ router.put('/edit-item-ingredients', auth.authenticateToken, auth.managerCheck, 
 // || Search Item ||
 // =================
 
-router.get('/search', auth.authenticateToken, (req, res, next) => {
+router.get('/search/:storeId', auth.authenticateToken, (req, res, next) => {
   try {
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
-    const storeId = req.query.storeId;
+    const storeId = req.params.storeId;
 
     Item.searchItem(term, storeId, (err, _item) => {
       return err ? res.json({ status: 400, msg: `Unable to find item: ${req.query.term}` })
@@ -180,9 +180,9 @@ router.get('/search', auth.authenticateToken, (req, res, next) => {
 router.put('/delete', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
     const payload = {
-      itemId: req.body.itemId,
+      itemId: req.body._id,
       ingredients: await parseIngredientArray(req.body.ingredients),
-      storeId: req.body.storeId,
+      storeId: req.body.store,
       action: 'remove'
     };
 

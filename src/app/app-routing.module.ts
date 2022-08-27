@@ -7,12 +7,11 @@ import { ItemListComponent } from './components/item/item-list/item-list.compone
 import { HomeComponent } from './components/home/home/home.component';
 
 const routes: Routes = [
-  { path: 'ingredient-list', component: IngredientListComponent},
+  { path: 'ingredient-list/:storeId', component: IngredientListComponent},
   { path: 'store-list', component: StoreListComponent },
-  { path: 'item-list', component: ItemListComponent },
+  { path: 'item-list/:storeId', component: ItemListComponent },
   { path: 'home', component: HomeComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', component: HomeComponent }
+  { path: '**', redirectTo: 'home' }
 ];
 
 @NgModule({

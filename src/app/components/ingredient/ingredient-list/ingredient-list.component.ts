@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
+import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
 
 import { Ingredient } from 'src/app/interfaces/ingredient';
-import { Subscription } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-ingredient-list',
@@ -20,7 +22,9 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private ingredientService: IngredientService
+    private ingredientService: IngredientService,
+    private globalService: GlobalService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +49,11 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   // =======================
 
   retrieveIngredientList(): void {
-    this.ingredientService.getIngredientList().subscribe(_list => {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+
+    this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
       this.ingredientService.changeIngredientList(_list.msg);
     });
   };
@@ -64,6 +72,6 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   };
 
   onBack(): void {
-    console.log('back')
-  }
+    this.globalService.redirectUser('store-list');
+  };
 }

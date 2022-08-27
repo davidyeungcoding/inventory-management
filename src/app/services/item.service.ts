@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 
+import { GlobalService } from './global.service';
+
 import { Item } from '../interfaces/item';
 
 @Injectable({
@@ -25,6 +27,7 @@ export class ItemService {
   toChange = this.toChangeSource.asObservable();
 
   constructor(
+    private globalService: GlobalService,
     private http: HttpClient
   ) { }
   
@@ -32,14 +35,18 @@ export class ItemService {
   // || Router Requests ||
   // =====================
 
-  getFullItemList() {
-    return this.http.get(`${this.api}/search?query=name`, this.httpOptions).pipe(
+  getFullItemList(token: string, storeId: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/search/${storeId}`, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
 
-  createItem(item: any) {
-    return this.http.post(`${this.api}/create`, item, this.httpOptions).pipe(
+  createItem(item: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.post(`${this.api}/create`, item, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
@@ -56,8 +63,10 @@ export class ItemService {
     );
   };
 
-  deleteItem(item: Item) {
-    return this.http.put(`${this.api}/delete`, item, this.httpOptions).pipe(
+  deleteItem(item: Item, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/delete`, item, validateHeader).pipe(
       catchError(err => of(err))
     );
   };

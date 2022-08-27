@@ -2,8 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { ItemService } from 'src/app/services/item.service';
 import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
+import { ItemService } from 'src/app/services/item.service';
 
 import { Item } from 'src/app/interfaces/item';
 
@@ -20,12 +21,14 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     name: new FormControl(''),
     price: new FormControl(''),
     active: new FormControl('false'),
-    available: new FormControl('false')
+    available: new FormControl('false'),
+    storeId: new FormControl('')
   });
 
   constructor(
-    private itemService: ItemService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private userService: UserService,
+    private itemService: ItemService
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +48,8 @@ export class CreateItemComponent implements OnInit, OnDestroy {
       name: '',
       price: '',
       active: 'false',
-      available: 'false'
+      available: 'false',
+      storeId: ''
     });
   };
 
@@ -89,14 +93,17 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
   onCreateItem(): void {
     $('#addMsgContainer').css('display', 'none');
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
     const form = this.addItem.value;
     if (!this.validateName(form.name)) return;
     if (!this.validatePrice(form.price)) return;
     $('#createItemBtn').prop('disabled', true);
     form.price = this.itemService.parsePrice(form.price!);
+    form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
     
-    this.itemService.createItem(form).subscribe(_res => {
-      if (_res.status === 200) {
+    this.itemService.createItem(form, token).subscribe(_res => {
+      if (_res.status === 201) {
         this.addMessage = 'Item successfully created';
         this.globalService.displayMsg('alert-success', '#addMsg', '#addMsgContainer');
         this.addItemToList(_res.msg);

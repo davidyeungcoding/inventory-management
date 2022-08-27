@@ -2,11 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { ItemService } from 'src/app/services/item.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
+import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
+import { ItemService } from 'src/app/services/item.service';
 
-import { Item } from 'src/app/interfaces/item';
 import { Ingredient } from 'src/app/interfaces/ingredient';
+import { Item } from 'src/app/interfaces/item';
 
 @Component({
   selector: 'app-item-list',
@@ -28,14 +30,16 @@ export class ItemListComponent implements OnInit, OnDestroy {
   });
 
   constructor(
-    private itemService: ItemService,
-    private ingredientService: IngredientService
+    private ingredientService: IngredientService,
+    private globalService: GlobalService,
+    private userService: UserService,
+    private itemService: ItemService
   ) { }
 
   ngOnInit(): void {
-    this.retrieveItemList();
-    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.fullIngredientList = _list));
+    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.retrieveItemList();
   }
 
   ngOnDestroy(): void {
@@ -87,24 +91,33 @@ export class ItemListComponent implements OnInit, OnDestroy {
   // =======================
 
   retrieveItemList(): void {
-    this.itemService.getFullItemList().subscribe(_list => {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+
+    this.itemService.getFullItemList(token, storeId).subscribe(_list => {
       this.convertPrice(_list.msg);
       this.itemService.changeItemList(_list.msg);
     });
   };
 
   retrieveIngredientList(): void {
-    this.ingredientService.getIngredientList().subscribe(_list => {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+
+    this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
       const list = this.filterIngredientList(this.targetItem!.ingredients, _list.msg, 0);
       this.ingredientService.changeIngredientList(list);
     });
   };
 
-  onEditSetup(item: Item, target: string): void {
+  onEditDetails(item: Item, target: string): void {
     this.onTargetItem(item, target);
     $('#editItemBtn').prop('disabled', false);
     $('#editName').attr('placeholder', this.targetItem!.name);
     $('#editPrice').attr('placeholder', this.targetItem!.price);
+
     this.editForm.setValue({
       name: '',
       price: '',
@@ -114,7 +127,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
   };
 
   onBack(): void {
-    console.log('back');
-    // handle go back
+    this.globalService.redirectUser('store-list');
   };
 }

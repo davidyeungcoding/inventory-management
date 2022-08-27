@@ -18,8 +18,8 @@ export class UserService {
   };
 
   constructor(
-    private http: HttpClient,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private http: HttpClient
   ) { }
 
   // =================
@@ -30,19 +30,6 @@ export class UserService {
   homeMessage = this.homeMessageSource.asObservable();
   private activeUserSource = new BehaviorSubject<User|null>(null);
   activeUser = this.activeUserSource.asObservable();
-
-  // ======================
-  // || Helper Functions ||
-  // ======================
-
-  buildValidateHeaders(token: string) {
-    return  {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': token
-      })
-    };
-  };
 
   // =====================
   // || Router Requests ||
@@ -61,7 +48,7 @@ export class UserService {
   };
 
   retrieveUserData(token: string) {
-    const validateHeader =this.buildValidateHeaders(token);
+    const validateHeader =this.globalService.buildValidateHeaders(token);
 
     return this.http.get(`${this.api}/retrieve-user`, validateHeader).pipe(
       catchError(err => of(err))
@@ -69,7 +56,7 @@ export class UserService {
   };
 
   logoutFromDB(token: string) {
-    const validateHeader = this.buildValidateHeaders(token);
+    const validateHeader = this.globalService.buildValidateHeaders(token);
 
     return this.http.get(`${this.api}/logout`, validateHeader).pipe(
       catchError(err => of(err))

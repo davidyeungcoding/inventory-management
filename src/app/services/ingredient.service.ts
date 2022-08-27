@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, catchError, of } from 'rxjs';
 
-import { Item } from '../interfaces/item';
+import { GlobalService } from './global.service';
+
 import { Ingredient } from '../interfaces/ingredient';
 
 @Injectable({
@@ -24,6 +25,7 @@ export class IngredientService {
   ingredientList = this.ingredientListSource.asObservable();
 
   constructor(
+    private globalService: GlobalService,
     private http: HttpClient
   ) { }
 
@@ -31,8 +33,10 @@ export class IngredientService {
   // || Router Requests ||
   // =====================
 
-  getIngredientList() {
-    return this.http.get(`${this.api}/search`, this.httpOptions).pipe(
+  getIngredientList(token: string, storeId: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/search/${storeId}`, validateHeader).pipe(
       catchError(err => of(err))
     );
   };

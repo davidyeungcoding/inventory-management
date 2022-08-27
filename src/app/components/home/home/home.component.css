@@ -35,6 +35,10 @@
   display: none;
 }
 
+#homeMsg {
+  margin: 0 16px 16px;
+}
+
 #registerContainer {
   display: none;
 }

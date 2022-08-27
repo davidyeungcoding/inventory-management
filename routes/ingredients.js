@@ -88,11 +88,11 @@ router.put('/edit', auth.authenticateToken, auth.managerCheck, (req, res, next) 
 // || Search Ingredients ||
 // ========================
 
-router.get('/search', auth.authenticateToken, (req, res, next) => {
+router.get('/search/:storeId', auth.authenticateToken, (req, res, next) => {
   try {
     const payload = {
       term: req.query.term ? new RegExp(req.query.term, 'i') : '',
-      storeId: req.query.storeId
+      storeId: req.params.storeId
     };
 
     Ingredient.searchIngredient(payload, (err, _list) => {

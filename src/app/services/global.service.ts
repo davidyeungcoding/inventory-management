@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,15 @@ export class GlobalService {
   constructor(
     private router: Router
   ) { }
+
+  buildValidateHeaders(token: string) {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': token
+      })
+    };
+  };
 
   testName(name: any): boolean {
     const regex = new RegExp('^[\\w\\s]+$', 'gm');
@@ -23,6 +33,10 @@ export class GlobalService {
 
   redirectUser(route: string): void {
     this.router.navigate([`/${route}`]);
+  };
+
+  storeActionRedirect(route: string, storeId: string): void {
+    this.router.navigate([`/${route}/${storeId}`]);
   };
 
   togglePassword(field: string): void {

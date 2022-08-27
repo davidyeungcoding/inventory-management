@@ -1,9 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { ItemService } from 'src/app/services/item.service';
 import { GlobalService } from 'src/app/services/global.service';
-import { IngredientService } from 'src/app/services/ingredient.service';
+import { UserService } from 'src/app/services/user.service';
+import { ItemService } from 'src/app/services/item.service';
 
 import { Item } from 'src/app/interfaces/item';
 
@@ -19,9 +19,9 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   deleteMessage: String = '';
 
   constructor(
-    private itemService: ItemService,
     private globalService: GlobalService,
-    private ingredientService: IngredientService
+    private userService: UserService,
+    private itemService: ItemService
   ) { }
 
   ngOnInit(): void {
@@ -56,8 +56,10 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   onDelete(): void {
     $('#deleteMsgContainer').css('display', 'none');
     $('#deleteItemBtn').prop('disabled', true);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
 
-    this.itemService.deleteItem(this.targetItem!).subscribe(_res => {
+    this.itemService.deleteItem(this.targetItem!, token).subscribe(_res => {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
