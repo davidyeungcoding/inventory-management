@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
@@ -11,8 +11,8 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class LoginComponent implements OnInit {
   login = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl('')
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
   });
 
   constructor(
@@ -22,6 +22,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get username() { return this.login.get('username') };
+  get password() { return this.login.get('password') };
 
   // ======================
   // || Helper Functions ||
@@ -38,7 +45,7 @@ export class LoginComponent implements OnInit {
     const check = this.globalServvice.testName(term);
 
     if (!check) {
-      this.userService.changeHomeMessage('Invalid username or password.');
+      this.userService.changeHomeMessage('Invalid username or password');
       this.globalServvice.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
     };
 
@@ -50,6 +57,7 @@ export class LoginComponent implements OnInit {
   // =======================
 
   onLogin(): void {
+    $('#homeMsgContainer').css('display', 'none');
     const form = this.login.value;
     if (!this.validateEntry(form.username)) return;
     if (!this.validateEntry(form.password)) return;

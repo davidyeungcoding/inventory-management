@@ -8,6 +8,10 @@
         id="username"
         required
         formControlName="username">
+
+      <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="error-text">
+        <span *ngIf="username?.errors?.['required']">Username is required</span>
+      </div>
     </div>
 
     <div class="form-group password-group">
@@ -26,6 +30,10 @@
       <i class="far fa-eye-slash hide-password"
         aria-label="Hide Password"
         (click)="onTogglePassword('#password')"></i>
+
+      <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-text">
+        <span *ngIf="password?.errors?.['required']">Password is required</span>
+      </div>
     </div>
 
     <div class="row home-btn-container">

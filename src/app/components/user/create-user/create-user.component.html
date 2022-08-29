@@ -6,7 +6,14 @@
       <input type="text"
         class="form-field"
         id="registerUsername"
+        required
         formControlName="username">
+
+      <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="error-text">
+        <span *ngIf="username?.errors?.['required']">Username is required</span>
+
+        <span *ngIf="username?.errors?.['pattern']">Username may not include special characters</span>
+      </div>
     </div>
 
     <div class="form-group password-group">
@@ -15,6 +22,7 @@
       <input type="password"
         class="form-field"
         id="registerPassword"
+        required
         formControlName="password">
 
       <i class="far fa-eye show-password"
@@ -24,6 +32,12 @@
       <i class="far fa-eye-slash hide-password"
         aria-label="Hide Password"
         (click)="onTogglePassword('#registerPassword')"></i>
+
+      <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-text">
+        <span *ngIf="password?.errors?.['required']">Password is required</span>
+
+        <span *ngIf="password?.errors?.['pattern']">Password may not include special characters</span>
+      </div>
     </div>
 
     <div class="row home-btn-container">

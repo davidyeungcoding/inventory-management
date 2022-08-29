@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
@@ -11,8 +11,8 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class CreateUserComponent implements OnInit, OnDestroy {
   addUser = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl('')
+    username: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
+    password: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')])
   });
 
   constructor(
@@ -26,6 +26,13 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get username() { return this.addUser.get('username') };
+  get password() { return this.addUser.get('password') };
+
   // ======================
   // || Helper Functions ||
   // ======================
@@ -37,22 +44,11 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     });
   };
 
-  validateUsername(username: any): boolean {
+  validateEntry(username: any, type: string): boolean {
     const check = this.globalService.testName(username);
 
     if (!check) {
-      this.userService.changeHomeMessage('Please enter a valid username. Username may not include special characters.');
-      this.globalService.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
-    };
-
-    return check;
-  };
-
-  validatePassword(password: any): boolean {
-    const check = this.globalService.testName(password);
-    
-    if (!check) {
-      this.userService.changeHomeMessage('Please enter a valid password. Password may not include special characters.');
+      this.userService.changeHomeMessage(`Please enter a valid ${type}`);
       this.globalService.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
     };
 
@@ -66,8 +62,8 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   onCreateUser(): void {
     $('#homeMsgContainer').css('display', 'none');
     const form = this.addUser.value;
-    if (!this.validateUsername(form.username!)) return;
-    if (!this.validatePassword(form.password!)) return;
+    if (!this.validateEntry(form.username, 'username')) return;
+    if (!this.validateEntry(form.password, 'password')) return;
     $('#createUserBtn').prop('disabled', true);
 
     this.userService.createUser(form).subscribe(_user => {

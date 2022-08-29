@@ -1,10 +1,11 @@
 :root {
   --background-color: white;
-  --table-color-secondary: hsl(0, 0%, 87%);
-  --table-color-tertiary: hsl(0, 0%, 75%);
   --color-primary: hsl(0, 0%, 70%);
   --color-secondary: hsl(0, 0%, 85%);
   --color-tertiary: hsl(27, 100%, 62%);
+  --table-color-secondary: hsl(0, 0%, 87%);
+  --table-color-tertiary: hsl(0, 0%, 75%);
+  --text-color-warning: hsl(355, 80%, 42%);
   --base-width: 650px;
   --base-width-wide: 950px;
 }
@@ -201,6 +202,11 @@ label {
 /* ============= */
 /* || General || */
 /* ============= */
+
+.error-text {
+  text-align: right;
+  color: var(--text-color-warning);
+}
 
 .scrollable {
   overflow-x: auto;
