@@ -1,11 +1,11 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { Ingredient } from 'src/app/interfaces/ingredient';
-
-import { GlobalService } from 'src/app/services/global.service';
 import { IngredientService } from 'src/app/services/ingredient.service';
+import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
+
+import { Ingredient } from 'src/app/interfaces/ingredient';
 
 @Component({
   selector: 'app-edit-ingredient',
@@ -21,7 +21,8 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
 
   constructor(
     private ingredientService: IngredientService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -79,17 +80,20 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   onEditIngredient(): void {
     $('#editIngredientMsgContainer').css('display', 'none');
     $('#editIngredientBtn').prop('disabled', false);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    if (!this.targetIngredient) return (<any>$('#editIngredientModal')).modal('hide');
     const form = this.editIngredient.value;
     if (!this.validateName(form.name)) return;
     $('#editIngredientBtn').prop('disabled', true);
     const payload = {
-      _id: this.targetIngredient!._id,
+      _id: this.targetIngredient._id,
       update: {
         name: form.name
       }
     };
 
-    this.ingredientService.editIngredient(payload).subscribe(_ingredient => {
+    this.ingredientService.editIngredient(payload, token).subscribe(_ingredient => {
       if (_ingredient.status === 200) {
         this.replaceIngredient(_ingredient.msg);
         this.editMessage = 'Ingredient successfully updated';

@@ -1,3 +1,7 @@
+/* ============= */
+/* || Message || */
+/* ============= */
+
 #storeMsgContainer {
   display: none;
 }
@@ -7,7 +11,8 @@
 /* =================== */
 
 .store-container {
-  margin-bottom: 2rem;
+  margin: 2rem auto;
+  max-width: var(--base-width-wide);
   background-color: var(--color-secondary);
 }
 
@@ -21,15 +26,14 @@
 /* =================== */
 
 .store-actions-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   padding: 0;
   text-align: center;
 }
 
 .store-action {
-  width: 30%;
+  margin: 8px auto;
   list-style: none;
 }
 

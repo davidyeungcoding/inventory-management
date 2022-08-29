@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
 import { GlobalService } from 'src/app/services/global.service';
+import { UserService } from 'src/app/services/user.service';
 
 import { Ingredient } from 'src/app/interfaces/ingredient';
 import { Subscription } from 'rxjs';
@@ -19,7 +20,8 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
 
   constructor(
     private ingredientService: IngredientService,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -54,8 +56,11 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
   onDeleteIngredient(): void {
     $('#deleteIngredientMsgContainer').css('display', 'none');
     $('#deleteIngredientBtn').prop('disabled', true);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    if (!this.targetIngredient) return (<any>$('#deleteIngredientModal')).modal('hide');
 
-    this.ingredientService.deleteIngredient(this.targetIngredient!).subscribe(_res => {
+    this.ingredientService.deleteIngredient(this.targetIngredient, token).subscribe(_res => {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {

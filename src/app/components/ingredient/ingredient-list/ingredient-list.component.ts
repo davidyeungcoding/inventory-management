@@ -62,6 +62,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.onTargetIngredient(ingredient);
     $('#editIngredientBtn').prop('disabled', false);
     $('#editIngredientName').attr('placeholder', this.targetIngredient!.name);
+    $('#editIngredientMsgContainer').css('display', 'none');
     this.editIngredientForm.setValue({
       name: ''
     });

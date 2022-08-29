@@ -6,6 +6,7 @@
   --color-secondary: hsl(0, 0%, 85%);
   --color-tertiary: hsl(27, 100%, 62%);
   --base-width: 650px;
+  --base-width-wide: 950px;
 }
 
 /* =========== */
@@ -14,6 +15,7 @@
 
 .table-body {
   margin: auto;
+  max-width: var(--base-width-wide);
 }
 
 th {
@@ -60,10 +62,12 @@ td>button {
   display: flex;
   justify-content: center;
   column-gap: .65rem;
-  margin-top: 1rem;
+  margin: auto;
+  max-width: var(--base-width-wide);
 }
 
 .table-end-btn {
+  margin-top: 1rem;
   width: 9rem;
 }
 

@@ -126,6 +126,10 @@ export class ItemListComponent implements OnInit, OnDestroy {
     });
   };
 
+  onAddItem(): void {
+    $('#addMsgContainer').css('display', 'none');
+  };
+
   onBack(): void {
     this.globalService.redirectUser('store-list');
   };

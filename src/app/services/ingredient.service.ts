@@ -11,11 +11,6 @@ import { Ingredient } from '../interfaces/ingredient';
 })
 export class IngredientService {
   private api = 'http://localhost:3000/ingredients';
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
 
   // =================
   // || Observables ||
@@ -49,14 +44,18 @@ export class IngredientService {
     );
   };
 
-  editIngredient(ingredient: any) {
-    return this.http.put(`${this.api}/edit`, ingredient, this.httpOptions).pipe(
+  editIngredient(ingredient: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/edit`, ingredient, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
 
-  deleteIngredient(ingredient: Ingredient) {
-    return this.http.put(`${this.api}/delete`, ingredient, this.httpOptions).pipe(
+  deleteIngredient(ingredient: Ingredient, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/delete`, ingredient, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
