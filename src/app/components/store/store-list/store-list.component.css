@@ -1,11 +1,3 @@
-/* ============= */
-/* || Message || */
-/* ============= */
-
-#storeMsgContainer {
-  display: none;
-}
-
 /* =================== */
 /* || Store Details || */
 /* =================== */
@@ -13,7 +5,7 @@
 .store-container {
   margin: 2rem auto;
   max-width: var(--base-width-wide);
-  background-color: var(--color-secondary);
+  background-color: var(--color-primary);
 }
 
 .store-details {

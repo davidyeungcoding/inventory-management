@@ -58,4 +58,20 @@ export class GlobalService {
     $('.show-password').css('display', 'inline');
     $('.hide-password').css('display', 'none');
   };
+
+  filterList(target: any[], original: any[], index: number): any[] {
+    if (!target.length) return original;
+    const id = target[index]._id;
+    let temp = [...original];
+
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i]._id === id) {
+        temp.splice(i, 1);
+        if (index + 1 !== target.length) return this.filterList(target, temp, ++index);
+        break;
+      };
+    };
+
+    return temp;
+  };
 }

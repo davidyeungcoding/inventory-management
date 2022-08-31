@@ -43,6 +43,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.itemService.changeItemList([]);
     this.subscriptions.unsubscribe();
   }
 
@@ -70,22 +71,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.itemService.changeToChange({});
   };
 
-  filterIngredientList(item: Ingredient[], list: Ingredient[], index: number): any {
-    if (!item.length) return list;
-    const id = item[index]._id;
-    let temp = [...list];
-
-    for (let i = 0; i < temp.length; i++) {
-      if (id === temp[i]._id) {
-        temp.splice(i, 1);
-        if (index + 1 !== item.length) temp = this.filterIngredientList(item, temp, ++index);
-        break;
-      };
-    };
-
-    return temp;
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -96,6 +81,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.itemService.getFullItemList(token, storeId).subscribe(_list => {
+      // to do: error retrieving item list
       this.convertPrice(_list.msg);
       this.itemService.changeItemList(_list.msg);
     });
@@ -107,7 +93,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
-      const list = this.filterIngredientList(this.targetItem!.ingredients, _list.msg, 0);
+      // to do: error retrieving ingredient list
+      const list = this.globalService.filterList(this.targetItem!.ingredients, _list.msg, 0);
       this.ingredientService.changeIngredientList(list);
     });
   };

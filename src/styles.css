@@ -1,7 +1,7 @@
 :root {
   --background-color: white;
-  --color-primary: hsl(0, 0%, 70%);
-  --color-secondary: hsl(0, 0%, 85%);
+  --color-primary: hsl(0, 0%, 85%);
+  --color-secondary: hsl(0, 0%, 70%);
   --color-tertiary: hsl(27, 100%, 62%);
   --table-color-secondary: hsl(0, 0%, 87%);
   --table-color-tertiary: hsl(0, 0%, 75%);
@@ -28,11 +28,11 @@ th, td {
 }
 
 td:first-child, th:first-child {
-  padding-left: .75rem;
+  padding-left: 16px;
 }
 
 td:last-child, th:last-child {
-  padding-right: .75rem;
+  padding-right: 16px;
 }
 
 .table-entry:nth-child(even) {
@@ -103,10 +103,6 @@ td>button {
   width: 100%;
 }
 
-.last-radio-group {
-  margin: 0;
-}
-
 .alert-msg {
   text-align: center;
 }
@@ -114,6 +110,14 @@ td>button {
 label {
   display: block;
 }
+
+.last-radio-group {
+  margin: 0;
+}
+
+/* ================ */
+/* || Radio Form || */
+/* ================ */
 
 .radio-container {
   padding-bottom: 1rem;
@@ -124,6 +128,10 @@ label {
 .radio-item:hover {
   cursor: pointer;
 }
+
+/* ============== */
+/* || Password || */
+/* ============== */
 
 .password-group {
   position: relative;
@@ -137,18 +145,50 @@ label {
   position: absolute;
   top: 31px;
   right: 10px;
-  color: var(--color-primary);
+  color: var(--color-secondary);
+}
+
+/* ==================== */
+/* || Modal Group Two|| */
+/* ==================== */
+
+.modal-group-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 35%));
+  justify-content: space-evenly;
+  overflow-x: auto;
+}
+
+.selector-title {
+  text-align: center;
+}
+
+.selector-container {
+  margin-bottom: 16px;
+  height: clamp(13rem, 50vh, 20rem);
+  border: solid 2px var(--color-secondary);
+  overflow-y: auto;
+}
+
+.selector-option {
+  padding: 3px 10px;
+}
+
+.selector-option:hover {
+  cursor: pointer;
+  background-color: var(--color-primary);
+}
+
+.selected {
+  background-color: var(--color-secondary);
 }
 
 /* =========== */
 /* || Modal || */
 /* =========== */
 
-.modal-group-one, .modal-group-two {
-  display: block;
-}
-
 .modal-group-one {
+  display: block;
   margin: auto;
 }
 
@@ -183,10 +223,6 @@ label {
 }
 
 @media screen and (min-width: 485px) {
-  .modal-group-two {
-    display: flex;
-    justify-content: space-around;
-  }
 
   .modal-btn-container {
     display: flex;
@@ -202,6 +238,10 @@ label {
 /* ============= */
 /* || General || */
 /* ============= */
+
+.msg-container {
+  display: none;
+}
 
 .error-text {
   text-align: right;

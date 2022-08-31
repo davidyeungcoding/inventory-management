@@ -1,32 +1,32 @@
 <div class="row">
-  <div class="msg-container" id="editItemIngredientMsgContainer">
-    <h5 class="alert alert-msg" id="editItemIngredientMsg">{{ editItemIngredientMsg }}</h5>
+  <div class="msg-container" id="addUserMsgContainer">
+    <h5 class="alert alert-msg" id="addUserMsg">{{ errorMessage }}</h5>
   </div>
 
   <div class="modal-group-two">
     <div class="modal-selector-container">
       <div class="selector-group">
-        <h4 class="selector-title">Item</h4>
-  
+        <h4 class="selector-title">Store Users</h4>
+
         <div class="selector-container">
-          <div *ngFor="let ingredient of ingredientList"
+          <div *ngFor="let user of storeUsers"
             class="selector-option"
-            id="{{ ingredient._id }}"
-            (click)="toRemove(ingredient)">{{ ingredient.name }}
+            id="{{ user._id }}"
+            (click)="toRemove(user)">{{ user.username }}
           </div>
         </div>
       </div>
     </div>
-  
+
     <div class="modal-selector-container">
       <div class="selector-group">
-        <h4 class="selector-title">Ingredients</h4>
-  
+        <h4 class="selector-title">User List</h4>
+
         <div class="selector-container">
-          <div *ngFor="let ingredient of fullIngredientList"
+          <div *ngFor="let user of filteredUserList"
             class="selector-option"
-            id="{{ ingredient._id }}"
-            (click)="toAdd(ingredient)">{{ ingredient.name }}
+            id="{{  user._id }}"
+            (click)="toAdd(user)">{{ user.username }}
           </div>
         </div>
       </div>
@@ -38,8 +38,8 @@
   <div class="modal-btn-container">
     <button type="button"
       class="btn btn-secondary modal-btn"
-      id="updateItemIngredientBtn"
-      (click)="onUpdate()">Update</button>
+      id="updateStoreUsersBtn"
+      (click)="onUpdateStoreUsers()">Update</button>
 
     <button type="button"
       class="btn btn-secondary modal-btn"

@@ -144,6 +144,12 @@ module.exports.searchUser = (term, callback) => {
   this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $sort: sort }, { $lookup: importStores }], callback);
 };
 
+module.exports.getStoreUsers = (storeId, callback) => {
+  const query = { stores: storeId };
+  const sort = { username: 1 };
+  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $sort: sort }], callback);
+};
+
 // =================
 // || Delete User ||
 // =================

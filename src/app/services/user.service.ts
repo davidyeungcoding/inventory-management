@@ -30,6 +30,10 @@ export class UserService {
   homeMessage = this.homeMessageSource.asObservable();
   private activeUserSource = new BehaviorSubject<User|null>(null);
   activeUser = this.activeUserSource.asObservable();
+  private storeUsersSource = new BehaviorSubject<User[]>([]);
+  storeUsers = this.storeUsersSource.asObservable();
+  private fullUserListSource = new BehaviorSubject<User[]>([]);
+  fullUserList = this.fullUserListSource.asObservable();
 
   // =====================
   // || Router Requests ||
@@ -63,6 +67,22 @@ export class UserService {
     );
   };
 
+  getStoreUsers(token: string, storeId: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/store-users/${storeId}`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  getFullUserList(token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/full-user-list`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -77,7 +97,7 @@ export class UserService {
         localStorage.removeItem('token');
         this.globalService.redirectUser('home');
       } else {
-        // handle failure to logout
+        // to do: failure to logout
       };
     });
   };
@@ -92,5 +112,13 @@ export class UserService {
 
   changeActiveUser(user: User|null): void {
     this.activeUserSource.next(user);
+  };
+
+  changeStoreUsers(list: User[]): void {
+    this.storeUsersSource.next(list);
+  };
+
+  changeFullUserList(list: User[]): void {
+    this.fullUserListSource.next(list);
   };
 }

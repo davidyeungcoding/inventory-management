@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 const auth = require('../routes-middleware/user-authorization');
 
 module.exports = router;
@@ -255,6 +256,30 @@ router.get('/search', auth.authenticateToken, auth.managerCheck, (req, res, next
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to complete search for user' });
+  };
+});
+
+router.get('/full-user-list', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  try {
+    User.searchUser('', (err, _list) => {
+      return err ? res.json({ status: 400, msg: 'Unable to retrieve full user list' })
+      : res.json({ status: 200, msg: _list, token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process retrieval request for full user list' });
+  };
+});
+
+router.get('/store-users/:storeId', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  try {
+    const storeId = mongoose.Types.ObjectId(req.params.storeId);
+
+    User.getStoreUsers(storeId, (err, _list) => {
+      return err ? res.json({ status: 400, msg: 'Unable to find users for store' })
+      : res.json({ status: 200, msg: _list, token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to get users for store' });
   };
 });
 

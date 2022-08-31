@@ -1,5 +1,5 @@
 <div class="container">
-  <div id="storeMsgContainer">
+  <div class="msg-container" id="storeMsgContainer">
     <h5 class="alert alert-msg" id="storeMsg">{{ storeListMessage }}</h5>
   </div>
 
@@ -22,7 +22,7 @@
 
         <li class="store-action" (click)="onStoreActionRedirect('store-details', store._id)">Store Details</li>
 
-        <li class="store-action" (click)="onStoreActionRedirect('user-list', store._id)">Manage Users</li>
+        <li class="store-action" (click)="onStoreActionRedirect('manage-user', store._id)">Manage Users</li>
 
         <li class="store-action" id="delete">Delete Store</li>
       </ul>

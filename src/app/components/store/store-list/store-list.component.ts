@@ -28,6 +28,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.storeService.changeStoreList([]);
     this.subscriptions.unsubscribe();
   }
 
@@ -46,6 +47,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
         if (_list.msg.length) {
           this.storeService.changeStoreList(_list.msg)
         } else {
+          this.storeService.changeStoreList([]);
           this.storeListMessage = 'No stores found for your account';
           this.globalService.displayMsg('alert-danger', '#storeMsg', '#storeMsgContainer');
         };

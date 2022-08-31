@@ -33,6 +33,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.ingredientService.changeIngredientList([]);
     this.subscriptions.unsubscribe();
   }
 
@@ -54,6 +55,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
+      // to do: error with retrieving ingredient list
       this.ingredientService.changeIngredientList(_list.msg);
     });
   };

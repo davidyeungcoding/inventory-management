@@ -20,6 +20,8 @@ import { UserListComponent } from './components/user/user-list/user-list.compone
 import { HomeComponent } from './components/home/home/home.component';
 import { LoginComponent } from './components/home/login/login.component';
 import { StoreListComponent } from './components/store/store-list/store-list.component';
+import { ManageUserComponent } from './components/user/manage-user/manage-user.component';
+import { AddUserComponent } from './components/store/add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,9 @@ import { StoreListComponent } from './components/store/store-list/store-list.com
     UserListComponent,
     HomeComponent,
     LoginComponent,
-    StoreListComponent
+    StoreListComponent,
+    ManageUserComponent,
+    AddUserComponent
   ],
   imports: [
     BrowserModule,

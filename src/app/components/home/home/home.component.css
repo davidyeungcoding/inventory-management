@@ -18,8 +18,8 @@
   width: clamp(375px, 60%, 460px);
   margin: auto;
   padding: 2rem 0;
-  background-color: var(--color-secondary);
-  border: solid 2px var(--color-primary);
+  background-color: var(--color-primary);
+  border: solid 2px var(--color-secondary);
 }
 
 /* ========== */
@@ -29,10 +29,6 @@
 .form-container {
   width: 75%;
   margin: auto;
-}
-
-#homeMsgContainer {
-  display: none;
 }
 
 #homeMsg {
