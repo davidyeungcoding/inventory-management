@@ -59,6 +59,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     if (!check) {
       this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
       this.globalService.displayMsg('alert-danger', '#createItemMsg');
+      $('#createItemBtn').prop('disabled', false);
     };
 
     return check;
@@ -70,6 +71,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     if (!check) {
       this.addMessage = 'Please enter a valid price.';
       this.globalService.displayMsg('alert-danger', '#createItemMsg');
+      $('#createItemBtn').prop('disabled', false);
     };
 
     return check;
@@ -100,8 +102,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   };
 
   validateForm(form: any): boolean {
-    if (!this.validateName(form.name)) return false;
-    if (!this.validatePrice(form.price)) return false;
+    if (!this.validateName(form.name) || !this.validatePrice(form.price)) return false;
     return true;
   };
 
@@ -111,13 +112,13 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
   onCreateItem(): void {
     $('#createItemMsgContainer').css('display', 'none');
+    $('#createItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
     const form = this.createItem.value;
     if (!this.validateForm(form)) return;
     form.price = this.itemService.parsePrice(form.price!);
     form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    $('#createItemBtn').prop('disabled', true);
     
     this.itemService.createItem(form, token).subscribe(_res => {
       if (_res.status === 201) {
@@ -128,8 +129,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#createItemModal')).modal('hide');
           this.clearForm();
-          $('#createItemBtn').prop('disabled', false);
-          $('#createItemMsgContainer').css('display', 'none');
         }, this.globalService.timeout);
       } else {
         this.addMessage = _res.msg;
@@ -140,9 +139,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   };
 
   onCancelCreate(): void {
-    this.clearForm();
     (<any>$('#createItemModal')).modal('hide');
-    $('#createItemBtn').prop('disabled', false);
-    $('#createItemMsgContainer').css('display', 'none');
+    this.clearForm();
   };
 }

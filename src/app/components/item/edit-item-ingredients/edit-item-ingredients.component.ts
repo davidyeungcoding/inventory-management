@@ -88,9 +88,9 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
 
   onUpdate(): void {
     $('#editItemIngredientMsgContainer').css('display', 'none');
+    $('#editItemIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
-    $('#updateItemIngredientBtn').prop('disabled', true);
     
     const payload = {
       id: this.targetItem!._id,
@@ -104,16 +104,11 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
         let price = _item.msg.price;
         _item.msg.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
         this.updateItemList(_item.msg);
-
-        setTimeout(() => {
-          (<any>$('#editItemIngredientsModal')).modal('hide');
-          $('#eidtItemIngredientMsgContainer').css('display', 'none');
-          $('#updateItemIngredientBtn').prop('disabled', false);
-        }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#editItemIngredientsModal')).modal('hide') }, this.globalService.timeout);
       } else {
         this.editItemIngredientMsg = _item.msg;
         this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');
-        $('#updateItemIngredientBtn').prop('disabled', false);
+        $('#editItemIngredientBtn').prop('disabled', false);
       };
     });
   };

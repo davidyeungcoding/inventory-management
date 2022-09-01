@@ -51,7 +51,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
 
   handleMissingToken(): void {
     this.deleteMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#deleteMsg');
+    this.globalService.displayMsg('alert-danger', '#deleteItemMsg');
     
     setTimeout(() => {
       (<any>$('#deleteItemModal')).modal('hide');
@@ -66,30 +66,22 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   // =======================
 
   onDelete(): void {
-    $('#deleteMsgContainer').css('display', 'none');
+    $('#deleteItemMsgContainer').css('display', 'none');
+    $('#deleteItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
-    $('#deleteItemBtn').prop('disabled', true);
 
     this.itemService.deleteItem(this.targetItem!, token!).subscribe(_res => {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
         this.removeItemFromList();
-        this.globalService.displayMsg('alert-success', '#deleteMsg');
-
-        setTimeout(() => {
-          (<any>$('#deleteItemModal')).modal('hide');
-          $('#deleteItemBtn').prop('disabled', false);
-        }, this.globalService.timeout);
+        this.globalService.displayMsg('alert-success', '#deleteItemMsg');
+        setTimeout(() => { (<any>$('#deleteItemModal')).modal('hide') }, this.globalService.timeout);
       } else {
-        this.globalService.displayMsg('alert-danger', '#deleteMsg');
+        this.globalService.displayMsg('alert-danger', '#deleteItemMsg');
         $('#deleteItemBtn').prop('disabled', false);
       };
     });
-  };
-
-  onCancelDelete(): void {
-    $('#deleteItemBtn').prop('disabled', false);
   };
 }

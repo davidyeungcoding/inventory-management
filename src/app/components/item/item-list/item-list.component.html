@@ -1,6 +1,6 @@
 <div class="container">
   <div class="msg-container" id="itemListMsgContainer">
-    <h5 class="alert alert-msg" id="itemListMsg">{{ errorMessage }}</h5>
+    <h5 class="alert alert-msg" id="itemListMsg">{{ itemListMessage }}</h5>
   </div>
 
   <div class="row scrollable">
@@ -24,19 +24,19 @@
         <td class="table-center btn-padding">
           <button type="button"
             class="btn btn-secondary"
-            (click)="onEditDetails(item, '#editItemMsgContainer')"><i class="far fa-edit"></i> Details</button>
+            (click)="onEditDetails(item)"><i class="far fa-edit"></i> Details</button>
         </td>
         
         <td class="table-center btn-padding">
           <button type="button"
             class="btn btn-secondary"
-            (click)="onEditItemIngredients(item, '#editItemIngredientMsgContainer')"><i class="far fa-edit"></i> Ingredients</button>
+            (click)="onEditItemIngredients(item)"><i class="far fa-edit"></i> Ingredients</button>
         </td>
 
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
-            (click)="onDeleteItem(item, '#deleteMsgContainer')"><i class="fas fa-trash"></i></button>
+            (click)="onDeleteItem(item)"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     </table>
@@ -44,8 +44,6 @@
   
   <div class="row table-end">
     <button class="btn btn-secondary table-end-btn"
-      data-bs-toggle="modal"
-      data-bs-target="#createItemModal"
       (click)="onCreateItem()">Create Item</button>
     
     <button class="btn btn-secondary table-end-btn"

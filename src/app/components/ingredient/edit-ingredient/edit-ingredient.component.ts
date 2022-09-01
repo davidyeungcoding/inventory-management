@@ -55,9 +55,9 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
     if (!check) {
       this.editMessage = 'Please enter a valid item name. Name may not include special characters.';
       this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
+      $('#editIngredientBtn').prop('disabled', false);
     };
 
-    $('#editIngredientBtn').prop('disabled', false);
     return check;
   };
 
@@ -108,11 +108,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
         this.editMessage = 'Ingredient successfully updated';
         this.globalService.displayMsg('alert-success', '#editIngredientMsg');
         this.replaceIngredient(_ingredient.msg);
-        
-        setTimeout(() => {
-          (<any>$('#editIngredientModal')).modal('hide');
-          $('#editIngredientBtn').prop('disabled', false);
-        }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#editIngredientModal')).modal('hide') }, this.globalService.timeout);
       } else {
         this.editMessage = _ingredient.msg;
         this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
@@ -124,7 +120,5 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   onCancelIngredientEdit(): void {
     (<any>$('#editIngredientModal')).modal('hide');
     this.clearForm();
-    $('#editIngredientBtn').prop('disabled', false);
-    $('#editIngredientMsgContainer').css('display', 'none');
   };
 }

@@ -1,5 +1,5 @@
-<div class="msg-container" id="deleteMsgContainer">
-  <h5 class="alert alert-msg" id="deleteMsg">{{ deleteMessage }}</h5>
+<div class="msg-container" id="deleteItemMsgContainer">
+  <h5 class="alert alert-msg" id="deleteItemMsg">{{ deleteMessage }}</h5>
 </div>
 
 <h4 class="modal-title">Are you sure you want to delete {{ targetItem?.name }}?</h4>
@@ -12,6 +12,5 @@
 
   <button type="button"
     class="btn btn-secondary modal-btn"
-    data-bs-dismiss="modal"
-    (click)="onCancelDelete()">No</button>
+    data-bs-dismiss="modal">No</button>
 </div>

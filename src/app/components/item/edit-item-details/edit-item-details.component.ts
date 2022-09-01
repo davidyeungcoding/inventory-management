@@ -85,8 +85,12 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   };
 
   validateForm(form: any): boolean {
-    if (form.name.length && !this.validateName(form.name)) return false;
-    if (form.price.length && !this.validatePrice(form.price)) return false;
+    if (form.name.length && !this.validateName(form.name)
+      || form.price.length && !this.validatePrice(form.price)) {
+      $('#editItemBtn').prop('disabled', false);
+      return false;
+    };
+
     return true;
   };
 
@@ -107,6 +111,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
 
   onEditItem(): void {
     $('#editItemMsgContainer').css('display', 'none');
+    $('#editItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
     const form =  this.editItem.value;
@@ -117,6 +122,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
       && tempItem.available === JSON.stringify(this.targetItem!.available)) {
       this.editMessage = 'No changes detected';
       this.globalService.displayMsg('alert-danger', '#editItemMsg');
+      $('#editItemBtn').prop('disabled', false);
       return;
     };
     
@@ -124,8 +130,6 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
       id: this.targetItem!._id,
       update: tempItem
     };
-
-    $('#editItemBtn').prop('disabled', true);
 
     this.itemService.editItemDetails(payload, token).subscribe(_item => {
       if (_item.status === 200) {
@@ -137,8 +141,6 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#editItemModal')).modal('hide');
           this.clearForm();
-          $('#editItemBtn').prop('disabled', false);
-          $('#editItemMsgContainer').css('display', 'none');
         }, this.globalService.timeout);
       } else {
         this.editMessage = _item.msg;
@@ -149,9 +151,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   };
 
   onCancelEdit(): void {
-    this.clearForm();
     (<any>$('#editItemModal')).modal('hide');
-    $('#editItemBtn').prop('disabled', false);
-    $('#editItemMsgContainer').css('display', 'none');
+    this.clearForm();
   };
 }
