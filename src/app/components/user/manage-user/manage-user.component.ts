@@ -48,7 +48,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       } else {
         this.userService.changeStoreUsers([]);
         this.manageUserMessage = 'No users found for this location';
-        this.globalService.displayMsg('alert-danger', '#manageUserMsg', '#manageUserMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#manageUserMsg');
       };
     });
   };
@@ -66,7 +66,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
         (<any>$('#addUserModal')).modal('show');
       } else {
         this.fullUserListError = _list.msg;
-        this.globalService.displayMsg('alert-danger', '#addUserMsg', '#addUserMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#addUserMsg');
       };
     });
   };

@@ -1,4 +1,8 @@
 <div class="container">
+  <div class="msg-container" id="itemListMsgContainer">
+    <h5 class="alert alert-msg" id="itemListMsg">{{ errorMessage }}</h5>
+  </div>
+
   <div class="row scrollable">
     <table class="table-body">
       <tr>
@@ -20,25 +24,19 @@
         <td class="table-center btn-padding">
           <button type="button"
             class="btn btn-secondary"
-            data-bs-toggle="modal"
-            data-bs-target="#editItemModal"
-            (click)="onEditDetails(item, '#editMsgContainer')"><i class="far fa-edit"></i> Details</button>
+            (click)="onEditDetails(item, '#editItemMsgContainer')"><i class="far fa-edit"></i> Details</button>
         </td>
         
         <td class="table-center btn-padding">
           <button type="button"
             class="btn btn-secondary"
-            data-bs-toggle="modal"
-            data-bs-target="#editItemIngredientsModal"
             (click)="onEditItemIngredients(item, '#editItemIngredientMsgContainer')"><i class="far fa-edit"></i> Ingredients</button>
         </td>
 
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
-            data-bs-toggle="modal"
-            data-bs-target="#deleteItemModal"
-            (click)="onTargetItem(item, '#deleteMsgContainer')"><i class="fas fa-trash"></i></button>
+            (click)="onDeleteItem(item, '#deleteMsgContainer')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     </table>
@@ -48,7 +46,7 @@
     <button class="btn btn-secondary table-end-btn"
       data-bs-toggle="modal"
       data-bs-target="#createItemModal"
-      (click)="onAddItem()">Add Item</button>
+      (click)="onCreateItem()">Create Item</button>
     
     <button class="btn btn-secondary table-end-btn"
       (click)="onBack()">Back</button>
@@ -105,7 +103,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add Item</h5>
+        <h5 class="modal-title">Create Item</h5>
 
         <button type="button"
           class="btn-close"

@@ -49,7 +49,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
 
     if (!check) {
       this.userService.changeHomeMessage(`Please enter a valid ${type}`);
-      this.globalService.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
+      this.globalService.displayMsg('alert-danger', '#homeMsg');
     };
 
     return check;
@@ -69,11 +69,11 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     this.userService.createUser(form).subscribe(_user => {
       if (_user.status === 201) {
         this.userService.changeHomeMessage('User successfully created');
-        this.globalService.displayMsg('alert-success', '#homeMsg', '#homeMsgContainer');
+        this.globalService.displayMsg('alert-success', '#homeMsg');
         this.clearForm();
       } else {
         this.userService.changeHomeMessage(_user.msg);
-        this.globalService.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#homeMsg');
       };
       
       $('#createUserBtn').prop('disabled', false);

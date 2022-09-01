@@ -52,7 +52,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
 
     if(!check) {
       this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
-      this.globalService.displayMsg('alert-danger', '#addIngredientMsg', '#addIngredientMsgContainer');
+      this.globalService.displayMsg('alert-danger', '#addIngredientMsg');
     };
 
     return check;
@@ -84,7 +84,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.createIngredient(form, token).subscribe(_ingredient => {
       if (_ingredient.status === 201) {
         this.addMessage = 'Ingredient successfully created';
-        this.globalService.displayMsg('alert-success', '#addIngredientMsg', '#addIngredientMsgContainer');
+        this.globalService.displayMsg('alert-success', '#addIngredientMsg');
         this.addIngredientToList(_ingredient.msg);
 
         setTimeout(() => {
@@ -95,7 +95,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
         }, this.globalService.timeout);
       } else {
         this.addMessage = _ingredient.msg;
-        this.globalService.displayMsg('alert-danger', '#addIngredientMsg', '#addIngredientMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#addIngredientMsg');
         $('#createIngredientBtn').prop('disabled', false);
       };
     });

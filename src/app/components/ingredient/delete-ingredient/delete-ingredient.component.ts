@@ -69,7 +69,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
 
       if (_res.status === 200) {
         this.removeIngredientFromList();
-        this.globalService.displayMsg('alert-success', '#deleteIngredientMsg', '#deleteIngredientMsgContainer');
+        this.globalService.displayMsg('alert-success', '#deleteIngredientMsg');
 
         setTimeout(() => {
           (<any>$('#deleteIngredientModal')).modal('hide');
@@ -77,7 +77,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
           $('#deleteIngredientMsgContainer').css('display', 'none');
         }, this.globalService.timeout);
       } else {
-        this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg', '#deleteIngredientMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg');
         $('#deleteIngredientBtn').prop('disabled', false);
       };
     });

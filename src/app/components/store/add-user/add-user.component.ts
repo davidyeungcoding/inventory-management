@@ -69,7 +69,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     if (!Object.keys(this.toChange).length) {
       this.errorMessage = 'No changes detected';
-      return this.globalService.displayMsg('alert-danger', '#addUserMsg', '#addUserMsgContainer');
+      return this.globalService.displayMsg('alert-danger', '#addUserMsg');
     };
 
     $('#updateStoreUsersBtn').prop('disabled', true);
@@ -81,7 +81,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
         this.errorMessage = 'Store users have been updated';
-        this.globalService.displayMsg('alert-success', '#addUserMsg', '#addUserMsgContainer');
+        this.globalService.displayMsg('alert-success', '#addUserMsg');
         this.userService.changeStoreUsers(_store.msg.users);
 
         setTimeout(() => {
@@ -91,7 +91,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
         }, this.globalService.timeout);
       } else {
         this.errorMessage = _store.msg;
-        this.globalService.displayMsg('alert-danger', '#addUserMsg', '#addUserMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#addUserMsg');
         $('#updateStoreUsersBtn').prop('disabled', false);
       };
     });

@@ -60,6 +60,19 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
     this.itemService.changeItemList(array);
   };
 
+  handleMissingToken(): void {
+    this.editItemIngredientMsg = this.globalService.missingUserMsg;
+    this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');
+
+    setTimeout(() => {
+      $('#editItemIngredientMsgContainer').css('display', 'none');
+      (<any>$('#editItemIngredientsModal')).modal('hide');
+      this.userService.logout();
+    }, this.globalService.timeoutLong);
+
+    return;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -77,18 +90,18 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   onUpdate(): void {
     $('#editItemIngredientMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
-    if (!this.targetItem) return (<any>$('#editItemIngredientModal')).modal('hide');
+    if (!token) return this.handleMissingToken();
     $('#updateItemIngredientBtn').prop('disabled', true);
+    
     const payload = {
-      id: this.targetItem._id,
+      id: this.targetItem!._id,
       toChange: this.toChange
     };
 
     this.itemService.updateItemIngredient(payload, token).subscribe(_item => {
       if (_item.status === 200) {
         this.editItemIngredientMsg = 'Ingredients successfully updated';
-        this.globalService.displayMsg('alert-success', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
+        this.globalService.displayMsg('alert-success', '#editItemIngredientMsg');
         let price = _item.msg.price;
         _item.msg.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
         this.updateItemList(_item.msg);
@@ -100,7 +113,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
         }, this.globalService.timeout);
       } else {
         this.editItemIngredientMsg = _item.msg;
-        this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');
         $('#updateItemIngredientBtn').prop('disabled', false);
       };
     });

@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
 
     if (!check) {
       this.userService.changeHomeMessage('Invalid username or password');
-      this.globalServvice.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
+      this.globalServvice.displayMsg('alert-danger', '#homeMsg');
     };
 
     return check;
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
         this.globalServvice.redirectUser('store-list');
       } else {
         this.userService.changeHomeMessage(_user.msg);
-        this.globalServvice.displayMsg('alert-danger', '#homeMsg', '#homeMsgContainer');
+        this.globalServvice.displayMsg('alert-danger', '#homeMsg');
       };
 
       $('#loginUserBtn').prop('disabled', false);

@@ -16,6 +16,8 @@ export class GlobalService {
   // =================
 
   timeout = 1500;
+  timeoutLong = 3500;
+  missingUserMsg = 'User missing authorization credentials, logging out shortly.';
 
   // =======================
   // || General Functions ||
@@ -35,10 +37,10 @@ export class GlobalService {
     return regex.test(name);
   };
 
-  displayMsg(add: string, target: string, container: string): void {
+  displayMsg(add: string, target: string): void {
     $(`${target}`).removeClass('alert-success alert-danger');
     $(`${target}`).addClass(add);
-    $(`${container}`).css('display', 'inline');
+    $(`${target}Container`).css('display', 'inline');
   };
 
   redirectUser(route: string): void {
@@ -83,6 +85,11 @@ export class GlobalService {
     };
 
     return temp;
+  };
+
+  checkToken(token: any, modal: string): boolean {
+    if (!token) (<any>$(`${modal}`)).modal('hide');
+    return token ? true : false;
   };
 
   highlight(id: string, toChange: any): void {

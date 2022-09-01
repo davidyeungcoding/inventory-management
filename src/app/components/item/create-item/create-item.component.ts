@@ -17,7 +17,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
   addMessage: string = '';
-  addItem = new FormGroup({
+  createItem = new FormGroup({
     name: new FormControl(''),
     price: new FormControl(''),
     active: new FormControl('false'),
@@ -44,7 +44,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   // ======================
 
   clearForm(): void {
-    this.addItem.setValue({
+    this.createItem.setValue({
       name: '',
       price: '',
       active: 'false',
@@ -58,7 +58,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
     if (!check) {
       this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
-      this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');
+      this.globalService.displayMsg('alert-danger', '#createItemMsg');
     };
 
     return check;
@@ -69,7 +69,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
     if (!check) {
       this.addMessage = 'Please enter a valid price.';
-      this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');
+      this.globalService.displayMsg('alert-danger', '#createItemMsg');
     };
 
     return check;
@@ -87,37 +87,55 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.itemService.changeItemList(temp);
   };
 
+  handleMissingToken(): void {
+    this.addMessage = this.globalService.missingUserMsg;
+    this.globalService.displayMsg('alert-danger', '#createItemMsg');
+
+    setTimeout(() => {
+      $('#createItemMsgContainer').css('display', 'none');
+      (<any>$('#createItemModal')).modal('hide');
+      this.userService.logout();
+    }, this.globalService.timeoutLong);
+
+    return;
+  };
+
+  validateForm(form: any): boolean {
+    if (!this.validateName(form.name)) return false;
+    if (!this.validatePrice(form.price)) return false;
+    return true;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
 
   onCreateItem(): void {
-    $('#addMsgContainer').css('display', 'none');
+    $('#createItemMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
-    const form = this.addItem.value;
-    if (!this.validateName(form.name)) return;
-    if (!this.validatePrice(form.price)) return;
-    $('#createItemBtn').prop('disabled', true);
+    if (!token) return this.handleMissingToken();
+    const form = this.createItem.value;
+    if (!this.validateForm(form)) return;
     form.price = this.itemService.parsePrice(form.price!);
     form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    $('#createItemBtn').prop('disabled', true);
     
     this.itemService.createItem(form, token).subscribe(_res => {
       if (_res.status === 201) {
         this.addMessage = 'Item successfully created';
-        this.globalService.displayMsg('alert-success', '#addMsg', '#addMsgContainer');
+        this.globalService.displayMsg('alert-success', '#createItemMsg');
         this.addItemToList(_res.msg);
         
         setTimeout(() => {
           (<any>$('#createItemModal')).modal('hide');
           this.clearForm();
           $('#createItemBtn').prop('disabled', false);
-          $('#addMsgContainer').css('display', 'none');
+          $('#createItemMsgContainer').css('display', 'none');
         }, this.globalService.timeout);
       } else {
         this.addMessage = _res.msg;
-        this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');
-        $('#addItemBtn').prop('disabled', false);
+        this.globalService.displayMsg('alert-danger', '#createItemMsg');
+        $('#createItemBtn').prop('disabled', false);
       };
     });
   };
@@ -126,6 +144,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.clearForm();
     (<any>$('#createItemModal')).modal('hide');
     $('#createItemBtn').prop('disabled', false);
-    $('#addMsgContainer').css('display', 'none');
+    $('#createItemMsgContainer').css('display', 'none');
   };
 }

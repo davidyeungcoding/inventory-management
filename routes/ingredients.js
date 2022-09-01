@@ -96,7 +96,7 @@ router.get('/search/:storeId', auth.authenticateToken, (req, res, next) => {
     };
 
     Ingredient.searchIngredient(payload, (err, _list) => {
-      return err ? res.json({ status: 400, msg: `Unable to search for term: \"${term}\"` })
+      return err ? res.json({ status: 400, msg: `Unable to retrieve ingredients for store` })
       : res.json({ status: 200, msg: _list, token: req.token });
     });
   } catch {

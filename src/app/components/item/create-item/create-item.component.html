@@ -1,9 +1,9 @@
 <div class="row modal-form-container">
-  <div class="msg-container" id="addMsgContainer">
-    <h5 class="alert alert-msg" id="addMsg">{{ addMessage }}</h5>
+  <div class="msg-container" id="createItemMsgContainer">
+    <h5 class="alert alert-msg" id="createItemMsg">{{ addMessage }}</h5>
   </div>
 
-  <form [formGroup]="addItem" (ngSubmit)="onCreateItem()">
+  <form [formGroup]="createItem" (ngSubmit)="onCreateItem()">
     <div class="modal-group-two">
       <div class="form-group">
         <label for="itemName">Name:</label>

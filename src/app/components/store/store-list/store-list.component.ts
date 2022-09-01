@@ -49,16 +49,17 @@ export class StoreListComponent implements OnInit, OnDestroy {
         } else {
           this.storeService.changeStoreList([]);
           this.storeListMessage = 'No stores found for your account';
-          this.globalService.displayMsg('alert-danger', '#storeMsg', '#storeMsgContainer');
+          this.globalService.displayMsg('alert-danger', '#storeMsg');
         };
       } else {
         this.storeListMessage = _list.msg;
-        this.globalService.displayMsg('alert-danger', '#storeMsg', '#storeMsgContainer');
+        this.globalService.displayMsg('alert-danger', '#storeMsg');
       };
     });
   };
 
   onStoreActionRedirect(route: string, storeId: string): void {
+    // to do: handle hide error message container on redirect
     this.globalService.storeActionRedirect(route, storeId);
   };
 }

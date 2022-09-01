@@ -165,7 +165,7 @@ router.get('/search/:storeId', auth.authenticateToken, (req, res, next) => {
     const storeId = req.params.storeId;
 
     Item.searchItem(term, storeId, (err, _item) => {
-      return err ? res.json({ status: 400, msg: `Unable to find item: ${req.query.term}` })
+      return err ? res.json({ status: 400, msg: `Unable to retrieve item data` })
       : res.json({ status: 200, msg: _item, token: req.token });
     });
   } catch {
