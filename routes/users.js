@@ -82,6 +82,19 @@ const editUserStoreList = async (payload, token) => {
   });
 };
 
+const generateUpdateArray = async obj => {
+  return new Promise(resolve => {
+    const insertion = [];
+    const removal = [];
+
+    Object.keys(obj).forEach(key => {
+      obj[key] === 'add' ? insertion.push(key) : removal.push(key);
+    });
+
+    return resolve({ insertion: insertion, removal: removal });
+  });
+};
+
 // =================
 // || Create User ||
 // =================
@@ -207,8 +220,9 @@ router.put('/change-account-type', auth.authenticateToken, auth.adminCheck, (req
 
 router.put('/edit-stores', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
-    const insertion = req.body.insertion;
-    const removal = req.body.removal;
+    const changes = await generateUpdateArray(req.body.toChange);
+    const insertion = changes.insertion;
+    const removal = changes.removal;
 
     if (insertion.length) {
       const payload = {

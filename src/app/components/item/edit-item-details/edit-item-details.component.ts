@@ -117,7 +117,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
           this.clearForm();
           $('#editItemBtn').prop('disabled', false);
           $('#editMsgContainer').css('display', 'none');
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.editMessage = _item.msg;
         this.globalService.displayMsg('alert-danger', '#editMsg', '#editMsgContainer');

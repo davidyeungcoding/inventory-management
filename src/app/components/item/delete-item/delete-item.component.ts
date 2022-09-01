@@ -70,7 +70,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#deleteItemModal')).modal('hide');
           $('#deleteItemBtn').prop('disabled', false);
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteResult', '#deleteMsgContainer');
         $('#deleteItemBtn').prop('disabled', false);

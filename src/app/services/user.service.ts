@@ -34,6 +34,8 @@ export class UserService {
   storeUsers = this.storeUsersSource.asObservable();
   private fullUserListSource = new BehaviorSubject<User[]>([]);
   fullUserList = this.fullUserListSource.asObservable();
+  private toChangeSource = new BehaviorSubject<any>({});
+  toChange = this.toChangeSource.asObservable();
 
   // =====================
   // || Router Requests ||
@@ -120,5 +122,9 @@ export class UserService {
 
   changeFullUserList(list: User[]): void {
     this.fullUserListSource.next(list);
+  };
+
+  changeToChange(obj: any): void {
+    this.toChangeSource.next(obj);
   };
 }

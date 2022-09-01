@@ -71,11 +71,15 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   onCreateIngredient(): void {
     $('#addIngredientMsgContainer').css('display', 'none');
     const form = this.addIngredient.value;
+    form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
     if (!this.validateName(form.name)) return;
     $('#createIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
-    form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    
+    if (!token) {
+      (<any>$('#createIngredientModal')).modal('hide');
+      return this.userService.logout();
+    };
 
     this.ingredientService.createIngredient(form, token).subscribe(_ingredient => {
       if (_ingredient.status === 201) {
@@ -88,7 +92,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
           this.clearForm();
           $('#createIngredientBtn').prop('disabled', false);
           $('#addIngredientMsgContainer').css('display', 'none');
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.addMessage = _ingredient.msg;
         this.globalService.displayMsg('alert-danger', '#addIngredientMsg', '#addIngredientMsgContainer');

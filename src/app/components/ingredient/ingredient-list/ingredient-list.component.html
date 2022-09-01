@@ -13,8 +13,6 @@
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
-            data-bs-toggle="modal"
-            data-bs-target="#editIngredientModal"
             (click)="onEditIngredient(ingredient)"><i class="far fa-edit"></i></button>
         </td>
 
@@ -25,8 +23,6 @@
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
-            data-bs-toggle="modal"
-            data-bs-target="#deleteIngredientModal"
             (click)="onDeleteIngredient(ingredient)"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
@@ -36,8 +32,6 @@
   <div class="row table-end">
     <button type="button"
       class="btn btn-secondary table-end-btn"
-      data-bs-toggle="modal"
-      data-bs-target="#createIngredientModal"
       (click)="onAddIngredient()">Add Ingredient</button>
 
     <button type="button"

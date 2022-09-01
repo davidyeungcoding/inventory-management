@@ -11,6 +11,16 @@ export class GlobalService {
     private router: Router
   ) { }
 
+  // =================
+  // || Fixed Value ||
+  // =================
+
+  timeout = 1500;
+
+  // =======================
+  // || General Functions ||
+  // =======================
+
   buildValidateHeaders(token: string) {
     return {
       headers: new HttpHeaders({
@@ -73,5 +83,14 @@ export class GlobalService {
     };
 
     return temp;
+  };
+
+  highlight(id: string, toChange: any): void {
+    toChange[id] ? $(`#${id}`).removeClass('selected')
+    : $(`#${id}`).addClass('selected');
+  };
+
+  clearHighlight(): void {
+    $('.selector-option').removeClass('selected');
   };
 }

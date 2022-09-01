@@ -113,7 +113,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
           this.clearForm();
           $('#createItemBtn').prop('disabled', false);
           $('#addMsgContainer').css('display', 'none');
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.addMessage = _res.msg;
         this.globalService.displayMsg('alert-danger', '#addMsg', '#addMsgContainer');

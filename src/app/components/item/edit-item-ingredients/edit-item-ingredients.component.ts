@@ -41,16 +41,10 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
-  changeSelected(ingredient: Ingredient, action: string): void {
+  changeSelected(id: string, action: string): void {
     const temp = {...this.toChange};
-    const target = temp[ingredient._id];
-    target ? delete temp[ingredient._id] : temp[ingredient._id] = action;
+    temp[id] ? delete temp[id] : temp[id] = action;
     this.itemService.changeToChange(temp);
-  };
-
-  highlight(ingredient: Ingredient): void {
-    this.toChange[ingredient._id] ? $(`#${ingredient._id}`).removeClass('selected')
-    : $(`#${ingredient._id}`).addClass('selected');
   };
 
   updateItemList(item: Item): void {
@@ -71,21 +65,21 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   // =======================
 
   toAdd(ingredient: Ingredient): void {
-    this.highlight(ingredient);
-    this.changeSelected(ingredient, 'add');
+    this.globalService.highlight(ingredient._id, this.toChange);
+    this.changeSelected(ingredient._id, 'add');
   };
 
   toRemove(ingredient: Ingredient): void {
-    this.highlight(ingredient);
-    this.changeSelected(ingredient, 'remove');
+    this.globalService.highlight(ingredient._id, this.toChange);
+    this.changeSelected(ingredient._id, 'remove');
   };
 
   onUpdate(): void {
     $('#editItemIngredientMsgContainer').css('display', 'none');
-    $('#updateItemIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.userService.logout();
     if (!this.targetItem) return (<any>$('#editItemIngredientModal')).modal('hide');
+    $('#updateItemIngredientBtn').prop('disabled', true);
     const payload = {
       id: this.targetItem._id,
       toChange: this.toChange
@@ -103,7 +97,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
           (<any>$('#editItemIngredientsModal')).modal('hide');
           $('#eidtItemIngredientMsgContainer').css('display', 'none');
           $('#updateItemIngredientBtn').prop('disabled', false);
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.editItemIngredientMsg = _item.msg;
         this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg', '#editItemIngredientMsgContainer');
@@ -115,6 +109,6 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   onCancel(): void {
     (<any>$('#editItemIngredientsModal')).modal('hide');
     this.itemService.changeToChange({});
-    this.itemService.clearHighlight();
+    this.globalService.clearHighlight();
   };
 }

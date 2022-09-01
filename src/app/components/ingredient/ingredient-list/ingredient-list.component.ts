@@ -37,14 +37,6 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  // ======================
-  // || Helper Functions ||
-  // ======================
-
-  onTargetIngredient(ingredient: Ingredient): void {
-    this.targetIngredient = ingredient;
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -61,21 +53,33 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   };
 
   onEditIngredient(ingredient: Ingredient): void {
-    this.onTargetIngredient(ingredient);
+    this.targetIngredient = ingredient;
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
     $('#editIngredientBtn').prop('disabled', false);
-    $('#editIngredientName').attr('placeholder', this.targetIngredient!.name);
+    $('#editIngredientName').attr('placeholder', this.targetIngredient.name);
     $('#editIngredientMsgContainer').css('display', 'none');
+    
     this.editIngredientForm.setValue({
       name: ''
     });
+
+    (<any>$('#editIngredientModal')).modal('show');
   };
 
   onDeleteIngredient(ingredient: Ingredient): void {
-    this.onTargetIngredient(ingredient);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    this.targetIngredient = ingredient;
+    (<any>$('#deleteIngredientModal')).modal('show');
   };
 
   onAddIngredient(): void {
     $('#addIngredientMsgContainer').css('display', 'none');
+    $('#createIngredientBtn').prop('disabled', false);
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.logout();
+    (<any>$('#createIngredientModal')).modal('show');
   };
 
   onBack(): void {

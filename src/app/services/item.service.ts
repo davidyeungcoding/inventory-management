@@ -100,10 +100,6 @@ export class ItemService {
     return array;
   };
 
-  clearHighlight(): void {
-    $('.item-ingredient').removeClass('selected');
-  };
-
   // =======================
   // || Change Observables||
   // =======================

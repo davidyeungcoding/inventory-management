@@ -111,10 +111,6 @@ label {
   display: block;
 }
 
-.last-radio-group {
-  margin: 0;
-}
-
 /* ================ */
 /* || Radio Form || */
 /* ================ */
@@ -127,6 +123,10 @@ label {
 
 .radio-item:hover {
   cursor: pointer;
+}
+
+.last-radio-group {
+  margin: 0;
 }
 
 /* ============== */

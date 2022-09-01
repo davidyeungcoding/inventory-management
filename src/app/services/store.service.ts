@@ -36,6 +36,14 @@ export class StoreService {
     );
   };
 
+  updateStoreUsers(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/edit-users`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // ==========================
   // || Change Observerables ||
   // ==========================

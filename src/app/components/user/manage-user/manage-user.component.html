@@ -29,9 +29,7 @@
   <div class="row table-end">
     <button type="button"
       class="btn btn-secondary table-end-btn"
-      data-bs-toggle="modal"
-      data-bs-target="#addUserModal"
-      (click)="getFullUserList()">Add User</button>
+      (click)="getFullUserList()">Edit Users</button>
 
     <button type="button"
       class="btn btn-secondary table-end-btn"
@@ -73,8 +71,8 @@
       </div>
 
       <div class="modal-body">
-        <app-add-user [errorMessage]="fullUserListError"
-        [storeUsers]="manageUsers"
+        <app-add-user [storeUsers]="manageUsers"
+        [errorMessage]="fullUserListError"
         [filteredUserList]="filteredUserList"></app-add-user>
       </div>
     </div>

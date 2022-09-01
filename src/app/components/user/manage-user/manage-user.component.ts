@@ -39,8 +39,8 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   getStoreUsers(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    if (!token) return this.userService.logout();
 
     this.userService.getStoreUsers(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
@@ -54,12 +54,16 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   };
 
   getFullUserList(): void {
+    $('#addUserMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
     if (!token) return this.userService.logout();
+    this.globalService.clearHighlight();
+    this.userService.changeToChange({});
 
     this.userService.getFullUserList(token).subscribe(_list => {
       if (_list.status === 200) {
         this.filteredUserList = this.globalService.filterList(this.manageUsers, _list.msg, 0);
+        (<any>$('#addUserModal')).modal('show');
       } else {
         this.fullUserListError = _list.msg;
         this.globalService.displayMsg('alert-danger', '#addUserMsg', '#addUserMsgContainer');

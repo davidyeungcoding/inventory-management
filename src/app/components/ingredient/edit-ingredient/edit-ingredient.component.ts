@@ -80,12 +80,18 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   onEditIngredient(): void {
     $('#editIngredientMsgContainer').css('display', 'none');
     $('#editIngredientBtn').prop('disabled', false);
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
     if (!this.targetIngredient) return (<any>$('#editIngredientModal')).modal('hide');
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      (<any>$('#editIngredientModal')).modal('hide');
+      return this.userService.logout();
+    };
+    
     const form = this.editIngredient.value;
     if (!this.validateName(form.name)) return;
     $('#editIngredientBtn').prop('disabled', true);
+
     const payload = {
       _id: this.targetIngredient._id,
       update: {
@@ -103,7 +109,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
           (<any>$('#editIngredientModal')).modal('hide');
           $('#editIngredientBtn').prop('disabled', false);
           $('#editIngredientMsgContainer').css('display', 'none');
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.editMessage = _ingredient.msg;
         this.globalService.displayMsg('alert-danger', '#editIngredientMsg', '#editIngredientMsgContainer');

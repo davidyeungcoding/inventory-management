@@ -56,9 +56,13 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
   onDeleteIngredient(): void {
     $('#deleteIngredientMsgContainer').css('display', 'none');
     $('#deleteIngredientBtn').prop('disabled', true);
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
     if (!this.targetIngredient) return (<any>$('#deleteIngredientModal')).modal('hide');
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      (<any>$('#deleteIngredientModal')).modal('hide');
+      return this.userService.logout();
+    };
 
     this.ingredientService.deleteIngredient(this.targetIngredient, token).subscribe(_res => {
       this.deleteMessage = _res.msg;
@@ -71,7 +75,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
           (<any>$('#deleteIngredientModal')).modal('hide');
           $('#deleteIngredientBtn').prop('disabled', false);
           $('#deleteIngredientMsgContainer').css('display', 'none');
-        }, 1500);
+        }, this.globalService.timeout);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg', '#deleteIngredientMsgContainer');
         $('#deleteIngredientBtn').prop('disabled', false);

@@ -68,6 +68,19 @@ const buildUserList = list => {
   return list.map(user => user._id);
 };
 
+const generateUpdateArray = async obj => {
+  return new Promise(resolve => {
+    const insertion = [];
+    const removal = [];
+
+    Object.keys(obj).forEach(key => {
+      obj[key] === 'add' ? insertion.push(key) : removal.push(key);
+    });
+
+    return resolve({ insertion: insertion, removal: removal });
+  });
+};
+
 // ==================
 // || Create Store ||
 // ==================
@@ -126,8 +139,9 @@ router.put('/edit-details', auth.authenticateToken, auth.managerCheck, (req, res
 
 router.put('/edit-users', auth.authenticateToken, auth.managerCheck, async (req, res, next) => {
   try {
-    const insertion = req.body.insertion;
-    const removal = req.body.removal;
+    const changes = await generateUpdateArray(req.body.toChange);
+    const insertion = changes.insertion;
+    const removal = changes.removal;
 
     if (insertion.length) {
       const payload = {
