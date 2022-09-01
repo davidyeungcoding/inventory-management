@@ -1,4 +1,8 @@
 <div class="container">
+  <div class="msg-container" id="ingredientListMsgContainer">
+    <h5 class="alert alert-msg" id="ingredientListMsg">{{ errorMessage }}</h5>
+  </div>
+
   <div class="row scrollable">
     <table class="table-body">
       <tr>
@@ -32,7 +36,7 @@
   <div class="row table-end">
     <button type="button"
       class="btn btn-secondary table-end-btn"
-      (click)="onAddIngredient()">Add Ingredient</button>
+      (click)="onCreateIngredient()">Create Ingredient</button>
 
     <button type="button"
       class="btn btn-secondary table-end-btn"

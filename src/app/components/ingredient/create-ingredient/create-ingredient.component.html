@@ -1,9 +1,9 @@
 <div class="row modal-form-container">
-  <div class="msg-container" id="addIngredientMsgContainer">
-    <h5 class="alert alert-msg" id="addIngredientMsg">{{ addMessage }}</h5>
+  <div class="msg-container" id="createIngredientMsgContainer">
+    <h5 class="alert alert-msg" id="createIngredientMsg">{{ createMessage }}</h5>
   </div>
 
-  <form [formGroup]="addIngredient" (ngSubmit)="onCreateIngredient()">
+  <form [formGroup]="createIngredient" (ngSubmit)="onCreateIngredient()">
     <div class="modal-group-one">
       <div class="form-group">
         <label for="ingredientName">Name: </label>

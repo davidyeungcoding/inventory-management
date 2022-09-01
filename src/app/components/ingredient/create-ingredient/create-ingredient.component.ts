@@ -16,8 +16,8 @@ import { Ingredient } from 'src/app/interfaces/ingredient';
 export class CreateIngredientComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   ingredientList: Ingredient[] = [];
-  addMessage: string = '';
-  addIngredient = new FormGroup({
+  createMessage: string = '';
+  createIngredient = new FormGroup({
     name: new FormControl(''),
     storeId: new FormControl('')
   });
@@ -41,7 +41,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   // ======================
 
   clearForm(): void {
-    this.addIngredient.setValue({
+    this.createIngredient.setValue({
       name: '',
       storeId: ''
     });
@@ -51,10 +51,11 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     const check = this.globalService.testName(name);
 
     if(!check) {
-      this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
-      this.globalService.displayMsg('alert-danger', '#addIngredientMsg');
+      this.createMessage = 'Please enter a valid item name. Name may not include special characters.';
+      this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
     };
 
+    $('#createIngredientBtn').prop('disabled', false);
     return check;
   };
 
@@ -64,38 +65,39 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList(list);
   };
 
+  handleMissingToken(): void {
+    this.createMessage = this.globalService.missingTokenMsg;
+    this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
+    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
 
   onCreateIngredient(): void {
-    $('#addIngredientMsgContainer').css('display', 'none');
-    const form = this.addIngredient.value;
-    form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    if (!this.validateName(form.name)) return;
+    $('#createIngredientMsgContainer').css('display', 'none');
     $('#createIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    
-    if (!token) {
-      (<any>$('#createIngredientModal')).modal('hide');
-      return this.userService.logout();
-    };
+    if (!token) return this.handleMissingToken();
+    const form = this.createIngredient.value;
+    form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    if (!this.validateName(form.name)) return;
 
     this.ingredientService.createIngredient(form, token).subscribe(_ingredient => {
       if (_ingredient.status === 201) {
-        this.addMessage = 'Ingredient successfully created';
-        this.globalService.displayMsg('alert-success', '#addIngredientMsg');
+        this.createMessage = 'Ingredient successfully created';
+        this.globalService.displayMsg('alert-success', '#createIngredientMsg');
         this.addIngredientToList(_ingredient.msg);
 
         setTimeout(() => {
           (<any>$('#createIngredientModal')).modal('hide');
-          this.clearForm();
           $('#createIngredientBtn').prop('disabled', false);
-          $('#addIngredientMsgContainer').css('display', 'none');
+          this.clearForm();
         }, this.globalService.timeout);
       } else {
-        this.addMessage = _ingredient.msg;
-        this.globalService.displayMsg('alert-danger', '#addIngredientMsg');
+        this.createMessage = _ingredient.msg;
+        this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
         $('#createIngredientBtn').prop('disabled', false);
       };
     });
@@ -105,6 +107,6 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     this.clearForm();
     (<any>$('#createIngredientModal')).modal('hide');
     $('#createIngredientBtn').prop('disabled', false);
-    $('#addIngredientMsgContainer').css('display', 'none');
+    $('#createIngredientMsgContainer').css('display', 'none');
   };
 }

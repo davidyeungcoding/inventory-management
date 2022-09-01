@@ -17,7 +17,7 @@ export class GlobalService {
 
   timeout = 1500;
   timeoutLong = 3500;
-  missingUserMsg = 'User missing authorization credentials, logging out shortly.';
+  missingTokenMsg = 'User missing authorization credentials, logging out shortly.';
 
   // =======================
   // || General Functions ||

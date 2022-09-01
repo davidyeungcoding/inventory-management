@@ -88,11 +88,10 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   };
 
   handleMissingToken(): void {
-    this.addMessage = this.globalService.missingUserMsg;
+    this.addMessage = this.globalService.missingTokenMsg;
     this.globalService.displayMsg('alert-danger', '#createItemMsg');
 
     setTimeout(() => {
-      $('#createItemMsgContainer').css('display', 'none');
       (<any>$('#createItemModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);

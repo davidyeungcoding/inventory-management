@@ -57,6 +57,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
       this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
     };
 
+    $('#editIngredientBtn').prop('disabled', false);
     return check;
   };
 
@@ -73,27 +74,30 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList(list);
   };
 
+  handleMissingToken(): void {
+    this.editMessage = this.globalService.missingTokenMsg;
+    this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
+
+    setTimeout(() => {
+      (<any>$('#editIngredientModal')).modal('hide');
+      this.userService.logout();
+    }, this.globalService.timeoutLong);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
 
   onEditIngredient(): void {
     $('#editIngredientMsgContainer').css('display', 'none');
-    $('#editIngredientBtn').prop('disabled', false);
-    if (!this.targetIngredient) return (<any>$('#editIngredientModal')).modal('hide');
+    $('#editIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    
-    if (!token) {
-      (<any>$('#editIngredientModal')).modal('hide');
-      return this.userService.logout();
-    };
-    
+    if (!token) return this.handleMissingToken();
     const form = this.editIngredient.value;
     if (!this.validateName(form.name)) return;
-    $('#editIngredientBtn').prop('disabled', true);
 
     const payload = {
-      _id: this.targetIngredient._id,
+      _id: this.targetIngredient!._id,
       update: {
         name: form.name
       }
@@ -101,14 +105,13 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
 
     this.ingredientService.editIngredient(payload, token).subscribe(_ingredient => {
       if (_ingredient.status === 200) {
-        this.replaceIngredient(_ingredient.msg);
         this.editMessage = 'Ingredient successfully updated';
         this.globalService.displayMsg('alert-success', '#editIngredientMsg');
+        this.replaceIngredient(_ingredient.msg);
         
         setTimeout(() => {
           (<any>$('#editIngredientModal')).modal('hide');
           $('#editIngredientBtn').prop('disabled', false);
-          $('#editIngredientMsgContainer').css('display', 'none');
         }, this.globalService.timeout);
       } else {
         this.editMessage = _ingredient.msg;

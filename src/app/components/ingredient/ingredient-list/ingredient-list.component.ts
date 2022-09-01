@@ -15,8 +15,9 @@ import { Ingredient } from 'src/app/interfaces/ingredient';
 })
 export class IngredientListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
-  ingredientList: Ingredient[] = [];
   targetIngredient: Ingredient|null = null;
+  ingredientList: Ingredient[] = [];
+  errorMessage: string = '';
   editIngredientForm = new FormGroup({
     name: new FormControl('')
   });
@@ -37,6 +38,16 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  // =====================
+  // || Helper Functins ||
+  // =====================
+
+  handleMissingToken(): void {
+    this.errorMessage = this.globalService.missingTokenMsg;
+    this.globalService.displayMsg('alert-danger', '#ingredientListMsg');
+    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -47,18 +58,22 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
-      // to do: error with retrieving ingredient list
-      this.ingredientService.changeIngredientList(_list.msg);
+      if (_list.status === 200) {
+        this.ingredientService.changeIngredientList(_list.msg);
+      } else {
+        this.errorMessage = _list.msg;
+        this.globalService.displayMsg('alert-danger', '#ingredientListMsg');
+      };
     });
   };
 
   onEditIngredient(ingredient: Ingredient): void {
-    this.targetIngredient = ingredient;
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
+    if (!token) return this.handleMissingToken();
+    this.targetIngredient = ingredient;
     $('#editIngredientBtn').prop('disabled', false);
-    $('#editIngredientName').attr('placeholder', this.targetIngredient.name);
     $('#editIngredientMsgContainer').css('display', 'none');
+    $('#editIngredientName').attr('placeholder', this.targetIngredient.name);
     
     this.editIngredientForm.setValue({
       name: ''
@@ -69,16 +84,18 @@ export class IngredientListComponent implements OnInit, OnDestroy {
 
   onDeleteIngredient(ingredient: Ingredient): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
+    if (!token) return this.handleMissingToken();
     this.targetIngredient = ingredient;
+    $('#deleteIngredientBtn').prop('disabled', false);
+    $('#deleteIngredientMsgContainer').css('display', 'none');
     (<any>$('#deleteIngredientModal')).modal('show');
   };
 
-  onAddIngredient(): void {
-    $('#addIngredientMsgContainer').css('display', 'none');
-    $('#createIngredientBtn').prop('disabled', false);
+  onCreateIngredient(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
+    if (!token) return this.handleMissingToken();
+    $('#createIngredientBtn').prop('disabled', false);
+    $('#addIngredientMsgContainer').css('display', 'none');
     (<any>$('#createIngredientModal')).modal('show');
   };
 

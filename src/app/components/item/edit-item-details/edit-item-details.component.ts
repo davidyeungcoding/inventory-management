@@ -73,11 +73,10 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   };
 
   handleMissingToken(): void {
-    this.editMessage = this.globalService.missingUserMsg;
+    this.editMessage = this.globalService.missingTokenMsg;
     this.globalService.displayMsg('alert-danger', '#editItemMsg');
 
     setTimeout(() => {
-      $('#editItemMsgContainer').css('display', 'none');
       (<any>$('#editItemModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);

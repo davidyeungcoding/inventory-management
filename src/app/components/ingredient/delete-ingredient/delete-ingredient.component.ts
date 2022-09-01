@@ -49,6 +49,16 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList(list);
   };
 
+  handleMissingToken(): void {
+    this.deleteMessage = this.globalService.missingTokenMsg;
+    this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg');
+    
+    setTimeout(() => {
+      (<any>$('#deleteIngredientModal')).modal('hide');
+      this.userService.logout();
+    }, this.globalService.timeoutLong);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -56,34 +66,24 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
   onDeleteIngredient(): void {
     $('#deleteIngredientMsgContainer').css('display', 'none');
     $('#deleteIngredientBtn').prop('disabled', true);
-    if (!this.targetIngredient) return (<any>$('#deleteIngredientModal')).modal('hide');
     const token = localStorage.getItem('token');
-    
-    if (!token) {
-      (<any>$('#deleteIngredientModal')).modal('hide');
-      return this.userService.logout();
-    };
+    if (!token) return this.handleMissingToken();
 
-    this.ingredientService.deleteIngredient(this.targetIngredient, token).subscribe(_res => {
+    this.ingredientService.deleteIngredient(this.targetIngredient!, token).subscribe(_res => {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
-        this.removeIngredientFromList();
         this.globalService.displayMsg('alert-success', '#deleteIngredientMsg');
+        this.removeIngredientFromList();
 
         setTimeout(() => {
           (<any>$('#deleteIngredientModal')).modal('hide');
           $('#deleteIngredientBtn').prop('disabled', false);
-          $('#deleteIngredientMsgContainer').css('display', 'none');
         }, this.globalService.timeout);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg');
         $('#deleteIngredientBtn').prop('disabled', false);
       };
     });
-  };
-
-  onCancelDelete(): void {
-    $('#deleteIngredientBtn').prop('disabled', false);
   };
 }

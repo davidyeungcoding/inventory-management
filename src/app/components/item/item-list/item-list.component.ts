@@ -63,15 +63,15 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.targetItem = item;
   };
 
-  handleMissingUser(): void {
-    this.errorMessage = this.globalService.missingUserMsg;
+  handleMissingToken(): void {
+    this.errorMessage = this.globalService.missingTokenMsg;
     this.globalService.displayMsg('alert-danger', '#itemListMsg');
     setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
   };
 
   retrieveIngredientList(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingUser();
+    if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
@@ -93,7 +93,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   retrieveItemList(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingUser();
+    if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.itemService.getFullItemList(token, storeId).subscribe(_list => {
@@ -122,7 +122,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
       available: item.available.toString()
     });
     
-    return !token ?  this.handleMissingUser() : (<any>$('#editItemModal')).modal('show');
+    return !token ?  this.handleMissingToken() : (<any>$('#editItemModal')).modal('show');
   };
 
   onEditItemIngredients(item: Item, target: string): void {
@@ -137,7 +137,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     $('#deleteItemBtn').prop('disabled', false);
     this.onTargetItem(item, target);
     const token = localStorage.getItem('token');
-    return !token ? this.handleMissingUser() : (<any>$('#deleteItemModal')).modal('show');
+    return !token ? this.handleMissingToken() : (<any>$('#deleteItemModal')).modal('show');
   };
 
   onCreateItem(): void {

@@ -50,11 +50,10 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   };
 
   handleMissingToken(): void {
-    this.deleteMessage = this.globalService.missingUserMsg;
+    this.deleteMessage = this.globalService.missingTokenMsg;
     this.globalService.displayMsg('alert-danger', '#deleteMsg');
     
     setTimeout(() => {
-      $('#deleteMsgContainer').css('display', 'none');
       (<any>$('#deleteItemModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);
