@@ -22,7 +22,7 @@ const Store = require('../models/store');
 const authUser = async username => {
   return new Promise(resolve => {
     User.authSearch(username, (err, _user) => {
-      return err ? resolve({ status: 404, msg: 'Invalid username or password' })
+      return err || !_user.length ? resolve({ status: 404, msg: 'Invalid username or password' })
       : resolve({ status: 200, msg: _user[0] });
     });
   });

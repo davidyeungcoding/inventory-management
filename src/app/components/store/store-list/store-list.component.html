@@ -16,15 +16,24 @@
       <ul class="store-actions-list">
         <li class="store-action" (click)="onStoreActionRedirect('order-list', store._id)">View/Edit Orders</li>
 
-        <li class="store-action" (click)="onStoreActionRedirect('item-list', store._id)">View/Edit Items</li>
+        <li *ngIf="accountType.manager"
+          class="store-action"
+          (click)="onStoreActionRedirect('item-list', store._id)">View/Edit Items</li>
 
-        <li class="store-action" (click)="onStoreActionRedirect('ingredient-list', store._id)">View/Edit Ingredients</li>
+        <li *ngIf="accountType.manager"
+          class="store-action"
+          (click)="onStoreActionRedirect('ingredient-list', store._id)">View/Edit Ingredients</li>
 
-        <li class="store-action" (click)="onStoreActionRedirect('store-details', store._id)">Store Details</li>
+        <li *ngIf="accountType.manager"
+          class="store-action"
+          (click)="onStoreActionRedirect('store-details', store._id)">Store Details</li>
 
-        <li class="store-action" (click)="onStoreActionRedirect('manage-user', store._id)">Manage Users</li>
+        <li *ngIf="accountType.manager"
+          class="store-action"
+          (click)="onStoreActionRedirect('manage-user', store._id)">Manage Users</li>
 
-        <li class="store-action" id="delete">Delete Store</li>
+        <li *ngIf="accountType.manager"
+          class="store-action">Delete Store</li>
       </ul>
     </div>
   </div>

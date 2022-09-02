@@ -14,8 +14,7 @@ import { User } from 'src/app/interfaces/user';
 })
 export class ManageUserComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
-  private isManager?: boolean;
-  private isAdmin?: boolean;
+  private accountType: any;
   manageUsers: User[] = [];
   manageUserMessage: string = '';
   filteredUserList: User[] = [];
@@ -34,8 +33,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.manageUsers = _list));
-    this.subscriptions.add(this.userService.isManager.subscribe(_type => this.isManager = _type));
-    this.subscriptions.add(this.userService.isAdmin.subscribe(_type => this.isAdmin = _type));
+    this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.getStoreUsers();
   }
 
@@ -56,8 +54,8 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   compareAccountTypes(user: User): boolean {
     const target = user.accountType;
-    if (this.isAdmin) return true;
-    if (this.isManager) return target === 'admin' ? false : true;
+    if (this.accountType.admin) return true;
+    if (this.accountType.manager) return target === 'admin' ? false : true;
     return target === 'general' ? true : false;
   };
 

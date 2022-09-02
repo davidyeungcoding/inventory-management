@@ -15,6 +15,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   storeListMessage: string = '';
   storeList: Store[] = [];
+  accountType: any;
 
   constructor(
     private globalService: GlobalService,
@@ -24,6 +25,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
+    this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.getStoreList();
   }
 

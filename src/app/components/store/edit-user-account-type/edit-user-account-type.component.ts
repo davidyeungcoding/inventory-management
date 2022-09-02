@@ -13,8 +13,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   @Input() editUserAccountTypeMessage?: string;
   @Input() accountTypeForm: any;
   private subscriptions = new Subscription();
-  isManager?: boolean;
-  isAdmin?: boolean;
+  accountType: any;
 
   constructor(
     private globalService: GlobalService,
@@ -22,8 +21,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.userService.isAdmin.subscribe(_type => this.isAdmin = _type));
-    this.subscriptions.add(this.userService.isManager.subscribe(_type => this.isManager = _type));
+    this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
   }
 
   ngOnDestroy(): void {

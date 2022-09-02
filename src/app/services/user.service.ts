@@ -36,10 +36,8 @@ export class UserService {
   fullUserList = this.fullUserListSource.asObservable();
   private toChangeSource = new BehaviorSubject<any>({});
   toChange = this.toChangeSource.asObservable();
-  private isAdminSource = new BehaviorSubject<boolean>(false);
-  isAdmin = this.isAdminSource.asObservable();
-  private isManagerSource = new BehaviorSubject<boolean>(false);
-  isManager = this.isManagerSource.asObservable();
+  private accountTypeSource = new BehaviorSubject<any>({});
+  accountType = this.accountTypeSource.asObservable();
 
   // =====================
   // || Router Requests ||
@@ -134,15 +132,25 @@ export class UserService {
   };
 
   changeAccountType(type: string): void {
-    if (type === 'admin') {
-      this.isAdminSource.next(true);
-      this.isManagerSource.next(true);
-    } else if (type === 'manager') {
-      this.isAdminSource.next(false);
-      this.isManagerSource.next(true);
-    } else {
-      this.isAdminSource.next(false);
-      this.isManagerSource.next(false);
+    const temp = {
+      admin: false,
+      manager: false
     };
+
+    switch (type) {
+      case 'admin':
+        temp.admin = true;
+        temp.manager = true;
+        break;
+      case 'manager':
+        temp.admin = false;
+        temp.manager = true;
+        break;
+      default:
+        temp.admin = false;
+        temp.manager = false;
+    };
+
+    this.accountTypeSource.next(temp);
   };
 }

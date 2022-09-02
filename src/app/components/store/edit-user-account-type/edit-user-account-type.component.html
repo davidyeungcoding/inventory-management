@@ -8,7 +8,7 @@
       <label class="form-section-title" for="editAccountType">Account Type:</label>
 
       <div class="radio-container" id="editAccountType">
-        <label *ngIf="isAdmin"
+        <label *ngIf="accountType.admin"
           for="editTypeAdmin"
           class="radio-item">
           <input type="radio"
@@ -18,7 +18,7 @@
             value="admin"> Admin
         </label>
 
-        <label *ngIf="isManager"
+        <label *ngIf="accountType.manager"
           for="editTypeManager"
           class="radio-item">
           <input type="radio"
