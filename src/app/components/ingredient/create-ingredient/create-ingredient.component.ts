@@ -68,7 +68,11 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   handleMissingToken(): void {
     this.createMessage = this.globalService.missingTokenMsg;
     this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
-    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
+    
+    setTimeout(() => {
+      (<any>$('#createIngredientModal')).modal('hide');
+      this.userService.logout();
+    }, this.globalService.timeoutLong);
   };
 
   // =======================

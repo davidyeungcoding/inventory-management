@@ -68,8 +68,6 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
       (<any>$('#editItemIngredientsModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);
-
-    return;
   };
 
   // =======================

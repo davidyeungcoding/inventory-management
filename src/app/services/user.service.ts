@@ -36,6 +36,10 @@ export class UserService {
   fullUserList = this.fullUserListSource.asObservable();
   private toChangeSource = new BehaviorSubject<any>({});
   toChange = this.toChangeSource.asObservable();
+  private isAdminSource = new BehaviorSubject<boolean>(false);
+  isAdmin = this.isAdminSource.asObservable();
+  private isManagerSource = new BehaviorSubject<boolean>(false);
+  isManager = this.isManagerSource.asObservable();
 
   // =====================
   // || Router Requests ||
@@ -96,6 +100,7 @@ export class UserService {
     this.logoutFromDB(token).subscribe(_res => {
       if (_res.status === 200) {
         this.changeActiveUser(null);
+        this.changeAccountType('general');
         localStorage.removeItem('token');
         this.globalService.redirectUser('home');
       } else {
@@ -126,5 +131,18 @@ export class UserService {
 
   changeToChange(obj: any): void {
     this.toChangeSource.next(obj);
+  };
+
+  changeAccountType(type: string): void {
+    if (type === 'admin') {
+      this.isAdminSource.next(true);
+      this.isManagerSource.next(true);
+    } else if (type === 'manager') {
+      this.isAdminSource.next(false);
+      this.isManagerSource.next(true);
+    } else {
+      this.isAdminSource.next(false);
+      this.isManagerSource.next(false);
+    };
   };
 }

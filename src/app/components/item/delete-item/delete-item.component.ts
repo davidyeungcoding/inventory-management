@@ -57,8 +57,6 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
       (<any>$('#deleteItemModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);
-
-    return;
   };
 
   // =======================

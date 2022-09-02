@@ -1,0 +1,51 @@
+<div class="row modal-form-container">
+  <div class="msg-container" id="editUserAccountTypeMsgContainer">
+    <h5 class="alert alert-msg" id="editUserAccountTypeMsg">{{ editUserAccountTypeMessage }}</h5>
+  </div>
+
+  <form [formGroup]="accountTypeForm" (ngSubmit)="onEditAccountType()">
+    <div class="form-group form-section">
+      <label class="form-section-title" for="editAccountType">Account Type:</label>
+
+      <div class="radio-container" id="editAccountType">
+        <label *ngIf="isAdmin"
+          for="editTypeAdmin"
+          class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="editTypeAdmin"
+            formControlName="accountType"
+            value="admin"> Admin
+        </label>
+
+        <label *ngIf="isManager"
+          for="editTypeManager"
+          class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="editTypeManager"
+            formControlName="accountType"
+            value="manager"> Manager
+        </label>
+
+        <label for="editTypeGeneral" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="editTypeGeneral"
+            formControlName="accountType"
+            value="general"> General
+        </label>
+      </div>
+    </div>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="editUserAccountTypeBtn">Edit User</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </form>
+</div>

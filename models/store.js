@@ -65,7 +65,7 @@ module.exports.editStoreUserList = (payload, callback) => {
   const modifier = action === '$push' ? '$each' : '$in';
   const update = { [action]: { users: { [modifier]: payload.userList } } };
   this.storeModel.findByIdAndUpdate(payload._id, update, { new: true }, callback)
-  .populate('users', 'username');
+  .populate('users', 'username accountType');
 };
 
 module.exports.editUserListFromUser = (payload, callback) => {

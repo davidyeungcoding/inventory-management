@@ -67,6 +67,7 @@ export class LoginComponent implements OnInit {
       if (_user.status === 200) {
         this.clearForm();
         this.userService.changeActiveUser(_user.msg);
+        this.userService.changeAccountType(_user.msg.accountType);
         localStorage.setItem('token', _user.token);
         this.globalServvice.redirectUser('store-list');
       } else {

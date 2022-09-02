@@ -97,8 +97,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
       (<any>$('#createItemModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);
-
-    return;
   };
 
   validateForm(form: any): boolean {

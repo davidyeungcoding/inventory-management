@@ -14,10 +14,11 @@ import { User } from 'src/app/interfaces/user';
 })
 export class AddUserComponent implements OnInit, OnDestroy {
   @Input() filteredUserList!: User[];
-  @Input() errorMessage!: string;
+  @Input() addUserMessage!: string;
   @Input() storeUsers!: User[];
   private subscriptions = new Subscription();
   private toChange: any = {};
+  
 
   constructor(
     private globalService: GlobalService,
@@ -43,6 +44,16 @@ export class AddUserComponent implements OnInit, OnDestroy {
     this.userService.changeToChange(temp);
   };
 
+  handleMissingToken(): void {
+    this.addUserMessage = this.globalService.missingTokenMsg;
+    this.globalService.displayMsg('alert-danger', '#addUserMsg');
+    
+    setTimeout(() => {
+      (<any>$('#manageUserModal')).modal('hide');
+      this.userService.logout();
+    }, this.globalService.timeoutLong);
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -58,21 +69,19 @@ export class AddUserComponent implements OnInit, OnDestroy {
   };
 
   onUpdateStoreUsers(): void {
+    $('#updateStoreUsersBtn').prop('disabled', true);
     $('#addUserMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
+    if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    
-    if (!token) {
-      (<any>$('#addUserModal')).modal('hide');
-      return this.userService.logout();
-    };
 
     if (!Object.keys(this.toChange).length) {
-      this.errorMessage = 'No changes detected';
-      return this.globalService.displayMsg('alert-danger', '#addUserMsg');
+      this.addUserMessage = 'No changes detected';
+      this.globalService.displayMsg('alert-danger', '#addUserMsg');
+      $('#updateStoreUsersBtn').prop('disabled', false);
+      return;
     };
 
-    $('#updateStoreUsersBtn').prop('disabled', true);
     const payload = {
       _id: storeId,
       toChange: this.toChange
@@ -80,17 +89,12 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
-        this.errorMessage = 'Store users have been updated';
+        this.addUserMessage = 'Store users have been updated';
         this.globalService.displayMsg('alert-success', '#addUserMsg');
         this.userService.changeStoreUsers(_store.msg.users);
-
-        setTimeout(() => {
-          (<any>$('#addUserModal')).modal('hide');
-          $('#updateStoreUsersBtn').prop('disabled', false);
-          $('#addUserMsgContainer').css('display', 'none');
-        }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#manageUserModal')).modal('hide') }, this.globalService.timeout);
       } else {
-        this.errorMessage = _store.msg;
+        this.addUserMessage = _store.msg;
         this.globalService.displayMsg('alert-danger', '#addUserMsg');
         $('#updateStoreUsersBtn').prop('disabled', false);
       };
@@ -98,8 +102,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   };
 
   onCancel(): void {
-    (<any>$('#addUserModal')).modal('hide');
-    $('#addUserMsgContainer').css('display', 'none');
+    (<any>$('#manageUserModal')).modal('hide');
     this.userService.changeToChange({});
   };
 }

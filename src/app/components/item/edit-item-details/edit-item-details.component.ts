@@ -80,8 +80,6 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
       (<any>$('#editItemModal')).modal('hide');
       this.userService.logout();
     }, this.globalService.timeoutLong);
-
-    return;
   };
 
   validateForm(form: any): boolean {
