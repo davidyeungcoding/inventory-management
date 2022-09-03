@@ -73,6 +73,42 @@
 </div>
 
 <div class="modal fade"
+  id="confirmRemovalModal"
+  tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Remove User</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="msg-container" id="confirmRemovalMsgContainer">
+          <h5 class="alert alert-msg" id="confirmRemovalMsg">{{ confirmRemovalMessage }}</h5>
+        </div>
+
+        <h4 class="modal-title">Are you sure you want to remove yourself from this location?</h4>
+
+        <div class="modal-btn-container">
+          <button type="button"
+            class="btn btn-secondary modal-btn"
+            id="confirmRemovalBtn"
+            (click)="confirmRemoval()">Confirm</button>
+
+          <button type="button"
+            class="btn btn-secondary modal-btn"
+            data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
   id="manageUserModal"
   tabindex="-1">
   <div class="modal-dialog modal-lg">

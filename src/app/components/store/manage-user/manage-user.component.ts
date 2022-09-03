@@ -19,6 +19,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   private accountType: any;
   manageUsers: User[] = [];
   manageUserMessage: string = '';
+  confirmRemovalMessage: string = '';
   filteredUserList: User[] = [];
   fullUserListError: string = '';
   editUserMessage: string = '';
@@ -107,6 +108,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     if (!token) return this.handleMissingToken();
     $('#updateStoreUsersBtn').prop('disabled', false);
     $('#addUserMsgContainer').css('display', 'none');
+    $('#manageUserMsgContainer').css('display', 'none');
     this.globalService.clearHighlight();
     this.userService.changeToChange({});
 
@@ -127,6 +129,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     if (!token) return this.handleMissingToken();
     $('#editUserAccountTypeBtn').prop('disabled', false);
     $('#editUserAccountTypeMsgContainer').css('display', 'none');
+    $('#manageUserMsgContainer').css('display', 'none');
     this.handlePermissions(user);
     this.handlePersonalAccount(user);
     
@@ -143,6 +146,13 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    
+    if (this.activeUser!._id === user._id) {
+      $('#confirmRemovalBtn').prop('disabled', false);
+      $('#confirmRemovalMsgContainer').css('display', 'none');
+      (<any>$('#confirmRemovalModal')).modal('show');
+      return;
+    };
 
     const payload = {
       _id: storeId,
@@ -160,6 +170,36 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       } else {
         this.manageUserMessage = _store.msg;
         this.globalService.displayMsg('alert-danger', '#manageUserMsg');
+      };
+    });
+  };
+
+  confirmRemoval(): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.handleMissingToken();
+    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    $('#confirmRemovalBtn').prop('disabled', true);
+
+    const payload = {
+      _id: storeId,
+      toChange: {
+        [this.activeUser!._id]: 'remove'
+      }
+    };
+
+    this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
+      if (_store.status === 200) {
+        if (_store.token) localStorage.setItem('token', _store.token);
+        this.confirmRemovalMessage = 'You have been removed from this location';
+        this.globalService.displayMsg('alert-success', '#confirmRemovalMsg');
+        
+        setTimeout(() => { 
+          (<any>$('#confirmRemovalModal')).modal('hide');
+          this.globalService.redirectUser('store-list');
+        }, this.globalService.timeout);
+      } else {
+        this.confirmRemovalMessage = _store.msg;
+        this.globalService.displayMsg('alert-danger', '#confirmRemovalMsg');
       };
     });
   };
