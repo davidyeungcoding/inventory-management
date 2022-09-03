@@ -93,14 +93,12 @@ module.exports.editIngredientFromIngredient = (payload, callback) => {
 
 module.exports.searchStores = (term, id, callback) => {
   const query = term.toString().length ? { name: term, users: id } : { users: id };
-  this.storeModel.find(query, callback)
-  .sort({ name: 1 })
+  this.storeModel.find(query, callback);
 };
 
 module.exports.adminSearchStores = (term, callback) => {
   const query = term.toString().length ? { name: term } : {};
-  this.storeModel.find(query, callback)
-  .sort({ name: 1 })
+  this.storeModel.find(query, callback);
 };
 
 // ==================

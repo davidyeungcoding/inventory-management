@@ -4,7 +4,7 @@
   </div>
 
   <form [formGroup]="createItem" (ngSubmit)="onCreateItem()">
-    <div class="modal-group-two">
+    <section class="modal-group-two">
       <div class="form-group">
         <label for="itemName">Name:</label>
     
@@ -23,9 +23,9 @@
           formControlName="price"
           placeholder="0.00">
       </div>
-    </div>
+    </section>
 
-    <div class="form-group form-section">
+    <section class="form-group form-section">
       <label class="form-section-title" for="itemActive">Active:</label>
   
       <div class="radio-container" id="itemActive">
@@ -45,9 +45,9 @@
             value="false"> False
         </label>
       </div>
-    </div>
+    </section>
 
-    <div class="form-group form-section last-radio-group">
+    <section class="form-group form-section last-radio-group">
       <label class="form-section-title" for="itemAvailable">Available:</label>
 
       <div class="radio-container" id="itemAvailable">
@@ -67,7 +67,7 @@
             value="false"> False
         </label>
       </div>
-    </div>
+    </section>
 
     <div class="row modal-btn-container">
       <button type="submit"

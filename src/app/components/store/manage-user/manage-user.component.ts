@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
+import { StoreService } from 'src/app/services/store.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { User } from 'src/app/interfaces/user';
@@ -14,6 +15,7 @@ import { User } from 'src/app/interfaces/user';
 })
 export class ManageUserComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private activeUser?: User|null;
   private accountType: any;
   manageUsers: User[] = [];
   manageUserMessage: string = '';
@@ -28,12 +30,14 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   constructor(
     private globalService: GlobalService,
+    private storeService: StoreService,
     private userService: UserService
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.manageUsers = _list));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
+    this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.manageUsers = _list));
+    this.subscriptions.add(this.userService.activeUser.subscribe(_user => this.activeUser = _user));
     this.getStoreUsers();
   }
 
@@ -46,17 +50,35 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
+  compareAccountTypes(user: User): boolean {
+    const target = user.accountType;
+    if (this.accountType.admin) return true;
+    if (this.accountType.manager) return target === 'admin' ? false : true;
+    return target === 'general' ? true : false;
+  };
+
   handleMissingToken(): void {
     this.manageUserMessage = this.globalService.missingTokenMsg;
     this.globalService.displayMsg('alert-danger', '#manageUserMsg');
     setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
   };
 
-  compareAccountTypes(user: User): boolean {
-    const target = user.accountType;
-    if (this.accountType.admin) return true;
-    if (this.accountType.manager) return target === 'admin' ? false : true;
-    return target === 'general' ? true : false;
+  handlePermissions(user: User): void {
+    const permission = this.compareAccountTypes(user);
+
+    if (!permission) {
+      $('#editUserAccountTypeBtn').prop('disabled', true);
+      this.editUserMessage = 'Cannot change account type for users with higher permissions';
+      this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
+    };
+  };
+
+  handlePersonalAccount(target: any): void {
+    if (this.activeUser!._id === target._id) {
+      $('#editUserAccountTypeBtn').prop('disabled', true);
+      this.editUserMessage = 'Cannot modify your own account type';
+      this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
+    };
   };
 
   // =======================
@@ -70,6 +92,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
     this.userService.getStoreUsers(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
+        if (_list.token) localStorage.setItem('token', _list.token);
         this.userService.changeStoreUsers(_list.msg);
       } else {
         this.userService.changeStoreUsers([]);
@@ -89,6 +112,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
     this.userService.getFullUserList(token).subscribe(_list => {
       if (_list.status === 200) {
+        if (_list.token) localStorage.setItem('token', _list.token);
         this.filteredUserList = this.globalService.filterList(this.manageUsers, _list.msg, 0);
         (<any>$('#manageUserModal')).modal('show');
       } else {
@@ -103,12 +127,8 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     if (!token) return this.handleMissingToken();
     $('#editUserAccountTypeBtn').prop('disabled', false);
     $('#editUserAccountTypeMsgContainer').css('display', 'none');
-
-    if (!this.compareAccountTypes(user)) {
-      $('#editUserAccountTypeBtn').prop('disabled', true);
-      this.editUserMessage = 'Cannot change account type for users with higher permissions';
-      this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
-    };
+    this.handlePermissions(user);
+    this.handlePersonalAccount(user);
     
     this.accountTypeForm.setValue({
       _id: user._id,
@@ -119,7 +139,30 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     (<any>$('#editUserAccountTypeModal')).modal('show');
   };
 
-  onRemoveUser(user: User): void {}
+  onRemoveUser(user: User): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.handleMissingToken();
+    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+
+    const payload = {
+      _id: storeId,
+      toChange: {
+        [user._id]: 'remove'
+      }
+    };
+
+    this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
+      if (_store.status === 200) {
+        if (_store.token) localStorage.setItem('token', _store.token);
+        this.userService.changeStoreUsers(_store.msg.users);
+        this.manageUserMessage = `${user.username} has been removed`;
+        this.globalService.displayMsg('alert-success', '#manageUserMsg');
+      } else {
+        this.manageUserMessage = _store.msg;
+        this.globalService.displayMsg('alert-danger', '#manageUserMsg');
+      };
+    });
+  };
 
   onBack(): void {
     this.globalService.redirectUser('store-list');

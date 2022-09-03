@@ -49,6 +49,14 @@ export class UserService {
     );
   };
 
+  updateAccountType(form: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/change-account-type`, form, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   loginUser(form: any) {
     return this.http.post(`${this.api}/login`, form, this.httpOptions).pipe(
       catchError(err => of(err))
@@ -120,6 +128,12 @@ export class UserService {
   };
 
   changeStoreUsers(list: User[]): void {
+    list.sort((a, b) => {
+      return a.username.toLowerCase() < b.username.toLowerCase() ? -1
+      : a.username.toLowerCase() > b.username.toLowerCase() ? 1
+      : 0;
+    });
+
     this.storeUsersSource.next(list);
   };
 

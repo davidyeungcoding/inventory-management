@@ -90,6 +90,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
 
     this.ingredientService.createIngredient(form, token).subscribe(_ingredient => {
       if (_ingredient.status === 201) {
+        if (_ingredient.token) localStorage.setItem('token', _ingredient.token);
         this.createMessage = 'Ingredient successfully created';
         this.globalService.displayMsg('alert-success', '#createIngredientMsg');
         this.addIngredientToList(_ingredient.msg);

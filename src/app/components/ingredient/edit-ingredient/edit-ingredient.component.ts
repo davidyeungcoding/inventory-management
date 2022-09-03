@@ -105,6 +105,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
 
     this.ingredientService.editIngredient(payload, token).subscribe(_ingredient => {
       if (_ingredient.status === 200) {
+        if (_ingredient.token) localStorage.setItem('token', _ingredient.token);
         this.editMessage = 'Ingredient successfully updated';
         this.globalService.displayMsg('alert-success', '#editIngredientMsg');
         this.replaceIngredient(_ingredient.msg);

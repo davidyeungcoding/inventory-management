@@ -5,14 +5,14 @@
 
   <form [formGroup]="editIngredient" (ngSubmit)="onEditIngredient()">
     <div class="modal-group-one">
-      <div class="form-group">
+      <section class="form-group">
         <label for="#editIngredientName">Name: </label>
 
         <input type="text"
           class="form-field"
           id="editIngredientName"
           formControlName="name">
-      </div>
+      </section>
     </div>
 
     <div class="row modal-btn-container">

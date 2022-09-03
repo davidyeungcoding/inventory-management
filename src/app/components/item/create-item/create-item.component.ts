@@ -120,6 +120,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     
     this.itemService.createItem(form, token).subscribe(_res => {
       if (_res.status === 201) {
+        if (_res.token) localStorage.setItem('token', _res.token);
         this.addMessage = 'Item successfully created';
         this.globalService.displayMsg('alert-success', '#createItemMsg');
         this.addItemToList(_res.msg);

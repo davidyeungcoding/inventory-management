@@ -125,7 +125,7 @@ label {
   cursor: pointer;
 }
 
-.last-radio-group {
+section:last-of-type {
   margin: 0;
 }
 
@@ -188,7 +188,6 @@ label {
 /* =========== */
 
 .modal-group-one {
-  display: block;
   margin: auto;
 }
 

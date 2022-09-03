@@ -69,6 +69,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
+        if (_list.token) localStorage.setItem('token', _list.token);
         const list = this.globalService.filterList(this.targetItem!.ingredients, _list.msg, 0);
         this.ingredientService.changeIngredientList(list);
         (<any>$('#editItemIngredientsModal')).modal('show');
@@ -90,6 +91,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
     this.itemService.getFullItemList(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
+        if (_list.token) localStorage.setItem('token', _list.token);
         this.convertPrice(_list.msg);
         this.itemService.changeItemList(_list.msg);
       } else {

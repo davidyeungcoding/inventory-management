@@ -75,9 +75,7 @@ module.exports.purgeIngredientFromIngredient = (payload, callback) => {
 
 module.exports.searchItem = (term, storeId, callback) => {
   const query = term.toString().length ? { name: term, store: storeId } : { store: storeId };
-  
   this.itemModel.find(query, callback)
-  .sort({ name: 1 })
   .populate('ingredients', 'name');
 };
 

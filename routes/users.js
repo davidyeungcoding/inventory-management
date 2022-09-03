@@ -205,13 +205,13 @@ router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, 
 router.put('/change-account-type', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
   try {
     const payload = {
-      id: req.body.id,
+      id: req.body._id,
       accountType: req.body.accountType
     };
 
     User.changeAccountType(payload, (err, _user) => {
       return err ? res.json({ status: 400, msg: 'Unable to update account type, user not found' })
-      : res.json({ status: 200, msg: 'User account type updated', token: req.token });
+      : res.json({ status: 200, msg: 'User account type successfully updated', token: req.token });
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to change account type' });

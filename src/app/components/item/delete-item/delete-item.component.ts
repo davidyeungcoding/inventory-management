@@ -73,6 +73,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
       this.deleteMessage = _res.msg;
 
       if (_res.status === 200) {
+        if (_res.token) localStorage.setItem('token', _res.token);
         this.removeItemFromList();
         this.globalService.displayMsg('alert-success', '#deleteItemMsg');
         setTimeout(() => { (<any>$('#deleteItemModal')).modal('hide') }, this.globalService.timeout);

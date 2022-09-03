@@ -89,6 +89,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
+        if (_store.token) localStorage.setItem('token', _store.token);
         this.addUserMessage = 'Store users have been updated';
         this.globalService.displayMsg('alert-success', '#addUserMsg');
         this.userService.changeStoreUsers(_store.msg.users);

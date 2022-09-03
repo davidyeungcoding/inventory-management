@@ -49,6 +49,12 @@ export class StoreService {
   // ==========================
 
   changeStoreList(list: Store[]): void {
+    list.sort((a, b) => {
+      return a.name.toLowerCase() < b.name.toLowerCase() ? -1
+      : a.name.toLowerCase() > b.name.toLowerCase() ? 1
+      : 0;
+    });
+
     this.storeListSource.next(list);
   };
 }

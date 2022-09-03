@@ -34,9 +34,8 @@ export class AppComponent implements OnInit, OnDestroy {
       if (!token) return this.userService.logout();
 
       this.userService.retrieveUserData(token).subscribe(_user => {
-        if (_user.token) localStorage.setItem('token', _user.token);
-
         if (_user.status === 200) {
+          if (_user.token) localStorage.setItem('token', _user.token);
           this.userService.changeActiveUser(_user.msg);
           this.userService.changeAccountType(_user.msg.accountType);
         } else {

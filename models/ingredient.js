@@ -55,8 +55,7 @@ module.exports.updateFoundInFromItem = (payload, callback) => {
 module.exports.searchIngredient = (payload, callback) => {
   const query = payload.term.toString().length ? { name: payload.term, store: payload.storeId }
   : { store: payload.storeId };
-  this.ingredientModel.find(query, callback)
-  .sort({ name: 1 });
+  this.ingredientModel.find(query, callback);
 };
 
 // =======================

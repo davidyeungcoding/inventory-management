@@ -59,6 +59,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
 
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
+        if (_list.token) localStorage.setItem('token', _list.token);
         this.ingredientService.changeIngredientList(_list.msg);
       } else {
         this.errorMessage = _list.msg;

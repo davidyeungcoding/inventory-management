@@ -113,7 +113,7 @@ module.exports.resetPassword = (id, password, callback) => {
 };
 
 module.exports.changeAccountType = (payload, callback) => {
-  this.userModel.findByIdAndUpdate(payload.id, { $set: { accountType: payload.accountType } }, callback);
+  this.userModel.findByIdAndUpdate(payload.id, { $set: { accountType: payload.accountType } }, { new: true }, callback);
 };
 
 module.exports.updateStores = (userId, storeId, callback) => {
@@ -140,14 +140,12 @@ module.exports.editStoreList = (payload, callback) => {
 
 module.exports.searchUser = (term, callback) => {
   const query = term.toString().length ? { username: term } : {};
-  const sort = { username: 1 };
-  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $sort: sort }, { $lookup: importStores }], callback);
+  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $lookup: importStores }], callback);
 };
 
 module.exports.getStoreUsers = (storeId, callback) => {
   const query = { stores: storeId };
-  const sort = { username: 1 };
-  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $sort: sort }], callback);
+  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }], callback);
 };
 
 // =================

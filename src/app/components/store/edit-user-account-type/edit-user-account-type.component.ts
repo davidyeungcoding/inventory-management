@@ -4,6 +4,8 @@ import { Subscription } from 'rxjs';
 import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
 
+import { User } from 'src/app/interfaces/user';
+
 @Component({
   selector: 'app-edit-user-account-type',
   templateUrl: './edit-user-account-type.component.html',
@@ -13,6 +15,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   @Input() editUserAccountTypeMessage?: string;
   @Input() accountTypeForm: any;
   private subscriptions = new Subscription();
+  private storeUsers?: User[];
   accountType: any;
 
   constructor(
@@ -22,6 +25,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
+    this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.storeUsers = _list));
   }
 
   ngOnDestroy(): void {
@@ -42,6 +46,19 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     }, this.globalService.timeoutLong);
   };
 
+  replaceUser(user: User): void {
+    const temp = [...this.storeUsers!];
+
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i]._id === user._id) {
+        temp[i] = user;
+        break;
+      };
+    };
+
+    this.userService.changeStoreUsers(temp);
+  };
+
   // ========================
   // || Generaal Functions ||
   // ========================
@@ -51,6 +68,24 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     $('#editUserAccountTypeBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
-    // to do: disable ability to change account of higher level
+    const form = this.accountTypeForm.value;
+
+    this.userService.updateAccountType(form, token).subscribe(_user => {
+      this.editUserAccountTypeMessage = _user.msg;
+
+      if (_user.status === 200) {
+        if (_user.token) localStorage.setItem('token', _user.token);
+        this.globalService.displayMsg('alert-success', '#editUserAccountTypeMsg');
+        this.replaceUser(form);
+
+        setTimeout(() => {
+          $('#editUserAccountTypeBtn').prop('disabled', false);
+          (<any>$('#editUserAccountTypeModal')).modal('hide');
+        }, this.globalService.timeout);
+      } else {
+        this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
+        $('#editUserAccountTypeBtn').prop('disabled', false);
+      };
+    });
   };
 }

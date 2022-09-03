@@ -97,6 +97,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
 
     this.itemService.updateItemIngredient(payload, token).subscribe(_item => {
       if (_item.status === 200) {
+        if (_item.token) localStorage.setItem('token', _item.token);
         this.editItemIngredientMsg = 'Ingredients successfully updated';
         this.globalService.displayMsg('alert-success', '#editItemIngredientMsg');
         let price = _item.msg.price;
