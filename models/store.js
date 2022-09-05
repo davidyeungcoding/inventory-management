@@ -101,6 +101,10 @@ module.exports.adminSearchStores = (term, callback) => {
   this.storeModel.find(query, callback);
 };
 
+module.exports.retrieveStoreDetails = (storeId, callback) => {
+  this.storeModel.findById(storeId, { users: 0, items: 0, ingredients: 0 }, callback);
+};
+
 // ==================
 // || Delete Store ||
 // ==================

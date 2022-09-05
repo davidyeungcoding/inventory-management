@@ -36,6 +36,14 @@ export class StoreService {
     );
   };
 
+  getStoreDetails(token: string, storeId: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/details/${storeId}`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   updateStoreUsers(token: string, payload: any) {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 

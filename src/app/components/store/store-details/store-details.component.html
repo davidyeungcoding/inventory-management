@@ -1,0 +1,67 @@
+<div class="form-container">
+  <div class="msg-container" id="storeDetailsMsgContainer">
+    <h5 class="alert alert-msg" id="storeDetailsMsg">{{ storeDetailsMessage }}</h5>
+  </div>
+
+  <form [formGroup]="editStoreDetails" (ngSubmit)="onEditStoreDetails()">
+    <div class="form-group">
+      <label for="editStoreName">Name:</label>
+
+      <input type="text"
+        class="form-field"
+        id="editStoreName"
+        formControlName="name">
+    </div>
+
+    <div class="form-group">
+      <label for="editStoreStreet">Street:</label>
+
+      <input type="text"
+        class="form-field"
+        id="editStoreStreet"
+        formControlName="street">
+    </div>
+
+    <div class="form-group">
+      <label for="editStoreCity">City:</label>
+
+      <input type="text"
+        class="form-field"
+        id="editStoreCity"
+        formControlName="city">
+    </div>
+
+    <div class="dropdown form-group">
+      <button type="button"
+        class="btn btn-light dropdown-toggle"
+        id="stateSelection"
+        data-bs-toggle="dropdown"
+        aria-expanded="false">{{ selectedState }}</button>
+
+      <ul class="dropdown-menu">
+        <li *ngFor="let state of states">
+          <a class="dropdown-item" (click)="onChangeSelectedState(state)">{{ state }}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="form-group">
+      <label for="editStoreZip">Zip:</label>
+
+      <input type="text"
+        class="form-field"
+        id="editStoreZip"
+        formControlName="zip">
+    </div>
+
+    <div class="row table-end">
+      <button type="submit"
+        class="btn btn-secondary table-end-btn"
+        id="storeDetailsBtn">Update</button>
+
+      <button type="button"
+        class="btn btn-secondary table-end-btn"
+        (click)="onBack()">Back</button>
+    </div>
+  </form>
+</div>

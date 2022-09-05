@@ -198,6 +198,19 @@ router.get('/search', auth.authenticateToken, async (req, res, next) => {
   };
 });
 
+router.get('/details/:storeId', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  try {
+    const storeId = req.params.storeId;
+
+    Store.retrieveStoreDetails(storeId, (err, _store) => {
+      return err ? res.json({ status: 400, msg: 'An error has occurred while retrieving store details' })
+      : res.json({ status: 200, msg: _store, token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to retrieve store details' });
+  };
+});
+
 // ==================
 // || Delete Store ||
 // ==================

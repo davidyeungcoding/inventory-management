@@ -23,6 +23,7 @@ import { StoreListComponent } from './components/store/store-list/store-list.com
 import { ManageUserComponent } from './components/store/manage-user/manage-user.component';
 import { AddUserComponent } from './components/store/add-user/add-user.component';
 import { EditUserAccountTypeComponent } from './components/store/edit-user-account-type/edit-user-account-type.component';
+import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { EditUserAccountTypeComponent } from './components/store/edit-user-accou
     StoreListComponent,
     ManageUserComponent,
     AddUserComponent,
-    EditUserAccountTypeComponent
+    EditUserAccountTypeComponent,
+    StoreDetailsComponent
   ],
   imports: [
     BrowserModule,

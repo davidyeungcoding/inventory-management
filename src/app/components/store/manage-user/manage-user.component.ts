@@ -175,10 +175,10 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   };
 
   confirmRemoval(): void {
+    $('#confirmRemovalBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    $('#confirmRemovalBtn').prop('disabled', true);
 
     const payload = {
       _id: storeId,

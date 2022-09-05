@@ -129,6 +129,21 @@ section:last-of-type {
   margin: 0;
 }
 
+/* =================== */
+/* || Dropdown Form || */
+/* =================== */
+
+.dropdown>button {
+  border: solid 1px var(--color-primary);
+}
+
+.dropdown>ul {
+  padding: 0;
+  max-height: 146px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 /* ============== */
 /* || Password || */
 /* ============== */

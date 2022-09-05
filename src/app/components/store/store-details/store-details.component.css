@@ -1,0 +1,5 @@
+.form-container {
+  margin: auto;
+  padding: 32px;
+  max-width: var(--base-width);
+}
