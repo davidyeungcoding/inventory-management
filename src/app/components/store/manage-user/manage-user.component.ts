@@ -82,6 +82,22 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     };
   };
 
+  handleRemovePersonal(): void {
+    $('#confirmRemovalBtn').prop('disabled', false);
+    $('#confirmRemovalMsgContainer').css('display', 'none');
+    (<any>$('#confirmRemovalModal')).modal('show');
+    return;
+  };
+
+  buildRemovalPayload(userId: string, storeId: string): any {
+    return {
+      _id: storeId,
+      toChange: {
+        [userId]: 'remove'
+      }
+    };
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -146,20 +162,8 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    
-    if (this.activeUser!._id === user._id) {
-      $('#confirmRemovalBtn').prop('disabled', false);
-      $('#confirmRemovalMsgContainer').css('display', 'none');
-      (<any>$('#confirmRemovalModal')).modal('show');
-      return;
-    };
-
-    const payload = {
-      _id: storeId,
-      toChange: {
-        [user._id]: 'remove'
-      }
-    };
+    if (this.activeUser!._id === user._id) return this.handleRemovePersonal();
+    const payload = this.buildRemovalPayload(user._id, storeId);
 
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
@@ -179,13 +183,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.handleMissingToken();
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-
-    const payload = {
-      _id: storeId,
-      toChange: {
-        [this.activeUser!._id]: 'remove'
-      }
-    };
+    const payload = this.buildRemovalPayload(this.activeUser!._id, storeId);
 
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {

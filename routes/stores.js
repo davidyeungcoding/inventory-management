@@ -128,7 +128,7 @@ router.put('/edit-details', auth.authenticateToken, auth.managerCheck, (req, res
     if (req.body.state) payload.state = req.body.state;
     if (req.body.zip) payload.zip = req.body.zip;
   
-    Store.editStoreDetails(req.body._id, payload, (err, _store) => {
+    Store.editStoreDetails(req.body.storeId, payload, (err, _store) => {
       return err ? res.json({ status: 400, msg: 'Unable to update store details' })
       : res.json({ status: 200, msg: _store, token: req.token });
     });

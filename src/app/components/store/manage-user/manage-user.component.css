@@ -1,14 +1,6 @@
-/* =========== */
-/* || Table || */
-/* =========== */
-
 .table-body {
   max-width: var(--base-width);
 }
-
-/* ============= */
-/* || Message || */
-/* ============= */
 
 #manageUserMsg {
   margin: auto;

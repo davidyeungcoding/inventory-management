@@ -95,6 +95,14 @@ td>button {
   background-color: var(--background-color);
 }
 
+.form-group-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  column-gap: 16px;
+  justify-content: space-evenly;
+  overflow-x: auto;
+}
+
 .form-group {
   margin: 0 0 2rem;
 }
@@ -134,7 +142,7 @@ section:last-of-type {
 /* =================== */
 
 .dropdown>button {
-  border: solid 1px var(--color-primary);
+  border: solid 1px var(--color-secondary);
 }
 
 .dropdown>ul {
@@ -166,13 +174,6 @@ section:last-of-type {
 /* ==================== */
 /* || Modal Group Two|| */
 /* ==================== */
-
-.modal-group-two {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 35%));
-  justify-content: space-evenly;
-  overflow-x: auto;
-}
 
 .selector-title {
   text-align: center;

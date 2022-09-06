@@ -20,6 +20,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
   storeDetails?: Store;
   selectedState?: string;
   editStoreDetails = new FormGroup({
+    storeId: new FormControl(''),
     name: new FormControl(''),
     street: new FormControl(''),
     city: new FormControl(''),
@@ -52,11 +53,25 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
   };
 
   setPlaceHolders(store: Store): void {
+    this.editStoreDetails.patchValue({ storeId: store._id });
     $('#editStoreName').attr('placeholder', store.name);
     $('#editStoreStreet').attr('placeholder', store.street);
     $('#editStoreCity').attr('placeholder', store.city);
     this.selectedState = store.state;
+    this.editStoreDetails.patchValue({ state: store.state });
     $('#editStoreZip').attr('placeholder', store.zip);
+  };
+
+  checkForChanges(form: any): boolean {
+    if (!form.name && !form.street && !form.city && !form.zip &&
+    this.storeDetails!.state === form.state) {
+      this.storeDetailsMessage = 'No changes detected';
+      this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
+      $('#storeDetailsBtn').prop('disabled', false);
+      return false;
+    };
+
+    return true;
   };
 
   // =======================
@@ -86,8 +101,26 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
   };
 
   onEditStoreDetails(): void {
-    console.log(this.editStoreDetails.value)
-  }
+    $('#storeDetailsMsgContainer').css('display', 'none');
+    $('#storeDetailsBtn').prop('disabled', true);
+    const token = localStorage.getItem('token');
+    if (!token) return this.handleMissingToken();
+    const form = this.editStoreDetails.value;
+    if (!this.checkForChanges(form)) return;
+
+    this.storeService.updateStoreDetails(token, form).subscribe(_store => {
+      if (_store.status === 200) {
+        if (_store.token) localStorage.setItem('token', _store.token);
+        this.storeDetailsMessage = 'Store successfully updated';
+        this.globalService.displayMsg('alert-success', '#storeDetailsMsg');
+      } else {
+        this.storeDetailsMessage = _store.msg;
+        this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
+      };
+
+      $('#storeDetailsBtn').prop('disabled', false);
+    });
+  };
 
   onBack(): void {
     this.globalService.redirectUser('store-list');

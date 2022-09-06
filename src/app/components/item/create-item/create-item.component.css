@@ -1,4 +1,0 @@
-.modal-group-two {
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  column-gap: 16px;
-}
