@@ -35,6 +35,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.storeDetailsMessage = _msg));
     this.getStoreDetails();
   }
 
@@ -45,12 +46,6 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
   // ======================
   // || Helper Functions ||
   // ======================
-
-  handleMissingToken(): void {
-    this.storeDetailsMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
-    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
-  };
 
   setPlaceHolders(store: Store): void {
     this.editStoreDetails.patchValue({ storeId: store._id });
@@ -65,7 +60,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
   checkForChanges(form: any): boolean {
     if (!form.name && !form.street && !form.city && !form.zip &&
     this.storeDetails!.state === form.state) {
-      this.storeDetailsMessage = 'No changes detected';
+      this.userService.changeSystemMsg('No changes detected');
       this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
       $('#storeDetailsBtn').prop('disabled', false);
       return false;
@@ -80,7 +75,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
 
   getStoreDetails(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#storeDetailsMsg');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.storeService.getStoreDetails(token, storeId).subscribe(_store => {
@@ -89,7 +84,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
         this.storeDetails = _store.msg;
         this.setPlaceHolders(_store.msg);
       } else {
-        this.storeDetailsMessage = _store.msg;
+        this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
       };
     });
@@ -104,17 +99,17 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
     $('#storeDetailsMsgContainer').css('display', 'none');
     $('#storeDetailsBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#storeDetailsMsg');
     const form = this.editStoreDetails.value;
     if (!this.checkForChanges(form)) return;
 
     this.storeService.updateStoreDetails(token, form).subscribe(_store => {
       if (_store.status === 200) {
         if (_store.token) localStorage.setItem('token', _store.token);
-        this.storeDetailsMessage = 'Store successfully updated';
+        this.userService.changeSystemMsg('Store successfully updated');
         this.globalService.displayMsg('alert-success', '#storeDetailsMsg');
       } else {
-        this.storeDetailsMessage = _store.msg;
+        this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
       };
 

@@ -25,7 +25,8 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.itemService.itemList.subscribe(_list => this.itemList = _list);
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.deleteMessage = _msg));
+    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
   }
 
   ngOnDestroy(): void {
@@ -49,16 +50,6 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
     this.itemService.changeItemList(temp);
   };
 
-  handleMissingToken(): void {
-    this.deleteMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#deleteItemMsg');
-    
-    setTimeout(() => {
-      (<any>$('#deleteItemModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -67,10 +58,10 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
     $('#deleteItemMsgContainer').css('display', 'none');
     $('#deleteItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#deleteItemMsg', '#deleteItemModal');
 
     this.itemService.deleteItem(this.targetItem!, token!).subscribe(_res => {
-      this.deleteMessage = _res.msg;
+      this.userService.changeSystemMsg(_res.msg);
 
       if (_res.status === 200) {
         if (_res.token) localStorage.setItem('token', _res.token);

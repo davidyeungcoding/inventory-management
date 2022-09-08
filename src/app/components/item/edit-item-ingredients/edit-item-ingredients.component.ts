@@ -19,7 +19,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   @Input() fullIngredientList!: any[];
   private subscriptions = new Subscription();
   private toChange: any = {};
-  editItemIngredientMsg: string = '';
+  editItemIngredientMessage?: string;
   itemList: Item[] = [];
 
   constructor(
@@ -29,8 +29,9 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editItemIngredientMessage = _msg));
     this.subscriptions.add(this.itemService.toChange.subscribe(_targets => this.toChange = _targets));
+    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
   }
 
   ngOnDestroy(): void {
@@ -60,16 +61,6 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
     this.itemService.changeItemList(array);
   };
 
-  handleMissingToken(): void {
-    this.editItemIngredientMsg = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');
-
-    setTimeout(() => {
-      (<any>$('#editItemIngredientsModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -88,7 +79,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
     $('#editItemIngredientMsgContainer').css('display', 'none');
     $('#editItemIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#editItemIngredientMsg', '#editItemIngredientsModal');
     
     const payload = {
       id: this.targetItem!._id,
@@ -98,14 +89,14 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
     this.itemService.updateItemIngredient(payload, token).subscribe(_item => {
       if (_item.status === 200) {
         if (_item.token) localStorage.setItem('token', _item.token);
-        this.editItemIngredientMsg = 'Ingredients successfully updated';
+        this.userService.changeSystemMsg('Ingredients successfully updated');
         this.globalService.displayMsg('alert-success', '#editItemIngredientMsg');
         let price = _item.msg.price;
         _item.msg.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
         this.updateItemList(_item.msg);
         setTimeout(() => { (<any>$('#editItemIngredientsModal')).modal('hide') }, this.globalService.timeout);
       } else {
-        this.editItemIngredientMsg = _item.msg;
+        this.userService.changeSystemMsg(_item.msg);
         this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');
         $('#editItemIngredientBtn').prop('disabled', false);
       };

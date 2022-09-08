@@ -1,0 +1,13 @@
+.search-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+#searchStoreField {
+  border-radius: 5px 0 0 5px;
+}
+
+#searchStoreBtn {
+  border-radius: 0 5px 5px 0;
+  width: fit-content;
+}

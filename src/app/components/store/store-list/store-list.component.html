@@ -1,6 +1,10 @@
 <div class="container">
-  <div class="msg-container" id="storeMsgContainer">
-    <h5 class="alert alert-msg" id="storeMsg">{{ storeListMessage }}</h5>
+  <div class="row search-group">
+    <app-search-store></app-search-store>
+    
+    <div class="msg-container" id="storeMsgContainer">
+      <h5 class="alert alert-msg" id="storeMsg">{{ storeListMessage }}</h5>
+    </div>
   </div>
 
   <div class="row store-container" *ngFor="let store of storeList">

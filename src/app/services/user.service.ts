@@ -38,6 +38,8 @@ export class UserService {
   toChange = this.toChangeSource.asObservable();
   private accountTypeSource = new BehaviorSubject<any>({});
   accountType = this.accountTypeSource.asObservable();
+  private systemMsgSource = new BehaviorSubject<string>('');
+  systemMsg = this.systemMsgSource.asObservable();
 
   // =====================
   // || Router Requests ||
@@ -115,6 +117,22 @@ export class UserService {
     });
   };
 
+  handleMissingToken(elementId: string): void {
+    this.changeSystemMsg(this.globalService.missingTokenMsg);
+    this.globalService.displayMsg('alert-danger', elementId);
+    setTimeout(() => { this.logout() }, this.globalService.timeoutLong);
+  };
+  
+  handleMissingTokenModal(elementId: string, modal: string): void {
+    this.changeSystemMsg(this.globalService.missingTokenMsg);
+    this.globalService.displayMsg('alert-danger', elementId);
+
+    setTimeout(() => {
+      (<any>$(`${modal}`)).modal('hide');
+      this.logout();
+    }, this.globalService.timeoutLong);
+  };
+
   // ========================
   // || Change Observables ||
   // ========================
@@ -166,5 +184,9 @@ export class UserService {
     };
 
     this.accountTypeSource.next(temp);
+  };
+
+  changeSystemMsg(message: string): void {
+    this.systemMsgSource.next(message);
   };
 }

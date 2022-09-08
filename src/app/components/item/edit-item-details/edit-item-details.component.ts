@@ -26,6 +26,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
   }
 
@@ -50,7 +51,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     const check = this.globalService.testName(name);
 
     if (!check) {
-      this.editMessage = 'Please enter a valid item name. Name may not include special characters.';
+      this.userService.changeSystemMsg('Please enter a valid item name. Name may not include special characters.');
       this.globalService.displayMsg('alert-danger', '#editItemMsg');
     };
 
@@ -61,7 +62,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     const check = this.itemService.testPrice(price);
 
     if (!check) {
-      this.editMessage = 'Please enter a valid price.';
+      this.userService.changeSystemMsg('Please enter a valid price.');
       this.globalService.displayMsg('alert-danger', '#editItemMsg');
     };
 
@@ -70,16 +71,6 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
 
   convertPrice(price: string): string {
     return `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
-  };
-
-  handleMissingToken(): void {
-    this.editMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#editItemMsg');
-
-    setTimeout(() => {
-      (<any>$('#editItemModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
   };
 
   validateForm(form: any): boolean {
@@ -111,14 +102,14 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     $('#editItemMsgContainer').css('display', 'none');
     $('#editItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#editItemMsg', '#editItemModal');;
     const form =  this.editItem.value;
     if (!this.validateForm(form)) return;
     const tempItem = this.buildPayloadItem(form);
     
     if (!form.name && !form.price && tempItem.active === JSON.stringify(this.targetItem!.active)
       && tempItem.available === JSON.stringify(this.targetItem!.available)) {
-      this.editMessage = 'No changes detected';
+      this.userService.changeSystemMsg('No changes detected');
       this.globalService.displayMsg('alert-danger', '#editItemMsg');
       $('#editItemBtn').prop('disabled', false);
       return;
@@ -132,7 +123,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     this.itemService.editItemDetails(payload, token).subscribe(_item => {
       if (_item.status === 200) {
         if (_item.token) localStorage.setItem('token', _item.token);
-        this.editMessage = 'Item successfully updated';
+        this.userService.changeSystemMsg('Item successfully updated');
         this.globalService.displayMsg('alert-success', '#editItemMsg');
         _item.msg.price = this.convertPrice(_item.msg.price);
         this.itemService.changeItemList(this.itemService.replaceItem(this.itemList, _item.msg));
@@ -142,7 +133,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
           this.clearForm();
         }, this.globalService.timeout);
       } else {
-        this.editMessage = _item.msg;
+        this.userService.changeSystemMsg(_item.msg);
         this.globalService.displayMsg('alert-danger', '#editItemMsg');
         $('#editItemBtn').prop('disabled', false);
       };

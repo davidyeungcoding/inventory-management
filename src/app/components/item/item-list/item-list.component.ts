@@ -38,6 +38,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.fullIngredientList = _list));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.itemListMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
     this.retrieveItemList();
   }
@@ -58,12 +59,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
     });
   };
 
-  handleMissingToken(): void {
-    this.itemListMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#itemListMsg');
-    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
-  };
-
   retrieveIngredientList(token: string): void {
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
@@ -74,7 +69,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this.ingredientService.changeIngredientList(list);
         (<any>$('#editItemIngredientsModal')).modal('show');
       } else {
-        this.itemListMessage = _list.msg;
+        this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#itemListMsg');
       };
     });
@@ -86,7 +81,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   retrieveItemList(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.itemService.getFullItemList(token, storeId).subscribe(_list => {
@@ -95,7 +90,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         this.convertPrice(_list.msg);
         this.itemService.changeItemList(_list.msg);
       } else {
-        this.itemListMessage = _list.msg;
+        this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#itemListMsg');
       };
     });
@@ -103,7 +98,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   onEditDetails(item: Item): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     this.targetItem = item;
     $('#editItemBtn').prop('disabled', false);
     $('#editItemMsgContainer').css('display', 'none');
@@ -122,7 +117,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   onEditItemIngredients(item: Item): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     this.targetItem = item;
     this.targetIngredients = item.ingredients;
     $('#editItemIngredientBtn').prop('disabled', false);
@@ -134,7 +129,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   onDeleteItem(item: Item): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     this.targetItem = item;
     $('#deleteItemBtn').prop('disabled', false);
     $('#deleteItemMsgContainer').css('display', 'none');
@@ -143,7 +138,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
 
   onCreateItem(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     $('#createItemBtn').prop('disabled', false);
     $('#createItemMsgContainer').css('display', 'none');
     (<any>$('#createItemModal')).modal('show');

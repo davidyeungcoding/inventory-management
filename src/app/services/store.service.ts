@@ -60,6 +60,14 @@ export class StoreService {
     );
   };
 
+  searchStore(token: string, term: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/search?term=${term}`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // ==========================
   // || Change Observerables ||
   // ==========================

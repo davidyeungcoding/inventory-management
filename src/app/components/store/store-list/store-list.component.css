@@ -1,3 +1,20 @@
+/* ================== */
+/* || Search Group || */
+/* ================== */
+
+.search-group {
+  margin: 2rem auto;
+  max-width: var(--base-width-wide);
+}
+
+/* ============= */
+/* || Message || */
+/* ============= */
+
+#storeMsg {
+  margin-top: 2rem;
+}
+
 /* =================== */
 /* || Store Details || */
 /* =================== */

@@ -19,12 +19,8 @@
   max-width: var(--base-width-wide);
 }
 
-th {
-  min-width: fit-content;
-}
-
 th, td {
-  padding: .5rem 0;
+  padding: .5rem;
 }
 
 td:first-child, th:first-child {
@@ -41,10 +37,6 @@ td:last-child, th:last-child {
 
 .table-entry:hover {
   background-color: var(--table-color-tertiary);
-}
-
-.table-left {
-  text-align: left;
 }
 
 .table-center {

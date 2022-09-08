@@ -26,6 +26,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.storeListMessage = _msg));
     this.getStoreList();
   }
 
@@ -40,7 +41,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
 
   getStoreList(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.logout();
+    if (!token) return this.userService.handleMissingToken('#storeMsg');
 
     this.storeService.getStoreList(token).subscribe(_list => {
       if (_list.status === 200) {
@@ -50,11 +51,11 @@ export class StoreListComponent implements OnInit, OnDestroy {
           this.storeService.changeStoreList(_list.msg)
         } else {
           this.storeService.changeStoreList([]);
-          this.storeListMessage = 'No stores found for your account';
+          this.userService.changeSystemMsg('No stores found for your account');
           this.globalService.displayMsg('alert-danger', '#storeMsg');
         };
       } else {
-        this.storeListMessage = _list.msg;
+        this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#storeMsg');
       };
     });

@@ -8,7 +8,7 @@
   <div class="row scrollable">
     <table class="table-body">
       <tr>
-        <th class="table-left table-name">Name</th>
+        <th class="table-name">Name</th>
         <th class="table-center table-data">Price</th>
         <th class="table-center table-data">Active</th>
         <th class="table-center table-data">Available</th>
@@ -18,7 +18,7 @@
       </tr>
   
       <tr class="table-entry" *ngFor="let item of itemList">
-        <td class="table-left">{{ item.name }}</td>
+        <td>{{ item.name }}</td>
         <td class="table-center">{{ item.price }}</td>
         <td class="table-center table-data">{{ item.active }}</td>
         <td class="table-center table-data">{{ item.available }}</td>

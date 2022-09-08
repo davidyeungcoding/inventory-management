@@ -32,6 +32,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.addMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
   }
 
@@ -57,7 +58,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     const check = this.globalService.testName(name);
 
     if (!check) {
-      this.addMessage = 'Please enter a valid item name. Name may not include special characters.';
+      this.userService.changeSystemMsg('Please enter a valid item name. Name may not include special characters.');
       this.globalService.displayMsg('alert-danger', '#createItemMsg');
       $('#createItemBtn').prop('disabled', false);
     };
@@ -69,7 +70,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     const check = this.itemService.testPrice(price);
 
     if (!check) {
-      this.addMessage = 'Please enter a valid price.';
+      this.userService.changeSystemMsg('Please enter a valid price.');
       this.globalService.displayMsg('alert-danger', '#createItemMsg');
       $('#createItemBtn').prop('disabled', false);
     };
@@ -89,16 +90,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.itemService.changeItemList(temp);
   };
 
-  handleMissingToken(): void {
-    this.addMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#createItemMsg');
-
-    setTimeout(() => {
-      (<any>$('#createItemModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
-
   validateForm(form: any): boolean {
     if (!this.validateName(form.name) || !this.validatePrice(form.price)) return false;
     return true;
@@ -112,7 +103,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     $('#createItemMsgContainer').css('display', 'none');
     $('#createItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#createItemMsg', '#createItemModal');
     const form = this.createItem.value;
     if (!this.validateForm(form)) return;
     form.price = this.itemService.parsePrice(form.price!);
@@ -121,7 +112,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.itemService.createItem(form, token).subscribe(_res => {
       if (_res.status === 201) {
         if (_res.token) localStorage.setItem('token', _res.token);
-        this.addMessage = 'Item successfully created';
+        this.userService.changeSystemMsg('Item successfully created');
         this.globalService.displayMsg('alert-success', '#createItemMsg');
         this.addItemToList(_res.msg);
         
@@ -130,7 +121,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
           this.clearForm();
         }, this.globalService.timeout);
       } else {
-        this.addMessage = _res.msg;
+        this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-danger', '#createItemMsg');
         $('#createItemBtn').prop('disabled', false);
       };

@@ -24,6 +24,7 @@ import { ManageUserComponent } from './components/store/manage-user/manage-user.
 import { AddUserComponent } from './components/store/add-user/add-user.component';
 import { EditUserAccountTypeComponent } from './components/store/edit-user-account-type/edit-user-account-type.component';
 import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
+import { SearchStoreComponent } from './components/store/search-store/search-store.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { StoreDetailsComponent } from './components/store/store-details/store-de
     ManageUserComponent,
     AddUserComponent,
     EditUserAccountTypeComponent,
-    StoreDetailsComponent
+    StoreDetailsComponent,
+    SearchStoreComponent
   ],
   imports: [
     BrowserModule,
