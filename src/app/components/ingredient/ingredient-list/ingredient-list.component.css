@@ -1,3 +1,12 @@
+/* ============= */
+/* || Message || */
+/* ============= */
+
+#ingredientListMsg {
+  margin: auto;
+  width: var(--base-width);
+}
+
 /* =========== */
 /* || Table || */
 /* =========== */

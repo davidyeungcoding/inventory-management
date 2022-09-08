@@ -18,11 +18,9 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   private activeUser?: User|null;
   private accountType: any;
   manageUsers: User[] = [];
-  manageUserMessage: string = '';
-  confirmRemovalMessage: string = '';
+  manageUserMessage?: string;
   filteredUserList: User[] = [];
   fullUserListError: string = '';
-  editUserMessage: string = '';
   accountTypeForm = new FormGroup({
     _id: new FormControl(''),
     username: new FormControl(''),
@@ -36,6 +34,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.manageUserMessage = _msg));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.manageUsers = _list));
     this.subscriptions.add(this.userService.activeUser.subscribe(_user => this.activeUser = _user));
@@ -58,18 +57,12 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     return target === 'general' ? true : false;
   };
 
-  handleMissingToken(): void {
-    this.manageUserMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#manageUserMsg');
-    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
-  };
-
   handlePermissions(user: User): void {
     const permission = this.compareAccountTypes(user);
 
     if (!permission) {
       $('#editUserAccountTypeBtn').prop('disabled', true);
-      this.editUserMessage = 'Cannot change account type for users with higher permissions';
+      this.userService.changeSystemMsg('Cannot change account type for users with higher permissions');
       this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
     };
   };
@@ -77,7 +70,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   handlePersonalAccount(target: any): void {
     if (this.activeUser!._id === target._id) {
       $('#editUserAccountTypeBtn').prop('disabled', true);
-      this.editUserMessage = 'Cannot modify your own account type';
+      this.userService.changeSystemMsg('Cannot modify your own account type');
       this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
     };
   };
@@ -104,7 +97,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   getStoreUsers(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#manageUserMsg');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     this.userService.getStoreUsers(token, storeId).subscribe(_list => {
@@ -113,7 +106,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
         this.userService.changeStoreUsers(_list.msg);
       } else {
         this.userService.changeStoreUsers([]);
-        this.manageUserMessage = 'No users found for this location';
+        this.userService.changeSystemMsg('No users found for this location');
         this.globalService.displayMsg('alert-danger', '#manageUserMsg');
       };
     });
@@ -121,7 +114,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   getFullUserList(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#manageUserMsg');
     $('#updateStoreUsersBtn').prop('disabled', false);
     $('#addUserMsgContainer').css('display', 'none');
     $('#manageUserMsgContainer').css('display', 'none');
@@ -142,7 +135,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   onEditUser(user: User): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#manageUserMsg');
     $('#editUserAccountTypeBtn').prop('disabled', false);
     $('#editUserAccountTypeMsgContainer').css('display', 'none');
     $('#manageUserMsgContainer').css('display', 'none');
@@ -160,7 +153,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   onRemoveUser(user: User): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#manageUserMsg');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
     if (this.activeUser!._id === user._id) return this.handleRemovePersonal();
     const payload = this.buildRemovalPayload(user._id, storeId);
@@ -169,10 +162,10 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       if (_store.status === 200) {
         if (_store.token) localStorage.setItem('token', _store.token);
         this.userService.changeStoreUsers(_store.msg.users);
-        this.manageUserMessage = `${user.username} has been removed`;
+        this.userService.changeSystemMsg(`${user.username} has been removed`);
         this.globalService.displayMsg('alert-success', '#manageUserMsg');
       } else {
-        this.manageUserMessage = _store.msg;
+        this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#manageUserMsg');
       };
     });
@@ -181,14 +174,14 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   confirmRemoval(): void {
     $('#confirmRemovalBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#confirmRemovalMsg', '#confirmRemovalModal');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
     const payload = this.buildRemovalPayload(this.activeUser!._id, storeId);
 
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
         if (_store.token) localStorage.setItem('token', _store.token);
-        this.confirmRemovalMessage = 'You have been removed from this location';
+        this.userService.changeSystemMsg('You have been removed from this location');
         this.globalService.displayMsg('alert-success', '#confirmRemovalMsg');
         
         setTimeout(() => { 
@@ -196,7 +189,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
           this.globalService.redirectUser('store-list');
         }, this.globalService.timeout);
       } else {
-        this.confirmRemovalMessage = _store.msg;
+        this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#confirmRemovalMsg');
       };
     });

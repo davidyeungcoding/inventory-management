@@ -16,7 +16,7 @@ import { Ingredient } from 'src/app/interfaces/ingredient';
 export class CreateIngredientComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   ingredientList: Ingredient[] = [];
-  createMessage: string = '';
+  createMessage?: string;
   createIngredient = new FormGroup({
     name: new FormControl(''),
     storeId: new FormControl('')
@@ -30,6 +30,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.createMessage = _msg));
   }
 
   ngOnDestroy(): void {
@@ -51,7 +52,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     const check = this.globalService.testName(name);
 
     if(!check) {
-      this.createMessage = 'Please enter a valid item name. Name may not include special characters.';
+      this.userService.changeSystemMsg('Please enter a valid item name. Name may not include special characters.');
       this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
       $('#createIngredientBtn').prop('disabled', false);
     };
@@ -65,16 +66,6 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList(list);
   };
 
-  handleMissingToken(): void {
-    this.createMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
-    
-    setTimeout(() => {
-      (<any>$('#createIngredientModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -83,7 +74,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     $('#createIngredientMsgContainer').css('display', 'none');
     $('#createIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#createIngredientMsg', '#createIngredientModal');
     const form = this.createIngredient.value;
     form.storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
     if (!this.validateName(form.name)) return;
@@ -91,7 +82,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.createIngredient(form, token).subscribe(_ingredient => {
       if (_ingredient.status === 201) {
         if (_ingredient.token) localStorage.setItem('token', _ingredient.token);
-        this.createMessage = 'Ingredient successfully created';
+        this.userService.changeSystemMsg('Ingredient successfully created');
         this.globalService.displayMsg('alert-success', '#createIngredientMsg');
         this.addIngredientToList(_ingredient.msg);
 
@@ -100,7 +91,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
           this.clearForm();
         }, this.globalService.timeout);
       } else {
-        this.createMessage = _ingredient.msg;
+        this.userService.changeSystemMsg(_ingredient.msg);
         this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
         $('#createIngredientBtn').prop('disabled', false);
       };

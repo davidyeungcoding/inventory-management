@@ -24,9 +24,9 @@ export class StoreListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.storeListMessage = _msg));
+    this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
     this.getStoreList();
   }
 
@@ -62,7 +62,8 @@ export class StoreListComponent implements OnInit, OnDestroy {
   };
 
   onStoreActionRedirect(route: string, storeId: string): void {
-    // to do: handle hide error message container on redirect
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#storeMsg');
     this.globalService.storeActionRedirect(route, storeId);
   };
 }

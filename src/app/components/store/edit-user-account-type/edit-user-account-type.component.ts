@@ -12,10 +12,10 @@ import { User } from 'src/app/interfaces/user';
   styleUrls: ['./edit-user-account-type.component.css']
 })
 export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
-  @Input() editUserAccountTypeMessage?: string;
   @Input() accountTypeForm: any;
   private subscriptions = new Subscription();
   private storeUsers?: User[];
+  editUserAccountTypeMessage?: string;
   accountType: any;
 
   constructor(
@@ -24,6 +24,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editUserAccountTypeMessage = _msg));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.storeUsers = _list));
   }
@@ -35,16 +36,6 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   // ======================
   // || Helper Functions ||
   // ======================
-
-  handleMissingToken(): void {
-    this.editUserAccountTypeMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
-    
-    setTimeout(() => {
-      (<any>$('#editUserAccountTypeModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
 
   replaceUser(user: User): void {
     const temp = [...this.storeUsers!];
@@ -67,11 +58,11 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     $('#editUserAccountTypeMsgContainer').css('display', 'none');
     $('#editUserAccountTypeBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#editUserAccountTypeMsg', '#editUserAccountTypeModal');
     const form = this.accountTypeForm.value;
 
     this.userService.updateAccountType(form, token).subscribe(_user => {
-      this.editUserAccountTypeMessage = _user.msg;
+      this.userService.changeSystemMsg(_user.msg);
 
       if (_user.status === 200) {
         if (_user.token) localStorage.setItem('token', _user.token);

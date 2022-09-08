@@ -14,10 +14,10 @@ import { User } from 'src/app/interfaces/user';
 })
 export class AddUserComponent implements OnInit, OnDestroy {
   @Input() filteredUserList!: User[];
-  @Input() addUserMessage!: string;
   @Input() storeUsers!: User[];
   private subscriptions = new Subscription();
   private toChange: any = {};
+  addUserMessage!: string;
   
 
   constructor(
@@ -27,6 +27,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.addUserMessage = _msg));
     this.subscriptions.add(this.userService.toChange.subscribe(_obj => this.toChange = _obj));
   }
 
@@ -42,16 +43,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
     const temp = {...this.toChange};
     temp[id] ? delete temp[id] : temp[id] = action;
     this.userService.changeToChange(temp);
-  };
-
-  handleMissingToken(): void {
-    this.addUserMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#addUserMsg');
-    
-    setTimeout(() => {
-      (<any>$('#manageUserModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
   };
 
   // =======================
@@ -72,11 +63,11 @@ export class AddUserComponent implements OnInit, OnDestroy {
     $('#updateStoreUsersBtn').prop('disabled', true);
     $('#addUserMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#addUserMsg', '#manageUserModal');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
     if (!Object.keys(this.toChange).length) {
-      this.addUserMessage = 'No changes detected';
+      this.userService.changeSystemMsg('No changes detected');
       this.globalService.displayMsg('alert-danger', '#addUserMsg');
       $('#updateStoreUsersBtn').prop('disabled', false);
       return;
@@ -90,12 +81,12 @@ export class AddUserComponent implements OnInit, OnDestroy {
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
         if (_store.token) localStorage.setItem('token', _store.token);
-        this.addUserMessage = 'Store users have been updated';
+        this.userService.changeSystemMsg('Store users have been updated');
         this.globalService.displayMsg('alert-success', '#addUserMsg');
         this.userService.changeStoreUsers(_store.msg.users);
         setTimeout(() => { (<any>$('#manageUserModal')).modal('hide') }, this.globalService.timeout);
       } else {
-        this.addUserMessage = _store.msg;
+        this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#addUserMsg');
         $('#updateStoreUsersBtn').prop('disabled', false);
       };

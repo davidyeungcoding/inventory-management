@@ -3,7 +3,7 @@
 /* ============= */
 
 #itemListMsg {
-  margin: 2rem auto;
+  margin: auto;
   width: var(--base-width-wide);
 }
 

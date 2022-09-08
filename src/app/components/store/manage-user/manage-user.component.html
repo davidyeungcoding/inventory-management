@@ -67,8 +67,7 @@
       </div>
 
       <div class="modal-body">
-        <app-edit-user-account-type [accountTypeForm]="accountTypeForm"
-          [editUserAccountTypeMessage]="editUserMessage"></app-edit-user-account-type>
+        <app-edit-user-account-type [accountTypeForm]="accountTypeForm"></app-edit-user-account-type>
       </div>
     </div>
   </div>
@@ -90,7 +89,7 @@
 
       <div class="modal-body">
         <div class="msg-container" id="confirmRemovalMsgContainer">
-          <h5 class="alert alert-msg" id="confirmRemovalMsg">{{ confirmRemovalMessage }}</h5>
+          <h5 class="alert alert-msg" id="confirmRemovalMsg">{{ manageUserMessage }}</h5>
         </div>
 
         <h4 class="modal-title">Are you sure you want to remove yourself from this location?</h4>
@@ -125,9 +124,7 @@
       </div>
 
       <div class="modal-body">
-        <app-add-user [storeUsers]="manageUsers"
-        [addUserMessage]="fullUserListError"
-        [filteredUserList]="filteredUserList"></app-add-user>
+        <app-add-user [storeUsers]="manageUsers" [filteredUserList]="filteredUserList"></app-add-user>
       </div>
     </div>
   </div>

@@ -31,22 +31,13 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.retrieveIngredientList();
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.errorMessage = _msg));
   }
 
   ngOnDestroy(): void {
     this.ingredientService.changeIngredientList([]);
     this.subscriptions.unsubscribe();
   }
-
-  // =====================
-  // || Helper Functins ||
-  // =====================
-
-  handleMissingToken(): void {
-    this.errorMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#ingredientListMsg');
-    setTimeout(() => { this.userService.logout() }, this.globalService.timeoutLong);
-  };
 
   // =======================
   // || General Functions ||
@@ -62,7 +53,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.ingredientService.changeIngredientList(_list.msg);
       } else {
-        this.errorMessage = _list.msg;
+        this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#ingredientListMsg');
       };
     });
@@ -70,7 +61,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
 
   onEditIngredient(ingredient: Ingredient): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
     this.targetIngredient = ingredient;
     $('#editIngredientBtn').prop('disabled', false);
     $('#editIngredientMsgContainer').css('display', 'none');
@@ -85,7 +76,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
 
   onDeleteIngredient(ingredient: Ingredient): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
     this.targetIngredient = ingredient;
     $('#deleteIngredientBtn').prop('disabled', false);
     $('#deleteIngredientMsgContainer').css('display', 'none');
@@ -94,9 +85,9 @@ export class IngredientListComponent implements OnInit, OnDestroy {
 
   onCreateIngredient(): void {
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
     $('#createIngredientBtn').prop('disabled', false);
-    $('#addIngredientMsgContainer').css('display', 'none');
+    $('#createIngredientMsgContainer').css('display', 'none');
     (<any>$('#createIngredientModal')).modal('show');
   };
 

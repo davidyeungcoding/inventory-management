@@ -26,6 +26,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.deleteMessage = _msg));
   }
 
   ngOnDestroy(): void {
@@ -49,16 +50,6 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList(list);
   };
 
-  handleMissingToken(): void {
-    this.deleteMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg');
-    
-    setTimeout(() => {
-      (<any>$('#deleteIngredientModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -67,10 +58,10 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
     $('#deleteIngredientMsgContainer').css('display', 'none');
     $('#deleteIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#deleteIngredientMsg', '#deleteIngredientModal');
 
     this.ingredientService.deleteIngredient(this.targetIngredient!, token).subscribe(_res => {
-      this.deleteMessage = _res.msg;
+      this.userService.changeSystemMsg(_res.msg);
 
       if (_res.status === 200) {
         if (_res.token) localStorage.setItem('token', _res.token);

@@ -27,6 +27,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
+    this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editMessage = _msg));
   }
 
   ngOnDestroy(): void {
@@ -50,10 +51,17 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   };
 
   validateName(name: any): boolean {
+    if (!name.length) {
+      this.userService.changeSystemMsg('No changes detected');
+      this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
+      $('#editIngredientBtn').prop('disabled', false);
+      return false;
+    };
+
     const check = this.globalService.testName(name);
 
     if (!check) {
-      this.editMessage = 'Please enter a valid item name. Name may not include special characters.';
+      this.userService.changeSystemMsg('Please enter a valid item name. Name may not include special characters.');
       this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
       $('#editIngredientBtn').prop('disabled', false);
     };
@@ -74,16 +82,6 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList(list);
   };
 
-  handleMissingToken(): void {
-    this.editMessage = this.globalService.missingTokenMsg;
-    this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
-
-    setTimeout(() => {
-      (<any>$('#editIngredientModal')).modal('hide');
-      this.userService.logout();
-    }, this.globalService.timeoutLong);
-  };
-
   // =======================
   // || General Functions ||
   // =======================
@@ -92,7 +90,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
     $('#editIngredientMsgContainer').css('display', 'none');
     $('#editIngredientBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
-    if (!token) return this.handleMissingToken();
+    if (!token) return this.userService.handleMissingTokenModal('#editIngredientMsg', '#editIngredientModal');
     const form = this.editIngredient.value;
     if (!this.validateName(form.name)) return;
 
@@ -106,12 +104,12 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
     this.ingredientService.editIngredient(payload, token).subscribe(_ingredient => {
       if (_ingredient.status === 200) {
         if (_ingredient.token) localStorage.setItem('token', _ingredient.token);
-        this.editMessage = 'Ingredient successfully updated';
+        this.userService.changeSystemMsg('Ingredient successfully updated');
         this.globalService.displayMsg('alert-success', '#editIngredientMsg');
         this.replaceIngredient(_ingredient.msg);
         setTimeout(() => { (<any>$('#editIngredientModal')).modal('hide') }, this.globalService.timeout);
       } else {
-        this.editMessage = _ingredient.msg;
+        this.userService.changeSystemMsg(_ingredient.msg);
         this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
         $('#editIngredientBtn').prop('disabled', false);
       };
