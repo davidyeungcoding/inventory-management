@@ -1,0 +1,16 @@
+<div class="msg-container" id="confirmRemovalMsgContainer">
+  <h5 class="alert alert-msg" id="confirmRemovalMsg">{{ removeUserMessage }}</h5>
+</div>
+
+<h4 class="modal-title">Are you sure you want to remove yourself from this location?</h4>
+
+<div class="modal-btn-container">
+  <button type="button"
+    class="btn btn-secondary modal-btn"
+    id="confirmRemovalBtn"
+    (click)="confirmRemoval()">Confirm</button>
+
+  <button type="button"
+    class="btn btn-secondary modal-btn"
+    data-bs-dismiss="modal">Cancel</button>
+</div>

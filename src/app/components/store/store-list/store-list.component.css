@@ -24,6 +24,7 @@
   padding: 16px 0;
   max-width: var(--base-width-wide);
   background-color: var(--color-primary);
+  border: solid 1px var(--color-secondary);
 }
 
 .store-details {

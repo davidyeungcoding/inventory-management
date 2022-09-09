@@ -37,8 +37,30 @@
           (click)="onStoreActionRedirect('manage-user', store._id)">Manage Users</li>
 
         <li *ngIf="accountType.manager"
-          class="store-action">Delete Store</li>
+          class="store-action"
+          (click)="onDeleteStore(store)">Delete Store</li>
       </ul>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade"
+  id="deleteStoreModal"
+  tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Store Deletion</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <app-delete-store [targetStore]="targetStore!"></app-delete-store>
+      </div>
     </div>
   </div>
 </div>

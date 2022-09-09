@@ -3,6 +3,7 @@
   padding: 32px 28px;
   max-width: var(--base-width);
   background-color: var(--color-primary);
+  border: solid 1px var(--color-secondary);
 }
 
 .form-group-two {

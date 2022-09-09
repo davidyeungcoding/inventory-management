@@ -68,6 +68,14 @@ export class StoreService {
     );
   };
 
+  deleteStore(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/delete`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // ==========================
   // || Change Observerables ||
   // ==========================

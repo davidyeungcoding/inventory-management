@@ -13,6 +13,7 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class StoreListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  targetStore?: Store;
   storeListMessage: string = '';
   storeList: Store[] = [];
   accountType: any;
@@ -65,5 +66,14 @@ export class StoreListComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#storeMsg');
     this.globalService.storeActionRedirect(route, storeId);
+  };
+
+  onDeleteStore(store: Store): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#storeMsg');
+    $('#deleteStoreBtn').prop('disabled', false);
+    $('#deleteStoreMsgContainer').css('display', 'none');
+    this.targetStore = store;
+    (<any>$('#deleteStoreModal')).modal('show');
   };
 }

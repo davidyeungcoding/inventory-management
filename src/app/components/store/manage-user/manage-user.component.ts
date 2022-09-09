@@ -171,30 +171,6 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     });
   };
 
-  confirmRemoval(): void {
-    $('#confirmRemovalBtn').prop('disabled', true);
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingTokenModal('#confirmRemovalMsg', '#confirmRemovalModal');
-    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    const payload = this.buildRemovalPayload(this.activeUser!._id, storeId);
-
-    this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
-      if (_store.status === 200) {
-        if (_store.token) localStorage.setItem('token', _store.token);
-        this.userService.changeSystemMsg('You have been removed from this location');
-        this.globalService.displayMsg('alert-success', '#confirmRemovalMsg');
-        
-        setTimeout(() => { 
-          (<any>$('#confirmRemovalModal')).modal('hide');
-          this.globalService.redirectUser('store-list');
-        }, this.globalService.timeout);
-      } else {
-        this.userService.changeSystemMsg(_store.msg);
-        this.globalService.displayMsg('alert-danger', '#confirmRemovalMsg');
-      };
-    });
-  };
-
   onBack(): void {
     this.globalService.redirectUser('store-list');
   };

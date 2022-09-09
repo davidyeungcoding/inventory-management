@@ -25,6 +25,8 @@ import { AddUserComponent } from './components/store/add-user/add-user.component
 import { EditUserAccountTypeComponent } from './components/store/edit-user-account-type/edit-user-account-type.component';
 import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
 import { SearchStoreComponent } from './components/store/search-store/search-store.component';
+import { DeleteStoreComponent } from './components/store/delete-store/delete-store.component';
+import { RemoveUserComponent } from './components/store/remove-user/remove-user.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import { SearchStoreComponent } from './components/store/search-store/search-sto
     AddUserComponent,
     EditUserAccountTypeComponent,
     StoreDetailsComponent,
-    SearchStoreComponent
+    SearchStoreComponent,
+    DeleteStoreComponent,
+    RemoveUserComponent
   ],
   imports: [
     BrowserModule,
