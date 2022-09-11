@@ -1,6 +1,16 @@
 <div class="container">
-  <div class="row search-group">
-    <app-search-store></app-search-store>
+  <div class="row search-group-container">
+    <div class="search-group">
+      <div class="search-form">
+        <app-search-store></app-search-store>
+      </div>
+  
+      <button *ngIf="accountType.manager"
+        type="button"
+        class="btn btn-secondary"
+        id="createLocation"
+        (click)="onCreateStore()"><i class="fas fa-store-alt"></i>&nbsp;Create Store</button>
+    </div>
     
     <div class="msg-container" id="storeMsgContainer">
       <h5 class="alert alert-msg" id="storeMsg">{{ storeListMessage }}</h5>
@@ -44,9 +54,7 @@
   </div>
 </div>
 
-<div class="modal fade"
-  id="deleteStoreModal"
-  tabindex="-1">
+<div class="modal fade" id="deleteStoreModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -60,6 +68,25 @@
 
       <div class="modal-body">
         <app-delete-store [targetStore]="targetStore!"></app-delete-store>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="createStoreModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Store</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <app-create-store [createStore]="createStore"></app-create-store>
       </div>
     </div>
   </div>

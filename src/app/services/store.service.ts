@@ -23,10 +23,20 @@ export class StoreService {
 
   private storeListSource = new BehaviorSubject<Store[]>([]);
   storeList = this.storeListSource.asObservable();
+  private selectedStateSource = new BehaviorSubject<string>('');
+  selectedState = this.selectedStateSource.asObservable();
 
   // =====================
   // || Router Requests ||
   // =====================
+
+  createStore(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.post(`${this.api}/create`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
 
   getStoreList(token: string) {
     const validateHeader = this.globalService.buildValidateHeaders(token);
@@ -88,5 +98,9 @@ export class StoreService {
     });
 
     this.storeListSource.next(list);
+  };
+
+  changeSelectedState(state: string): void {
+    this.selectedStateSource.next(state);
   };
 }

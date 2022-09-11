@@ -47,11 +47,11 @@ export class DeleteStoreComponent implements OnInit, OnDestroy {
     };
 
     this.storeService.deleteStore(token, payload).subscribe(_res => {
-      if (_res === 200) {
-        this.userService.changeSystemMsg('Store successfully deleted');
+      if (_res.status === 200) {
+        this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-success', '#deleteStoreMsg');
         this.storeService.changeStoreList(this.globalService.filterList([this.targetStore], this.storeList!, 0));
-        setTimeout(() => { (<any>$('#deleteStoreModal')).modal('hide') });
+        setTimeout(() => { (<any>$('#deleteStoreModal')).modal('hide') }, this.globalService.timeout);
       } else {
         this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-danger', '#deleteStoreMsg');

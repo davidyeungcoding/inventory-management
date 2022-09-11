@@ -221,10 +221,9 @@ router.put('/delete', auth.authenticateToken, auth.managerCheck, async (req, res
     const users = req.body.users;
     
     if (users.length) {
-      const userList = buildUserList(users);
       const payload = {
         _id: storeId,
-        userList: userList,
+        userList: users,
         action: 'remove'
       };
 

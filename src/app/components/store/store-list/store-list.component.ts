@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Store } from 'src/app/interfaces/store';
 
 import { GlobalService } from 'src/app/services/global.service';
 import { StoreService } from 'src/app/services/store.service';
 import { UserService } from 'src/app/services/user.service';
+
+import { Store } from 'src/app/interfaces/store';
 
 @Component({
   selector: 'app-store-list',
@@ -17,6 +19,13 @@ export class StoreListComponent implements OnInit, OnDestroy {
   storeListMessage: string = '';
   storeList: Store[] = [];
   accountType: any;
+  createStore = new FormGroup({
+    name: new FormControl('', Validators.required),
+    street: new FormControl('', Validators.required),
+    city: new FormControl('', Validators.required),
+    state: new FormControl('', Validators.required),
+    zip: new FormControl('', Validators.required)
+  });
 
   constructor(
     private globalService: GlobalService,
@@ -35,6 +44,20 @@ export class StoreListComponent implements OnInit, OnDestroy {
     this.storeService.changeStoreList([]);
     this.subscriptions.unsubscribe();
   }
+
+  // ======================
+  // || Helper Functions ||
+  // ======================
+
+  clearForm(): void {
+    this.createStore.setValue({
+      name: '',
+      street: '',
+      city: '',
+      state: '',
+      zip: ''
+    });
+  };
 
   // =======================
   // || General Functions ||
@@ -75,5 +98,21 @@ export class StoreListComponent implements OnInit, OnDestroy {
     $('#deleteStoreMsgContainer').css('display', 'none');
     this.targetStore = store;
     (<any>$('#deleteStoreModal')).modal('show');
+  };
+
+  onCreateStore(): void {
+    $('#storeMsgContainer').css('display', 'none');
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      $('#createLocation').prop('disabled', true);
+      return this.userService.handleMissingToken('#storeMsg');
+    };
+
+    $('#createStoreBtn').prop('disabled', false);
+    $('#createStoreMsgContainer').css('display', 'none');
+    this.storeService.changeSelectedState('---Select a State---');
+    this.clearForm();
+    (<any>$('#createStoreModal')).modal('show');
   };
 }

@@ -1,4 +1,5 @@
-<form [formGroup]="searchQuery" (ngSubmit)="onSearch()">
+<form [formGroup]="searchQuery"
+  (ngSubmit)="onSearch()">
   <div class="search-form">
     <input type="text"
       class="form-field"
@@ -8,6 +9,10 @@
   
     <Button type="submit"
       class="btn btn-secondary"
-      id="searchStoreBtn">Search</Button>
+      id="searchStoreBtn">
+      <i class="fas fa-search"></i>
+      
+      <span class="search-text">&nbsp;Search</span>
+    </Button>
   </div>
 </form>

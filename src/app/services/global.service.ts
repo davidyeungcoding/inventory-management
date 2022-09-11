@@ -92,11 +92,6 @@ export class GlobalService {
     return temp;
   };
 
-  checkToken(token: any, modal: string): boolean {
-    if (!token) (<any>$(`${modal}`)).modal('hide');
-    return token ? true : false;
-  };
-
   highlight(id: string, toChange: any): void {
     toChange[id] ? $(`#${id}`).removeClass('selected')
     : $(`#${id}`).addClass('selected');

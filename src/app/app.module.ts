@@ -27,6 +27,7 @@ import { StoreDetailsComponent } from './components/store/store-details/store-de
 import { SearchStoreComponent } from './components/store/search-store/search-store.component';
 import { DeleteStoreComponent } from './components/store/delete-store/delete-store.component';
 import { RemoveUserComponent } from './components/store/remove-user/remove-user.component';
+import { CreateStoreComponent } from './components/store/create-store/create-store.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { RemoveUserComponent } from './components/store/remove-user/remove-user.
     StoreDetailsComponent,
     SearchStoreComponent,
     DeleteStoreComponent,
-    RemoveUserComponent
+    RemoveUserComponent,
+    CreateStoreComponent
   ],
   imports: [
     BrowserModule,

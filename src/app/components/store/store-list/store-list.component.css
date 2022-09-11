@@ -2,9 +2,44 @@
 /* || Search Group || */
 /* ================== */
 
-.search-group {
-  margin: 2rem auto;
+.search-group-container {
+  margin: auto;
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-background);
   max-width: var(--base-width-wide);
+}
+
+.search-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0;
+}
+
+.search-form {
+  width: 100%;
+}
+
+@media screen and (min-width: 450px) {
+  .search-group {
+    padding: 0 12px;
+  }
+
+  .search-form {
+    width: 60%;
+  }
+}
+
+/* ===================== */
+/* || Create Location || */
+/* ===================== */
+
+#createLocation {
+  white-space: nowrap;
+  width: fit-content;
 }
 
 /* ============= */
@@ -45,9 +80,9 @@
 .store-actions-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  justify-content: center;
   margin: 0;
   padding: 0;
-  text-align: center;
 }
 
 .store-action {

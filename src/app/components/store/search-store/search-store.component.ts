@@ -19,6 +19,13 @@ export class SearchStoreComponent implements OnInit, OnDestroy {
   searchQuery = new FormGroup({
     term: new FormControl('')
   });
+  createStore = new FormGroup({
+    name: new FormControl(''),
+    street: new FormControl(''),
+    city: new FormControl(''),
+    state: new FormControl(''),
+    zip: new FormControl('')
+  });
 
   constructor(
     private globalService: GlobalService,

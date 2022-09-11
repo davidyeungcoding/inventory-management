@@ -1,0 +1,93 @@
+<div class="container">
+  <div class="msg-container" id="createStoreMsgContainer">
+    <h5 class="alert alert-msg" id="createStoreMsg">{{ createStoreMessage }}</h5>
+  </div>
+
+  <form [formGroup]="createStore" (ngSubmit)="onCreateStore()">
+    <div class="form-group-two">
+      <div class="form-group">
+        <label for="createStoreName">Name:</label>
+  
+        <input type="text"
+          class="form-field"
+          id="createStoreName"
+          required
+          formControlName="name">
+
+        <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="error-text">
+          <span *ngIf="name?.errors?.['required']">Name is required</span>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="createStoreStreet">Street:</label>
+  
+        <input type="text"
+          class="form-field"
+          id="createStoreStreet"
+          required
+          formControlName="street">
+
+        <div *ngIf="street?.invalid && (street?.dirty || street?.touched)" class="error-text">
+          <span *ngIf="street?.errors?.['required']">Street is required</span>
+        </div>
+      </div>
+  
+      <div class="form-field">
+        <label for="createStoreCity">City:</label>
+  
+        <input type="text"
+          class="form-field"
+          id="createStoreCity"
+          required
+          formControlName="city">
+
+        <div *ngIf="city?.invalid && (city?.dirty || city?.touched)" class="error-text">
+          <span *ngIf="city?.errors?.['required']">City is required</span>
+        </div>
+      </div>
+  
+      <div class="dropdown">
+        <button type="button"
+          class="btn btn-light dropdown-toggle"
+          id="createStoreStreetSelection"
+          data-bs-toggle="dropdown"
+          aria-expanded="false">{{ selectedState }}</button>
+  
+          <ul class="dropdown-menu">
+            <li *ngFor="let state of states">
+              <a class="dropdown-item" (click)="onChangeSelectedState(state)">{{ state }}</a>
+            </li>
+          </ul>
+
+          <div *ngIf="!validState" class="error-text" id="invalidState">
+            <span>State is required</span>
+          </div>
+      </div>
+  
+      <div class="form-field">
+        <label for="createStoreZip">Zip:</label>
+  
+        <input type="text"
+          class="form-field"
+          id="createStoreZip"
+          required
+          formControlName="zip">
+
+        <div *ngIf="zip?.invalid && (zip?.dirty || zip?.touched)" class="error-text">
+          <span *ngIf="zip?.errors?.['required']">Zip is required</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="createStoreBtn">Create Store</button>
+  
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </form>
+</div>
