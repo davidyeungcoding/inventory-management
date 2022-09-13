@@ -14,7 +14,7 @@ import { IngredientListComponent } from './components/ingredient/ingredient-list
 import { CreateIngredientComponent } from './components/ingredient/create-ingredient/create-ingredient.component';
 import { DeleteIngredientComponent } from './components/ingredient/delete-ingredient/delete-ingredient.component';
 import { EditIngredientComponent } from './components/ingredient/edit-ingredient/edit-ingredient.component';
-import { CreateUserComponent } from './components/user/create-user/create-user.component';
+import { CreateUserComponent } from './components/home/create-user/create-user.component';
 import { EditUserComponent } from './components/user/edit-user/edit-user.component';
 import { UserListComponent } from './components/user/user-list/user-list.component';
 import { HomeComponent } from './components/home/home/home.component';
@@ -28,6 +28,8 @@ import { SearchStoreComponent } from './components/store/search-store/search-sto
 import { DeleteStoreComponent } from './components/store/delete-store/delete-store.component';
 import { RemoveUserComponent } from './components/store/remove-user/remove-user.component';
 import { CreateStoreComponent } from './components/store/create-store/create-store.component';
+import { NavbarComponent } from './components/navbar/navbar/navbar.component';
+import { StoreListIntersectionDirective } from './directives/store-list-intersection.directive';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { CreateStoreComponent } from './components/store/create-store/create-sto
     SearchStoreComponent,
     DeleteStoreComponent,
     RemoveUserComponent,
-    CreateStoreComponent
+    CreateStoreComponent,
+    NavbarComponent,
+    StoreListIntersectionDirective
   ],
   imports: [
     BrowserModule,

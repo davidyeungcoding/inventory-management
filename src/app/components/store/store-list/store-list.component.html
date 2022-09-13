@@ -17,6 +17,8 @@
     </div>
   </div>
 
+  <div appStoreListIntersection></div>
+
   <div class="row store-container" *ngFor="let store of storeList">
     <div class="container store-details">
       <h3 class="store-title">{{ store.name }}</h3>
@@ -52,6 +54,13 @@
       </ul>
     </div>
   </div>
+</div>
+
+<div class="fixed-element">
+  <button type="button"
+    class="btn btn-secondary"
+    id="toTopBtn"
+    (click)="onGoToTop()">Back to Top</button>
 </div>
 
 <div class="modal fade" id="deleteStoreModal" tabindex="-1">

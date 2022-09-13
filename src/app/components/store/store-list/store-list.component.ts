@@ -45,6 +45,8 @@ export class StoreListComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
+  // to do: add 'Back to Top' button
+
   // ======================
   // || Helper Functions ||
   // ======================
@@ -86,6 +88,8 @@ export class StoreListComponent implements OnInit, OnDestroy {
   };
 
   onStoreActionRedirect(route: string, storeId: string): void {
+    // to do: remove aria-current from navbar option
+    // to do: remove .active class from navbar option
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#storeMsg');
     this.globalService.storeActionRedirect(route, storeId);
@@ -114,5 +118,9 @@ export class StoreListComponent implements OnInit, OnDestroy {
     this.storeService.changeSelectedState('---Select a State---');
     this.clearForm();
     (<any>$('#createStoreModal')).modal('show');
+  };
+
+  onGoToTop(): void {
+    $(window).scrollTop(0);
   };
 }

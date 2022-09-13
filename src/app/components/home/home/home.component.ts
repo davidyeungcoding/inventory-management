@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { GlobalService } from 'src/app/services/global.service';
 
+import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({

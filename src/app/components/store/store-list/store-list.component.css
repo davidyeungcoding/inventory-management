@@ -94,3 +94,21 @@
   cursor: pointer;
   color: var(--color-tertiary);
 }
+
+/* =================== */
+/* || Fixed Element || */
+/* =================== */
+
+.fixed-element {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  translate: -50% 100%;
+}
+
+#toTopBtn {
+  border-radius: 10px 10px 0 0;
+  width: 150px;
+  transition-duration: .75s;
+  transition-property: translate;
+}
