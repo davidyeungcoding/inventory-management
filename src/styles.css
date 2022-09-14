@@ -62,16 +62,44 @@ td>button {
 
 .table-end-btn {
   margin-top: 1rem;
-  width: 9rem;
+  width: 80%;
+}
+
+@media screen and (min-width: 506px) {
+  .table-end-btn {
+    width: 9rem;
+  }
+}
+
+/* ==================== */
+/* || Form Group Two || */
+/* ==================== */
+
+.form-group-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  column-gap: 16px;
+  justify-content: space-evenly;
+  overflow-x: auto;
+}
+
+.form-selection-group-two {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 35%));
+  column-gap: 30px;
+  justify-content: space-evenly;
+  overflow-x: auto;
+}
+
+@media screen and (min-width: 992px) {
+  .form-selection-group-two {
+    column-gap: 0;
+  }
 }
 
 /* ========== */
 /* || Form || */
 /* ========== */
-
-.modal-form-container {
-  margin: 0 .5rem;
-}
 
 .form-section {
   border: solid;
@@ -86,14 +114,6 @@ td>button {
   padding: 0 1rem;
   margin-left: 1rem;
   background-color: var(--background-color);
-}
-
-.form-group-two {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  column-gap: 16px;
-  justify-content: space-evenly;
-  overflow-x: auto;
 }
 
 .form-group {
@@ -117,9 +137,20 @@ label {
 /* ================ */
 
 .radio-container {
-  padding-bottom: 1rem;
   display: flex;
-  justify-content: space-evenly;
+  flex-direction: column;
+  row-gap: 16px;
+  width: fit-content;
+  margin: auto;
+  padding-bottom: 1rem;
+}
+
+@media screen and (min-width: 466px) {
+  .radio-container {
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: auto;
+  }
 }
 
 .radio-item:hover {
@@ -196,6 +227,10 @@ section:last-of-type {
 /* || Modal || */
 /* =========== */
 
+.modal-form-container {
+  margin: 0 .5rem;
+}
+
 .modal-group-one {
   margin: auto;
 }
@@ -230,7 +265,7 @@ section:last-of-type {
   margin-top: 0px;
 }
 
-@media screen and (min-width: 485px) {
+@media screen and (min-width: 466px) {
 
   .modal-btn-container {
     display: flex;

@@ -38,14 +38,13 @@ export class StoreListComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.storeListMessage = _msg));
     this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
     this.getStoreList();
+    this.globalService.makeActiveNav('#navStoreList');
   }
 
   ngOnDestroy(): void {
     this.storeService.changeStoreList([]);
     this.subscriptions.unsubscribe();
   }
-
-  // to do: add 'Back to Top' button
 
   // ======================
   // || Helper Functions ||
@@ -88,10 +87,9 @@ export class StoreListComponent implements OnInit, OnDestroy {
   };
 
   onStoreActionRedirect(route: string, storeId: string): void {
-    // to do: remove aria-current from navbar option
-    // to do: remove .active class from navbar option
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#storeMsg');
+    this.globalService.removeActiveNav('#navStoreList');
     this.globalService.storeActionRedirect(route, storeId);
   };
 

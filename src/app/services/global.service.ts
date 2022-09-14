@@ -100,4 +100,16 @@ export class GlobalService {
   clearHighlight(): void {
     $('.selector-option').removeClass('selected');
   };
+
+  removeActiveNav(navId: string): void {
+    // if (!$(navId)[0]) return;
+    $(navId).removeClass('active');
+    $(navId)[0].ariaCurrent = null;
+  };
+
+  makeActiveNav(navId: string): void {
+    if (!$(navId)[0]) return;
+    $(navId).addClass('active');
+    $(navId)[0].ariaCurrent = 'page';
+  };
 }

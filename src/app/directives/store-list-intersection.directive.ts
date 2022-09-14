@@ -35,11 +35,8 @@ export class StoreListIntersectionDirective implements OnInit, AfterViewInit, On
 
   checkVisible(): void {
     this.storeListObserver = new IntersectionObserver(entry => {
-      if (entry[0].intersectionRatio === 0) {
-        $('#toTopBtn').css({ translate: "0 -100%" });
-      } else {
-        $('#toTopBtn').css({ translate: '0 100%' });
-      };
+      (entry[0].intersectionRatio === 0) ? $('#toTopBtn').css({ translate: "0 -100%" })
+      : $('#toTopBtn').css({ translate: '0 100%' });
     });
   };
 }

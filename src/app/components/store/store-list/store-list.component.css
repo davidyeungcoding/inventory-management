@@ -20,15 +20,17 @@
 }
 
 .search-form {
+  padding-right: 58px;
   width: 100%;
 }
 
-@media screen and (min-width: 450px) {
+@media screen and (min-width: 576px) {
   .search-group {
-    padding: 0 12px;
+    padding: 0 20px;
   }
 
   .search-form {
+    padding-right: 0;
     width: 60%;
   }
 }
@@ -76,6 +78,10 @@
 /* =================== */
 /* || Store Actions || */
 /* =================== */
+
+#storeListContainer {
+  margin-bottom: 3rem;
+}
 
 .store-actions-list {
   display: grid;

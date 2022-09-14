@@ -1,31 +1,44 @@
 <nav *ngIf="activeUser" class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand">Inventory Management</a>
+    <div class="offcanvas-btn-container">
+      <button type="button"
+        class="btn offcanvas-toggler"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#navbarOffcanvas"
+        aria-controls="navbarOffcanvas">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+    </div>
 
-    <button type="button"
-      class="navbar-toggler"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarCollapse"
-      aria-controls="navbarCollapse"
-      aria-expanded="false"
-      aria-label="Toggle Navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <div class="offcanvas offcanvas-end"
+      id="navbarOffcanvas"
+      tabindex="-1"
+      aria-labelledby="navbarOffcanvas">
+      <div class="offcanvas-header">
+        <button type="button"
+          class="btn-close btn-close-white offcanvas-close-btn"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"></button>
+      </div>
 
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav me-auto-mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" id="navStoreList" aria-current="page">Store List</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" id="navUserAccount">User Account</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" (click)="onLogout()">Logout</a>
-        </li>
-      </ul>
+      <div class="offcanvas-body navbar-list-container">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active"
+              id="navStoreList"
+              (click)="onNavRedirect('store-list')"
+              aria-current="page">Store List</a>
+          </li>
+  
+          <li class="nav-item">
+            <a class="nav-link" id="navUserAccount">User Account</a>
+          </li>
+  
+          <li class="nav-item">
+            <a class="nav-link" (click)="onLogout()">Logout</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </nav>

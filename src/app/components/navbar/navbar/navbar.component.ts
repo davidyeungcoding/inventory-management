@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 
 import { User } from 'src/app/interfaces/user';
+import { GlobalService } from 'src/app/services/global.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,9 +13,11 @@ import { User } from 'src/app/interfaces/user';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private navLinks = ['store-list'];
   activeUser?: User|null;
 
   constructor(
+    private globalService: GlobalService,
     private userService: UserService
   ) { }
 
@@ -25,20 +28,32 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+  // ======================
+  // || Helper Functions ||
+  // ======================
 
-  // to do: When navigating different pages =>
-    // remove aria-current from the current option
-    // remove .active class from current option
-    // if navigating with the navbar
-      // add aria-current to the selected option
-      // add .active class to the selected option
-  // to do: figure out how to swap collapse navbar for off canvas
+  generateElementId(str: string): string {
+    const splitStr = str.split('-');
+    const temp = splitStr.map(elem => elem.charAt(0).toUpperCase() + elem.substring(1));
+    return `#nav${temp.join('')}`;
+  };
 
   // =======================
   // || General Functions ||
   // =======================
 
-  onNavigate(next: string): void {}
+  onNavRedirect(link: string): void {
+    const current = document.URL.substring(document.URL.lastIndexOf('/') + 1);
+    if (link === current) return;
+    
+    if (this.navLinks.includes(current)) {
+      const navId = this.generateElementId(current);
+      this.globalService.removeActiveNav(navId);
+    };
+
+    this.globalService.redirectUser(link);
+    (<any>$('#navbarOffcanvas')).offcanvas('hide');
+  };
 
   onLogout(): void {
     this.userService.logout();

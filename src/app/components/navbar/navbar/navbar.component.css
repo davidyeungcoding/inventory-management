@@ -1,3 +1,76 @@
+/* ============ */
+/* || Navbar || */
+/* ============ */
+
+@media screen and (max-width: 991px) {
+  nav {
+    background-color:hsl(0, 0%, 0%, 0%) !important;
+  }
+}
+
+.navbar-list-container {
+  justify-content: center;
+}
+
+.navbar-list-container>ul {
+  column-gap: 32px;
+}
+
 .nav-item {
+  font-size: 24px;
+  text-align: center;
   cursor: pointer;
+}
+
+@media screen and (min-width: 992px) {
+  .nav-item {
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 401px) {
+  .nav-item {
+    text-align: left;
+  }
+}
+
+/* ======================= */
+/* || Offcanvas Toggler || */
+/* ======================= */
+
+.offcanvas-toggler {
+  padding: 12px 12px 10px;
+  border: solid 2px var(--color-secondary);
+  border-radius: 50%;
+  position: fixed;
+  top: 7px;
+  right: 7px;
+  z-index: 1;
+}
+
+.offcanvas-toggler>span>i {
+  font-size: 28px;
+  height: 28px;
+  width: 28px;
+  color: var(--color-secondary);
+}
+
+@media screen and (min-width: 992px) {
+  .offcanvas-btn-container {
+    display: none;
+  }
+}
+
+/* =============== */
+/* || Offcanvas || */
+/* =============== */
+
+.offcanvas {
+  background-color: hsl(0, 0%, 0%, .8);
+}
+
+.offcanvas-close-btn {
+  position: fixed;
+  top: 27px;
+  right: 27px;
 }
