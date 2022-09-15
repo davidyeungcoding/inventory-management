@@ -8,6 +8,7 @@ import { IngredientListComponent } from './components/ingredient/ingredient-list
 import { ManageUserComponent } from './components/store/manage-user/manage-user.component';
 import { UserListComponent } from './components/user/user-list/user-list.component';
 import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
+import { UserAccountComponent } from './components/user/user-account/user-account.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -16,6 +17,8 @@ const routes: Routes = [
   { path: 'ingredient-list/:storeId', component: IngredientListComponent},
   { path: 'store-details/:storeId', component: StoreDetailsComponent},
   { path: 'manage-user/:storeId', component: ManageUserComponent },
+  { path: 'user-list', component: UserListComponent },
+  { path: 'user-account', component: UserAccountComponent },
   { path: '**', redirectTo: 'home' }
 ];
 

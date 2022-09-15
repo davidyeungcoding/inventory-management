@@ -16,7 +16,7 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
   @Input() createStore: any;
   private subscriptions = new Subscription();
   private storeList?: Store[];
-  states = this.globalService.states;
+  states?: string[];
   createStoreMessage?: string;
   selectedState?: string;
   validState: boolean = true;
@@ -31,6 +31,7 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.storeService.selectedState.subscribe(_state => this.selectedState = _state));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.createStoreMessage = _msg));
     this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
+    this.subscriptions.add(this.globalService.states.subscribe(_list => this.states = _list));
   }
 
   ngOnDestroy(): void {

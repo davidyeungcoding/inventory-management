@@ -15,7 +15,7 @@ import { Store } from 'src/app/interfaces/store';
 })
 export class StoreDetailsComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
-  states = this.globalService.states;
+  states?: string[];
   storeDetailsMessage?: string;
   storeDetails?: Store;
   selectedState?: string;
@@ -36,6 +36,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.storeDetailsMessage = _msg));
+    this.subscriptions.add(this.globalService.states.subscribe(_list => this.states = _list));
     this.getStoreDetails();
   }
 

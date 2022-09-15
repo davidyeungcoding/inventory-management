@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +16,17 @@ export class GlobalService {
   // || Fixed Value ||
   // =================
 
+  private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'user-account']);
+  navLinks = this.navLinksSource.asObservable();
   timeout = 1500;
   timeoutLong = 3500;
   missingTokenMsg = 'User missing authorization credentials, logging out shortly.';
-  states = ["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
+  private statesSource = new BehaviorSubject<string[]>(["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
     "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI",
     "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH",
     "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VI", "VT",
-    "WA", "WI", "WV", "WY"];
+    "WA", "WI", "WV", "WY"]);
+  states = this.statesSource.asObservable();
 
   // =======================
   // || General Functions ||
@@ -102,7 +106,6 @@ export class GlobalService {
   };
 
   removeActiveNav(navId: string): void {
-    // if (!$(navId)[0]) return;
     $(navId).removeClass('active');
     $(navId)[0].ariaCurrent = null;
   };
@@ -111,5 +114,11 @@ export class GlobalService {
     if (!$(navId)[0]) return;
     $(navId).addClass('active');
     $(navId)[0].ariaCurrent = 'page';
+  };
+
+  generateElementId(str: string): string {
+    const splitStr = str.split('-');
+    const temp = splitStr.map(elem => elem.charAt(0).toUpperCase() + elem.substring(1));
+    return `#nav${temp.join('')}`;
   };
 }

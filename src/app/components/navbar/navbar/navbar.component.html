@@ -22,16 +22,21 @@
       </div>
 
       <div class="offcanvas-body navbar-list-container">
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" appNavIntersection>
           <li class="nav-item">
-            <a class="nav-link active"
+            <a class="nav-link"
               id="navStoreList"
-              (click)="onNavRedirect('store-list')"
-              aria-current="page">Store List</a>
+              (click)="onNavRedirect('store-list')">Store List</a>
+          </li>
+
+          <li *ngIf="accountType.admin" class="nav-item">
+            <a class="nav-link" id="navUserList">User List</a>
           </li>
   
           <li class="nav-item">
-            <a class="nav-link" id="navUserAccount">User Account</a>
+            <a class="nav-link"
+              id="navUserAccount"
+              (click)="onNavRedirect('user-account')">User Account</a>
           </li>
   
           <li class="nav-item">

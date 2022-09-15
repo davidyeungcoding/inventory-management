@@ -13,8 +13,9 @@ import { GlobalService } from 'src/app/services/global.service';
 })
 export class NavbarComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
-  private navLinks = ['store-list'];
+  private navLinks?: string[];
   activeUser?: User|null;
+  accountType: any;
 
   constructor(
     private globalService: GlobalService,
@@ -22,21 +23,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.subscriptions.add(this.userService.activeUser.subscribe(_user => this.activeUser = _user));
+    this.subscriptions.add(this.globalService.navLinks.subscribe(_list => this.navLinks = _list));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
-  // ======================
-  // || Helper Functions ||
-  // ======================
-
-  generateElementId(str: string): string {
-    const splitStr = str.split('-');
-    const temp = splitStr.map(elem => elem.charAt(0).toUpperCase() + elem.substring(1));
-    return `#nav${temp.join('')}`;
-  };
 
   // =======================
   // || General Functions ||
@@ -46,8 +40,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     const current = document.URL.substring(document.URL.lastIndexOf('/') + 1);
     if (link === current) return;
     
-    if (this.navLinks.includes(current)) {
-      const navId = this.generateElementId(current);
+    if (this.navLinks!.includes(current)) {
+      const navId = this.globalService.generateElementId(current);
       this.globalService.removeActiveNav(navId);
     };
 
