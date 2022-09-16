@@ -17,6 +17,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
   @Input() storeUsers!: User[];
   private subscriptions = new Subscription();
   private toChange: any = {};
+  private timeout?: number;
   addUserMessage!: string;
   
 
@@ -28,6 +29,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.addUserMessage = _msg));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
     this.subscriptions.add(this.userService.toChange.subscribe(_obj => this.toChange = _obj));
   }
 
@@ -84,7 +86,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg('Store users have been updated');
         this.globalService.displayMsg('alert-success', '#addUserMsg');
         this.userService.changeStoreUsers(_store.msg.users);
-        setTimeout(() => { (<any>$('#manageUserModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#manageUserModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#addUserMsg');

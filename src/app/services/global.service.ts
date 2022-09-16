@@ -18,15 +18,14 @@ export class GlobalService {
 
   private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'user-account']);
   navLinks = this.navLinksSource.asObservable();
-  timeout = 1500;
-  timeoutLong = 3500;
-  missingTokenMsg = 'User missing authorization credentials, logging out shortly.';
   private statesSource = new BehaviorSubject<string[]>(["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
     "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI",
     "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH",
     "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VI", "VT",
     "WA", "WI", "WV", "WY"]);
   states = this.statesSource.asObservable();
+  private timeoutSource = new BehaviorSubject<number>(1500);
+  timeout = this.timeoutSource.asObservable();
 
   // =======================
   // || General Functions ||

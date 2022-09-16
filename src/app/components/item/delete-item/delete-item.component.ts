@@ -15,6 +15,7 @@ import { Item } from 'src/app/interfaces/item';
 export class DeleteItemComponent implements OnInit, OnDestroy {
   @Input() targetItem!: Item|null;
   private subscriptions = new Subscription();
+  private timeout?: number;
   itemList: Item[] = [];
   deleteMessage: String = '';
 
@@ -27,6 +28,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.deleteMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -67,7 +69,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
         if (_res.token) localStorage.setItem('token', _res.token);
         this.removeItemFromList();
         this.globalService.displayMsg('alert-success', '#deleteItemMsg');
-        setTimeout(() => { (<any>$('#deleteItemModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#deleteItemModal')).modal('hide') }, this.timeout);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteItemMsg');
         $('#deleteItemBtn').prop('disabled', false);

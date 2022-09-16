@@ -15,6 +15,7 @@ import { User } from 'src/app/interfaces/user';
 export class RemoveUserComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private activeUser?: User|null;
+  private timeout?: number;
   removeUserMessage?: string;
 
   constructor(
@@ -26,6 +27,7 @@ export class RemoveUserComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.removeUserMessage = _msg));
     this.subscriptions.add(this.userService.activeUser.subscribe(_user => this.activeUser = _user));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -65,7 +67,7 @@ export class RemoveUserComponent implements OnInit, OnDestroy {
         setTimeout(() => { 
           (<any>$('#confirmRemovalModal')).modal('hide');
           this.globalService.redirectUser('store-list');
-        }, this.globalService.timeout);
+        }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#confirmRemovalMsg');

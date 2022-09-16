@@ -16,6 +16,7 @@ import { Item } from 'src/app/interfaces/item';
 export class CreateItemComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
+  private timeout?: number;
   addMessage: string = '';
   createItem = new FormGroup({
     name: new FormControl(''),
@@ -34,6 +35,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.addMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -119,7 +121,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#createItemModal')).modal('hide');
           this.clearForm();
-        }, this.globalService.timeout);
+        }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-danger', '#createItemMsg');

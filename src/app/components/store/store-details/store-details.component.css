@@ -6,10 +6,6 @@
   border: solid 1px var(--color-secondary);
 }
 
-.form-group-two {
-  justify-content: space-between;
-}
-
 .dropdown {
   margin-bottom: 20px;
 }

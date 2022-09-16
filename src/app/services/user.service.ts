@@ -22,6 +22,13 @@ export class UserService {
     private http: HttpClient
   ) { }
 
+  // =====================
+  // || Fixed Variables ||
+  // =====================
+
+  private missingTokenMsg = 'User missing authorization credentials, logging out shortly.';
+  private timeoutLong = 3500;
+
   // =================
   // || Observables ||
   // =================
@@ -55,6 +62,14 @@ export class UserService {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 
     return this.http.put(`${this.api}/change-account-type`, form, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  editUserDetails(form: any, token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/edit-details`, form, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
@@ -102,13 +117,13 @@ export class UserService {
   // =======================
 
   logout(): void {
+    this.changeActiveUser(null);
+    this.changeAccountType('general');
     const token = localStorage.getItem('token');
     if (!token) return this.globalService.redirectUser('home');
 
     this.logoutFromDB(token).subscribe(_res => {
       if (_res.status === 200) {
-        this.changeActiveUser(null);
-        this.changeAccountType('general');
         localStorage.removeItem('token');
         this.globalService.redirectUser('home');
       } else {
@@ -117,20 +132,20 @@ export class UserService {
     });
   };
 
-  handleMissingToken(elementId: string): void {
-    this.changeSystemMsg(this.globalService.missingTokenMsg);
-    this.globalService.displayMsg('alert-danger', elementId);
-    setTimeout(() => { this.logout() }, this.globalService.timeoutLong);
+  handleMissingToken(messageId: string): void {
+    this.changeSystemMsg(this.missingTokenMsg);
+    this.globalService.displayMsg('alert-danger', messageId);
+    setTimeout(() => { this.logout() }, this.timeoutLong);
   };
   
-  handleMissingTokenModal(elementId: string, modal: string): void {
-    this.changeSystemMsg(this.globalService.missingTokenMsg);
-    this.globalService.displayMsg('alert-danger', elementId);
+  handleMissingTokenModal(messageId: string, modal: string): void {
+    this.changeSystemMsg(this.missingTokenMsg);
+    this.globalService.displayMsg('alert-danger', messageId);
 
     setTimeout(() => {
       (<any>$(`${modal}`)).modal('hide');
       this.logout();
-    }, this.globalService.timeoutLong);
+    }, this.timeoutLong);
   };
 
   // ========================

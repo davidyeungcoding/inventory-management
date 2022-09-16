@@ -16,6 +16,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
   @Input() targetIngredient!: Ingredient|null;
   private subscriptions = new Subscription();
   private ingredientList: Ingredient[] = [];
+  private timeout?: number;
   deleteMessage: string = '';
 
   constructor(
@@ -27,6 +28,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.deleteMessage = _msg));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -67,7 +69,7 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
         if (_res.token) localStorage.setItem('token', _res.token);
         this.globalService.displayMsg('alert-success', '#deleteIngredientMsg');
         this.removeIngredientFromList();
-        setTimeout(() => { (<any>$('#deleteIngredientModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#deleteIngredientModal')).modal('hide') }, this.timeout);
       } else {
         this.globalService.displayMsg('alert-danger', '#deleteIngredientMsg');
         $('#deleteIngredientBtn').prop('disabled', false);

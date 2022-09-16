@@ -15,6 +15,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   @Input() accountTypeForm: any;
   private subscriptions = new Subscription();
   private storeUsers?: User[];
+  private timeout?: number;
   editUserAccountTypeMessage?: string;
   accountType: any;
 
@@ -27,6 +28,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editUserAccountTypeMessage = _msg));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
     this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.storeUsers = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -72,7 +74,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           $('#editUserAccountTypeBtn').prop('disabled', false);
           (<any>$('#editUserAccountTypeModal')).modal('hide');
-        }, this.globalService.timeout);
+        }, this.timeout);
       } else {
         this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
         $('#editUserAccountTypeBtn').prop('disabled', false);

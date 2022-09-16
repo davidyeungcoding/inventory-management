@@ -16,6 +16,7 @@ export class DeleteStoreComponent implements OnInit, OnDestroy {
   @Input() targetStore!: Store;
   private subscriptions = new Subscription();
   private storeList?: Store[];
+  private timeout?: number;
   deleteStoreMessage?: string;
 
   constructor(
@@ -27,6 +28,7 @@ export class DeleteStoreComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.deleteStoreMessage = _msg));
     this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -51,7 +53,7 @@ export class DeleteStoreComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-success', '#deleteStoreMsg');
         this.storeService.changeStoreList(this.globalService.filterList([this.targetStore], this.storeList!, 0));
-        setTimeout(() => { (<any>$('#deleteStoreModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#deleteStoreModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-danger', '#deleteStoreMsg');

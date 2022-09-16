@@ -17,6 +17,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   @Input() editItem!: any;
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
+  private timeout?: number;
   editMessage: string = '';
 
   constructor(
@@ -28,6 +29,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -131,7 +133,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#editItemModal')).modal('hide');
           this.clearForm();
-        }, this.globalService.timeout);
+        }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_item.msg);
         this.globalService.displayMsg('alert-danger', '#editItemMsg');

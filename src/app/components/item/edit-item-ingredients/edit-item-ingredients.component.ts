@@ -19,6 +19,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   @Input() fullIngredientList!: any[];
   private subscriptions = new Subscription();
   private toChange: any = {};
+  private timeout?: number;
   editItemIngredientMessage?: string;
   itemList: Item[] = [];
 
@@ -32,6 +33,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editItemIngredientMessage = _msg));
     this.subscriptions.add(this.itemService.toChange.subscribe(_targets => this.toChange = _targets));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -94,7 +96,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
         let price = _item.msg.price;
         _item.msg.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
         this.updateItemList(_item.msg);
-        setTimeout(() => { (<any>$('#editItemIngredientsModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#editItemIngredientsModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_item.msg);
         this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');

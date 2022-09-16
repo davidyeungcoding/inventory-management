@@ -17,6 +17,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   @Input() editIngredient: any;
   private subscriptions = new Subscription();
   private ingredientList: Ingredient[] = [];
+  private timeout?: number;
   editMessage: string = '';
 
   constructor(
@@ -28,6 +29,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editMessage = _msg));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -107,7 +109,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg('Ingredient successfully updated');
         this.globalService.displayMsg('alert-success', '#editIngredientMsg');
         this.replaceIngredient(_ingredient.msg);
-        setTimeout(() => { (<any>$('#editIngredientModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#editIngredientModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_ingredient.msg);
         this.globalService.displayMsg('alert-danger', '#editIngredientMsg');

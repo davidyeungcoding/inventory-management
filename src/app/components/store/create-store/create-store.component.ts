@@ -16,6 +16,7 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
   @Input() createStore: any;
   private subscriptions = new Subscription();
   private storeList?: Store[];
+  private timeout?: number;
   states?: string[];
   createStoreMessage?: string;
   selectedState?: string;
@@ -31,6 +32,7 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.storeService.selectedState.subscribe(_state => this.selectedState = _state));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.createStoreMessage = _msg));
     this.subscriptions.add(this.storeService.storeList.subscribe(_list => this.storeList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
     this.subscriptions.add(this.globalService.states.subscribe(_list => this.states = _list));
   }
 
@@ -90,7 +92,7 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg('Store successfully created');
         this.globalService.displayMsg('alert-success', '#createStoreMsg');
         this.updateStoreList(_store.msg);
-        setTimeout(() => { (<any>$('#createStoreModal')).modal('hide') }, this.globalService.timeout);
+        setTimeout(() => { (<any>$('#createStoreModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#createStoreMsg');

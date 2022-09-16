@@ -15,6 +15,7 @@ import { Ingredient } from 'src/app/interfaces/ingredient';
 })
 export class CreateIngredientComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private timeout?: number;
   ingredientList: Ingredient[] = [];
   createMessage?: string;
   createIngredient = new FormGroup({
@@ -31,6 +32,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.createMessage = _msg));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
 
   ngOnDestroy(): void {
@@ -89,7 +91,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           (<any>$('#createIngredientModal')).modal('hide');
           this.clearForm();
-        }, this.globalService.timeout);
+        }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_ingredient.msg);
         this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
