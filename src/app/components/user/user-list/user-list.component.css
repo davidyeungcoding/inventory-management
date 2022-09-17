@@ -1,0 +1,8 @@
+.table-body {
+  max-width: var(--base-width);
+}
+
+#userListMsg {
+  margin: auto;
+  width: var(--base-width);
+}

@@ -112,6 +112,14 @@ export class UserService {
     );
   };
 
+  getFullUserList(token: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/full-user-list`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -161,13 +169,8 @@ export class UserService {
   };
 
   changeStoreUsers(list: User[]): void {
-    list.sort((a, b) => {
-      return a.username.toLowerCase() < b.username.toLowerCase() ? -1
-      : a.username.toLowerCase() > b.username.toLowerCase() ? 1
-      : 0;
-    });
-
-    this.storeUsersSource.next(list);
+    const sortedList = this.globalService.sortList(list, 'username');
+    this.storeUsersSource.next(sortedList);
   };
 
   changeFullUserList(list: User[]): void {

@@ -1,1 +1,55 @@
-<p>user-list works!</p>
+<div class="container">
+  <h1 class="page-title">User List</h1>
+
+  <div class="msg-container" id="userListMsgContainer">
+    <h5 class="alert alert-msg" id="userListMsg">{{ userListMessage }}</h5>
+  </div>
+
+  <div class="row scrollable">
+    <table class="table-body">
+      <tr>
+        <th class="table-center">Edit</th>
+
+        <th class="sortable" (click)="sortList('username')">
+          <i class="fas fa-sort-up" id="userListUsername"></i>
+          <i class="fas fa-sort-down hide" id="userListUsernameReverse"></i> Username</th>
+        <!-- <th class="sortable" id="userListUsername" (click)="sortListReverse('username')">
+          <i class="fas fa-sort-up"></i> Username</th>
+
+        <th class="sortable hide" id="userListUsernameReverse" (click)="sortList('username')">
+          <i class="fas fa-sort-down"></i> Username</th> -->
+
+        <th class="table-center sortable" (click)="sortList('accountType')">
+          <i class="fas fa-sort-up" id="userListAccountType"></i>
+          <i class="fas fa-sort-down hide" id="userListAccountTypeReverse"></i> Account Type</th>
+        <!-- <th class="table-center sortable" id="userListAccountType" (click)="sortListReverse('accountType')">
+          <i class="fas fa-sort-up"></i> Account Type</th>
+
+        <th class="table-center sortable hide" id="userListAccountTypeReverse" (click)="sortList('accountType')">
+          <i class="fas fa-sort-down"></i> Account Type</th> -->
+
+        <th class="table-center">Delete User</th>
+      </tr>
+
+      <tr *ngFor="let user of userList" class="table-entry">
+        <td class="table-center">
+          <button type="button"
+            class="btn btn-secondary"><i class="far fa-edit"></i></button>
+        </td>
+
+        <td>
+          <span>{{ user.username }}</span>
+        </td>
+
+        <td class="table-center">
+          <span>{{ user.accountType }}</span>
+        </td>
+
+        <td class="table-center">
+          <button type="button"
+            class="btn btn-secondary"><i class="fas fa-trash"></i></button>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

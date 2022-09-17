@@ -20,7 +20,6 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   manageUsers: User[] = [];
   manageUserMessage?: string;
   filteredUserList: User[] = [];
-  fullUserListError: string = '';
   accountTypeForm = new FormGroup({
     _id: new FormControl(''),
     username: new FormControl(''),
@@ -124,10 +123,12 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.userService.getManageUserList(token).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
-        this.filteredUserList = this.globalService.filterList(this.manageUsers, _list.msg, 0);
+        const temp = this.globalService.filterList(this.manageUsers, _list.msg, 0);
+        this.filteredUserList = this.globalService.sortList(temp, 'username');
         (<any>$('#manageUserModal')).modal('show');
       } else {
-        this.fullUserListError = _list.msg;
+        (<any>$('#manageUserModal')).modal('show');
+        this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#addUserMsg');
       };
     });

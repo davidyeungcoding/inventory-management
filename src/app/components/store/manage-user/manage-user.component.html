@@ -18,11 +18,11 @@
       </tr>
 
       <tr *ngFor="let user of manageUsers" class="table-entry">
-        <th class="table-center">
+        <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
             (click)="onEditUser(user)"><i class="far fa-edit"></i></button>
-        </th>
+        </td>
 
         <td>
           <span>{{ user.username }}</span>

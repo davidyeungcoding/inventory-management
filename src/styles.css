@@ -20,6 +20,10 @@
   max-width: var(--base-width-wide);
 }
 
+.sortable {
+  cursor: pointer;
+}
+
 th, td {
   padding: .5rem;
 }
@@ -282,7 +286,7 @@ section:last-of-type {
 /* || General || */
 /* ============= */
 
-.msg-container {
+.msg-container, .hide {
   display: none;
 }
 

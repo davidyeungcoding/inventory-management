@@ -30,7 +30,9 @@
           </li>
 
           <li *ngIf="accountType.admin" class="nav-item">
-            <a class="nav-link" id="navUserList">User List</a>
+            <a class="nav-link"
+              id="navUserList"
+              (click)="onNavRedirect('user-list')">User List</a>
           </li>
   
           <li class="nav-item">

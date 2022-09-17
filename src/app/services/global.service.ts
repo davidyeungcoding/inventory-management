@@ -16,7 +16,7 @@ export class GlobalService {
   // || Fixed Value ||
   // =================
 
-  private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'user-account']);
+  private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'user-list', 'user-account']);
   navLinks = this.navLinksSource.asObservable();
   private statesSource = new BehaviorSubject<string[]>(["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
     "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI",
@@ -119,5 +119,21 @@ export class GlobalService {
     const splitStr = str.split('-');
     const temp = splitStr.map(elem => elem.charAt(0).toUpperCase() + elem.substring(1));
     return `#nav${temp.join('')}`;
+  };
+
+  sortList(list: any[], field: string): any[] {
+    return list.sort((a, b) => {
+      return a[field].toLowerCase() < b[field].toLowerCase() ? -1
+      : a[field].toLowerCase() > b[field].toLowerCase() ? 1
+      : 0;
+    });
+  };
+
+  reverseSortList(list: any[], field: string): any[] {
+    return list.sort((a, b) => {
+      return a[field].toLowerCase() < b[field].toLowerCase() ? 1
+      : a[field].toLowerCase() > b[field].toLowerCase() ? -1
+      : 0;
+    });
   };
 }
