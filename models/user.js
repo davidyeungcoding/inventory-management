@@ -143,6 +143,11 @@ module.exports.searchUser = (term, callback) => {
   this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $lookup: importStores }], callback);
 };
 
+module.exports.manageUserSearch = callback => {
+  const query = { accountType: { $nin: ['admin'] } };
+  this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }, { $lookup: importStores }], callback);
+};
+
 module.exports.getStoreUsers = (storeId, callback) => {
   const query = { stores: storeId };
   this.userModel.aggregate([{ $match: query }, { $project: aggregateExclusions }], callback);

@@ -104,10 +104,10 @@ export class UserService {
     );
   };
 
-  getFullUserList(token: string) {
+  getManageUserList(token: string) {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 
-    return this.http.get(`${this.api}/full-user-list`, validateHeader).pipe(
+    return this.http.get(`${this.api}/manage-user-list`, validateHeader).pipe(
       catchError(err => of(err))
     );
   };

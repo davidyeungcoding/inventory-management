@@ -112,7 +112,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     });
   };
 
-  getFullUserList(): void {
+  getManageUserList(): void {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#manageUserMsg');
     $('#updateStoreUsersBtn').prop('disabled', false);
@@ -121,7 +121,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.globalService.clearHighlight();
     this.userService.changeToChange({});
 
-    this.userService.getFullUserList(token).subscribe(_list => {
+    this.userService.getManageUserList(token).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.filteredUserList = this.globalService.filterList(this.manageUsers, _list.msg, 0);

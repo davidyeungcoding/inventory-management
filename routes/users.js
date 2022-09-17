@@ -284,6 +284,17 @@ router.get('/full-user-list', auth.authenticateToken, auth.managerCheck, (req, r
   };
 });
 
+router.get('/manage-user-list', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+  try {
+    User.manageUserSearch((err, _list) => {
+      return err ? res.json({ status: 400, msg: 'Unable to retrieve full user list' })
+      : res.json({ status: 200, msg: _list, token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process retrieval request for full user list' });
+  };
+});
+
 router.get('/store-users/:storeId', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   try {
     const storeId = mongoose.Types.ObjectId(req.params.storeId);
