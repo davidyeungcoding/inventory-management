@@ -85,6 +85,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
         if (_store.token) localStorage.setItem('token', _store.token);
         this.userService.changeSystemMsg('Store users have been updated');
         this.globalService.displayMsg('alert-success', '#addUserMsg');
+        this.globalService.sortList(_store.msg.users, 'username');
         this.userService.changeStoreUsers(_store.msg.users);
         setTimeout(() => { (<any>$('#manageUserModal')).modal('hide') }, this.timeout);
       } else {

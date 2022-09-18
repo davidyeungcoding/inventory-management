@@ -49,6 +49,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
       };
     };
 
+    this.globalService.sortList(temp, 'username');
     this.userService.changeStoreUsers(temp);
   };
 

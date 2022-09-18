@@ -188,13 +188,13 @@ router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (r
 
 router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, res, next) => {
   try {
-    const toChange = req.body.toChange;
+    const userId = req.body.toChange._id;
     const password = crypto.randomBytes(10).toString('hex');
 
-    User.resetPassword(toChange, password, (err, _user) => {
+    User.resetPassword(userId, password, (err, _user) => {
       if (err) return res.json({ status: 400, msg: 'Unable to reset password' });
       const resUser = buildResUser(_user);
-      if (req.user._id === toChange._id) req.token = auth.generateAuthToken(resUser);
+      if (req.user._id === userId) req.token = auth.generateAuthToken(resUser);
       return res.json({ status: 200, msg: password, token: req.token });
     });
   } catch {

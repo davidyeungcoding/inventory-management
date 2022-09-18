@@ -13,20 +13,12 @@
         <th class="sortable" (click)="sortList('username')">
           <i class="fas fa-sort-up" id="userListUsername"></i>
           <i class="fas fa-sort-down hide" id="userListUsernameReverse"></i> Username</th>
-        <!-- <th class="sortable" id="userListUsername" (click)="sortListReverse('username')">
-          <i class="fas fa-sort-up"></i> Username</th>
-
-        <th class="sortable hide" id="userListUsernameReverse" (click)="sortList('username')">
-          <i class="fas fa-sort-down"></i> Username</th> -->
 
         <th class="table-center sortable" (click)="sortList('accountType')">
           <i class="fas fa-sort-up" id="userListAccountType"></i>
           <i class="fas fa-sort-down hide" id="userListAccountTypeReverse"></i> Account Type</th>
-        <!-- <th class="table-center sortable" id="userListAccountType" (click)="sortListReverse('accountType')">
-          <i class="fas fa-sort-up"></i> Account Type</th>
 
-        <th class="table-center sortable hide" id="userListAccountTypeReverse" (click)="sortList('accountType')">
-          <i class="fas fa-sort-down"></i> Account Type</th> -->
+        <th class="table-center">Rest Password</th>
 
         <th class="table-center">Delete User</th>
       </tr>
@@ -34,7 +26,8 @@
       <tr *ngFor="let user of userList" class="table-entry">
         <td class="table-center">
           <button type="button"
-            class="btn btn-secondary"><i class="far fa-edit"></i></button>
+            class="btn btn-secondary"
+            aria-label="Edit User"><i class="far fa-edit"></i></button>
         </td>
 
         <td>
@@ -46,10 +39,37 @@
         </td>
 
         <td class="table-center">
+          <button class="btn btn-secondary"
+            aria-label="Reset Password"
+            (click)="onResetPassword(user)">
+            <i class="fas fa-undo-alt"></i></button>
+        </td>
+
+        <td class="table-center">
           <button type="button"
-            class="btn btn-secondary"><i class="fas fa-trash"></i></button>
+            class="btn btn-secondary"
+            aria-label="Delete User"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     </table>
+  </div>
+</div>
+
+<div class="modal fade" id="resetPasswordModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Reset Password</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <app-reset-password [targetUser]="targetUser"></app-reset-password>
+      </div>
+    </div>
   </div>
 </div>

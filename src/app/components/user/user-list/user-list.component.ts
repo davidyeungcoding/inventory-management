@@ -15,6 +15,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private accountTypeSort: boolean = true;
   private usernameSort: boolean = true;
+  targetUser?: User;
   userListMessage?: string;
   userList?: User[];
 
@@ -53,7 +54,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.userService.getFullUserList(token).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
-        const temp = this.globalService.sortList(_list.msg, 'username');
+        this.globalService.sortList(_list.msg, 'username');
         this.userService.changeFullUserList(_list.msg);
       } else {
         this.userService.changeFullUserList([]);
@@ -64,16 +65,26 @@ export class UserListComponent implements OnInit, OnDestroy {
   };
 
   sortList(term: string): void{
+    if (!this.userList) return;
     const elemId = this.buildElemId(term);
     const type = term === 'username' ? this.usernameSort : this.accountTypeSort;
     const current = type ? elemId : `${elemId}Reverse`;
     const next = type ? `${elemId}Reverse` : elemId;
-    const temp = type ? this.globalService.reverseSortList([...this.userList!], term)
-    : this.globalService.sortList([...this.userList!], term);
+    const temp = type ? this.globalService.reverseSortList([...this.userList], term)
+    : this.globalService.sortList([...this.userList], term);
     term === 'username' ? this.usernameSort = !this.usernameSort
     : this.accountTypeSort = !this.accountTypeSort;
     $(`#${current}`).addClass('hide');
     $(`#${next}`).removeClass('hide');
     this.userService.changeFullUserList(temp);
+  };
+
+  onResetPassword(user: User): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#userListMsg');
+    $('#resetPasswordMsgContainer').css('display', 'none');
+    $('#resetPasswordBtn').prop('disabled', false);
+    this.targetUser = user;
+    (<any>$('#resetPasswordModal')).modal('show');
   };
 }

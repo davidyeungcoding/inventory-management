@@ -120,6 +120,14 @@ export class UserService {
     );
   };
 
+  resetPassword(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/reset-password`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -169,8 +177,7 @@ export class UserService {
   };
 
   changeStoreUsers(list: User[]): void {
-    const sortedList = this.globalService.sortList(list, 'username');
-    this.storeUsersSource.next(sortedList);
+    this.storeUsersSource.next(list);
   };
 
   changeFullUserList(list: User[]): void {

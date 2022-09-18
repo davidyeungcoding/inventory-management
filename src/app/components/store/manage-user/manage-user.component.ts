@@ -102,6 +102,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.userService.getStoreUsers(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
+        this.globalService.sortList(_list.msg, 'username');
         this.userService.changeStoreUsers(_list.msg);
       } else {
         this.userService.changeStoreUsers([]);
@@ -162,6 +163,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
         if (_store.token) localStorage.setItem('token', _store.token);
+        this.globalService.sortList(_store.msg.users, 'username');
         this.userService.changeStoreUsers(_store.msg.users);
         this.userService.changeSystemMsg(`${user.username} has been removed`);
         this.globalService.displayMsg('alert-success', '#manageUserMsg');

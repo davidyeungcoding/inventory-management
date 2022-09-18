@@ -197,6 +197,7 @@ section:last-of-type {
   top: 31px;
   right: 10px;
   color: var(--color-secondary);
+  cursor: pointer;
 }
 
 /* ==================== */
