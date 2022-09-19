@@ -40,15 +40,7 @@ export class DeleteItemComponent implements OnInit, OnDestroy {
   // ======================
 
   removeItemFromList(): void {
-    let temp = [...this.itemList];
-    
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i]._id === this.targetItem!._id) {
-        temp.splice(i, 1);
-        break;
-      };
-    };
-    
+    const temp = this.globalService.purgeFromList(this.itemList, this.targetItem);
     this.itemService.changeItemList(temp);
   };
 

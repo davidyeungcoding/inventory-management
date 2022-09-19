@@ -40,16 +40,8 @@ export class DeleteIngredientComponent implements OnInit, OnDestroy {
   // ======================
 
   removeIngredientFromList(): void {
-    let list = [...this.ingredientList];
-
-    for (let i = 0; i < list.length; i++) {
-      if (list[i]._id === this.targetIngredient!._id) {
-        list.splice(i, 1);
-        break;
-      };
-    };
-
-    this.ingredientService.changeIngredientList(list);
+    const temp = this.globalService.purgeFromList(this.ingredientList, this.targetIngredient);
+    this.ingredientService.changeIngredientList(temp);
   };
 
   // =======================

@@ -136,4 +136,30 @@ export class GlobalService {
       : 0;
     });
   };
+
+  purgeFromList(list: any[], target: any): any[] {
+    const temp = [...list];
+
+    for (let i =  0; i < temp.length; i++) {
+      if (list[i]._id === target._id) {
+        temp.splice(i, 1);
+        break;
+      };
+    };
+
+    return temp;
+  };
+
+  replaceInList(list: any[], target: any): any[] {
+    const temp = [...list];
+
+    for (let i = 0; i < temp.length; i++) {
+      if (temp[i]._id === target._id) {
+        temp.splice(i, 1, target);
+        break;
+      };
+    };
+
+    return temp;
+  };
 }

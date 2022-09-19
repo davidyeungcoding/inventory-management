@@ -38,15 +38,7 @@ export class DeleteUserComponent implements OnInit, OnDestroy {
   // ======================
 
   purgeUser(): void {
-    const temp = [...this.userList!];
-
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i]._id === this.targetUser!._id) {
-        temp.splice(i, 1);
-        break;
-      };
-    };
-
+    const temp = this.globalService.purgeFromList(this.userList!, this.targetUser);
     this.userService.changeFullUserList(temp);
   };
 

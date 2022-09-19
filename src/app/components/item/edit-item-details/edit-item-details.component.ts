@@ -40,15 +40,6 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
-  clearForm():void {
-    this.editItem.setValue({
-      name: '',
-      price: '',
-      active: '',
-      available: ''
-    });
-  };
-
   validateName(name: string): boolean {
     const check = this.globalService.testName(name);
 
@@ -96,6 +87,11 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     return tempItem;
   };
 
+  checkForChanges(form: any, item: any): boolean {
+    return !form.name && !form.price && item.active === JSON.stringify(this.targetItem!.active)
+      && item.available === JSON.stringify(this.targetItem!.available) ? true : false;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -109,8 +105,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     if (!this.validateForm(form)) return;
     const tempItem = this.buildPayloadItem(form);
     
-    if (!form.name && !form.price && tempItem.active === JSON.stringify(this.targetItem!.active)
-      && tempItem.available === JSON.stringify(this.targetItem!.available)) {
+    if (this.checkForChanges(form, tempItem)) {
       this.userService.changeSystemMsg('No changes detected');
       this.globalService.displayMsg('alert-danger', '#editItemMsg');
       $('#editItemBtn').prop('disabled', false);
@@ -128,12 +123,9 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg('Item successfully updated');
         this.globalService.displayMsg('alert-success', '#editItemMsg');
         _item.msg.price = this.convertPrice(_item.msg.price);
-        this.itemService.changeItemList(this.itemService.replaceItem(this.itemList, _item.msg));
-        
-        setTimeout(() => {
-          (<any>$('#editItemModal')).modal('hide');
-          this.clearForm();
-        }, this.timeout);
+        const temp = this.globalService.replaceInList(this.itemList, _item.msg);
+        this.itemService.changeItemList(temp);
+        setTimeout(() => { (<any>$('#editItemModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_item.msg);
         this.globalService.displayMsg('alert-danger', '#editItemMsg');
@@ -144,6 +136,5 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
 
   onCancelEdit(): void {
     (<any>$('#editItemModal')).modal('hide');
-    this.clearForm();
   };
 }

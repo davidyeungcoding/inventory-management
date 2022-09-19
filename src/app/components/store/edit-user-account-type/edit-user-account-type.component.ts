@@ -40,15 +40,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   // ======================
 
   replaceUser(user: User): void {
-    const temp = [...this.storeUsers!];
-
-    for (let i = 0; i < temp.length; i++) {
-      if (temp[i]._id === user._id) {
-        temp[i] = user;
-        break;
-      };
-    };
-
+    const temp = this.globalService.replaceInList(this.storeUsers!, user);
     this.globalService.sortList(temp, 'username');
     this.userService.changeStoreUsers(temp);
   };

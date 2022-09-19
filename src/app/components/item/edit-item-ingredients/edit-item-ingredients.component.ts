@@ -51,16 +51,8 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
   };
 
   updateItemList(item: Item): void {
-    const array = [...this.itemList];
-    
-    for (let i = 0; i < array.length; i++) {
-      if (array[i]._id === item._id) {
-        array[i] = item;
-        break;
-      };
-    };
-
-    this.itemService.changeItemList(array);
+    const temp = this.globalService.replaceInList(this.itemList, item);
+    this.itemService.changeItemList(temp);
   };
 
   // =======================
