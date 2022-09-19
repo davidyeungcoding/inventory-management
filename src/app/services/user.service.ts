@@ -127,6 +127,14 @@ export class UserService {
       catchError(err => of(err))
     );
   };
+  
+  deleteUser(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/delete`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
 
   // =======================
   // || General Functions ||

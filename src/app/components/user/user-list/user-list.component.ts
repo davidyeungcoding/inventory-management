@@ -87,4 +87,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.targetUser = user;
     (<any>$('#resetPasswordModal')).modal('show');
   };
+
+  onDeleteUser(user: User): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#userListMsg');
+    $('#deleteUserMsgContainer').css('display', 'none');
+    $('#deleteUserBtn').prop('disabled', false);
+    this.targetUser = user;
+    (<any>$('#deleteUserModal')).modal('show');
+  };
 }

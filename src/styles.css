@@ -28,6 +28,10 @@ th, td {
   padding: .5rem;
 }
 
+th {
+  white-space: nowrap;
+}
+
 td:first-child, th:first-child {
   padding-left: 16px;
 }

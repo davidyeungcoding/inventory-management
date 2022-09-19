@@ -165,17 +165,18 @@ router.get('/retrieve-user', auth.authenticateToken, (req, res, next) => {
 
 router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (req, res, next) => {
   try {
-    const toChange = req.body.toChange;
+    const password = req.body.password;
+    const username = req.body.username;
     const change = {};
-    if (toChange.password) change.password = toChange.password;
+    if (password) change.password = password;
     
-    if (toChange.username) {
-      const duplicate = await duplicateCheck(toChange.username);
+    if (username) {
+      const duplicate = await duplicateCheck(username);
       if (duplicate) return res.json({ status: 400, msg: 'Duplicate username' });
-      change.username = toChange.username;
+      change.username = username;
     };
 
-    User.editUser(toChange._id, change, (err, _user) => {
+    User.editUser(req.body._id, change, (err, _user) => {
       if (err) return res.json({ status: 400, msg: 'Unable to update user information' });
       const resUser = buildResUser(_user);
       if (req.user._id === resUser._id) req.token = auth.generateAuthToken(resUser);
@@ -188,7 +189,7 @@ router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (r
 
 router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, res, next) => {
   try {
-    const userId = req.body.toChange._id;
+    const userId = req.body._id;
     const password = crypto.randomBytes(10).toString('hex');
 
     User.resetPassword(userId, password, (err, _user) => {
@@ -260,7 +261,7 @@ router.put('/edit-stores', auth.authenticateToken, auth.managerCheck, async (req
 // || Search User ||
 // =================
 
-router.get('/search', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
+router.get('/search', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
   try {
     const term = req.query.term ? new RegExp(req.query.term, 'i') : '';
     

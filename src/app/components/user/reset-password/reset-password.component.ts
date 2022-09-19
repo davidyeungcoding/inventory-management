@@ -37,7 +37,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     $('#resetPasswordBtn').prop('disabled', true);
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingTokenModal('#resetPasswordMsg', '#resetPasswordModal');
-    const payload = { toChange: this.targetUser! };
+    const payload = { _id: this.targetUser!._id };
     
     this.userService.resetPassword(token, payload).subscribe(_user => {
       if (_user.status === 200) {
@@ -49,6 +49,6 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
         this.globalService.displayMsg('alert-danger', '#resetPasswordMsg');
         $('#resetPasswordBtn').prop('disabled', false);
       };
-    })
-  }
+    });
+  };
 }

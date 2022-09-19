@@ -98,9 +98,9 @@ module.exports.personalCheck = (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'];
     const tokenUser = jwt.decode(authHeader);
-    const toChange = req.body.toChange;
+    const userId = req.body._id;
     
-    if (tokenUser._id !== toChange._id && tokenUser.accountType !== 'admin') {
+    if (tokenUser._id !== userId && tokenUser.accountType !== 'admin') {
       return res.json({ status: 403, msg: 'User does not have permission to edit this account' });
     };
 

@@ -1,0 +1,16 @@
+<div class="msg-container" id="deleteUserMsgContainer">
+  <h5 class="alert alert-msg" id="deleteUserMsg">{{ deleteUserMessage }}</h5>
+</div>
+
+<h4 class="modal-title">Are you sure you want to delete {{ targetUser?.username }}?</h4>
+
+<div class="modal-btn-container">
+  <button type="button"
+    class="btn btn-secondary modal-btn"
+    id="deleteUserBtn"
+    (click)="onDeleteUser()">Confirm</button>
+
+  <button type="button"
+    class="btn btn-secondary modal-btn"
+    data-bs-dismiss="modal">Cancel</button>
+</div>

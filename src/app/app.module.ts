@@ -32,6 +32,7 @@ import { StoreListIntersectionDirective } from './directives/store-list-intersec
 import { UserAccountComponent } from './components/user/user-account/user-account.component';
 import { NavIntersectionDirective } from './directives/nav-intersection.directive';
 import { ResetPasswordComponent } from './components/user/reset-password/reset-password.component';
+import { DeleteUserComponent } from './components/user/delete-user/delete-user.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { ResetPasswordComponent } from './components/user/reset-password/reset-p
     UserAccountComponent,
     NavIntersectionDirective,
     ResetPasswordComponent,
+    DeleteUserComponent,
   ],
   imports: [
     BrowserModule,

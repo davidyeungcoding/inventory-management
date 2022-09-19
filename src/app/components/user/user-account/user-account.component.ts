@@ -88,9 +88,9 @@ export class UserAccountComponent implements OnInit, OnDestroy {
     if (!token) return this.userService.handleMissingToken('#userAccountMsg');
     const form = this.userForm.value;
     if (!this.validateForm(form)) return;
-    const payload: any = { toChange: { _id: this.activeUser!._id } };
-    if (form.username) payload.toChange.username = form.username;
-    if (form.password) payload.toChange.password = form.password;
+    const payload: any = { _id: this.activeUser!._id };
+    if (form.username) payload.username = form.username;
+    if (form.password) payload.password = form.password;
 
     this.userService.editUserDetails(payload, token).subscribe(_user => {
       if (_user.status === 200) {
@@ -101,9 +101,8 @@ export class UserAccountComponent implements OnInit, OnDestroy {
       } else {
         this.userService.changeSystemMsg(_user.msg);
         this.globalService.displayMsg('alert-danger', '#userAccountMsg');
+        $('#userAccountBtn').prop('disabled', false);
       };
-
-      $('#userAccountBtn').prop('disabled', false);
-    })
+    });
   };
 }
