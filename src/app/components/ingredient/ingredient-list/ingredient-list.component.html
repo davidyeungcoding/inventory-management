@@ -10,7 +10,9 @@
       <tr>
         <th class="table-center">Edit</th>
 
-        <th>Name</th>
+        <th class="table-name sortable" (click)="sortList()">
+          <i class="fas fa-sort-up" id="ingredientListName"></i>
+          <i class="fas fa-sort-down hide" id="ingredientListNameReverse"></i> Name</th>
 
         <th class="table-center">Delete</th>
       </tr>

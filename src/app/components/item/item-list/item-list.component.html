@@ -8,23 +8,23 @@
   <div class="row scrollable">
     <table class="table-body">
       <tr>
-        <th class="table-name" (click)="sortList('name')">
+        <th class="table-name sortable" (click)="sortList('name')">
           <i class="fas fa-sort-up" id="itemListName"></i>
           <i class="fas fa-sort-down hide" id="itemListNameReverse"></i> Name</th>
           
-        <th class="table-center table-data" (click)="sortList('price')">
+        <th class="table-center sortable" (click)="sortList('price')">
           <i class="fas fa-sort-up" id="itemListPrice"></i>
           <i class="fas fa-sort-down hide" id="itemListPriceReverse"></i> Price</th>
 
-        <th class="table-center table-data" (click)="sortList('active')">
+        <th class="table-center sortable" (click)="sortList('active')">
           <i class="fas fa-sort-up" id="itemListActive"></i>
           <i class="fas fa-sort-down hide" id="itemListActiveReverse"></i> Active</th>
 
-        <th class="table-center table-data" (click)="sortList('available')">
+        <th class="table-center sortable" (click)="sortList('available')">
           <i class="fas fa-sort-up" id="itemListAvailable"></i>
           <i class="fas fa-sort-down hide" id="itemListAvailableReverse"></i> Available</th>
 
-        <th class="table-center table-data">Edit Details</th>
+        <th class="table-center">Edit Details</th>
         <th class="table-center">Edit Ingredients</th>
         <th class="table-center">Delete</th>
       </tr>

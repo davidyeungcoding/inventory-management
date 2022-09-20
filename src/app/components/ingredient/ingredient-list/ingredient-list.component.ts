@@ -15,6 +15,7 @@ import { Ingredient } from 'src/app/interfaces/ingredient';
 })
 export class IngredientListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private nameSort: boolean = true;
   targetIngredient: Ingredient|null = null;
   ingredientList: Ingredient[] = [];
   errorMessage: string = '';
@@ -51,12 +52,25 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.ingredientService.getIngredientList(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
+        this.globalService.sortList(_list.msg, 'name');
         this.ingredientService.changeIngredientList(_list.msg);
       } else {
         this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#ingredientListMsg');
       };
     });
+  };
+
+  sortList(): void {
+    const temp = [...this.ingredientList];
+    const current = this.nameSort ? 'ingredientListName' : 'ingredientListNameReverse';
+    const next = this.nameSort ? 'ingredientListNameReverse' : 'ingredientListName';
+    this.nameSort ? this.globalService.reverseSortList(temp, 'name')
+    : this.globalService.sortList(temp, 'name');
+    this.ingredientService.changeIngredientList(temp);
+    $(`#${current}`).addClass('hide');
+    $(`#${next}`).removeClass('hide');
+    this.nameSort = !this.nameSort;
   };
 
   onEditIngredient(ingredient: Ingredient): void {

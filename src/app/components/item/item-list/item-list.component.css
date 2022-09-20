@@ -11,14 +11,6 @@
 /* || Table || */
 /* =========== */
 
-.table-name {
-  min-width: 9rem;
-}
-
-.table-data {
-  min-width: 4rem;
-}
-
 .btn-padding {
   padding: 8px 4px;
 }
