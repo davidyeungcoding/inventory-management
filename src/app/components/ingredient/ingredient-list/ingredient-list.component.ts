@@ -62,6 +62,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   };
 
   sortList(): void {
+    if (!this.ingredientList.length) return;
     const temp = [...this.ingredientList];
     const current = this.nameSort ? 'ingredientListName' : 'ingredientListNameReverse';
     const next = this.nameSort ? 'ingredientListNameReverse' : 'ingredientListName';

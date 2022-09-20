@@ -32,6 +32,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.userService.changeFullUserList([]);
     this.subscriptions.unsubscribe();
   }
   

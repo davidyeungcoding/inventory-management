@@ -142,7 +142,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   };
 
   sortList(term: string): void {
-    if (!this.itemList) return;
+    if (!this.itemList.length) return;
     const elemId = `itemList${term[0].toUpperCase()}${term.substring(1)}`;
     const temp = this.handleSortList(term, elemId);
     this.itemService.changeItemList(temp);

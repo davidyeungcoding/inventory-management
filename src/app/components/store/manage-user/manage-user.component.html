@@ -10,14 +10,18 @@
       <tr>
         <th class="table-center">Edit</th>
 
-        <th>Username</th>
+        <th class="table-name sortable" (click)="sortList('username')">
+          <i class="fas fa-sort-up" id="manageUserUsername"></i>
+          <i class="fas fa-sort-down hide" id="manageUserUsernameReverse"></i> Username</th>
 
-        <th class="table-center">Account Type</th>
+        <th class="table-center sortable" (click)="sortList('accountType')">
+          <i class="fas fa-sort-up" id="manageUserAccountType"></i>
+          <i class="fas fa-sort-down hide" id="manageUserAccountTypeReverse"></i> Account Type</th>
 
         <th class="table-center">Remove User</th>
       </tr>
 
-      <tr *ngFor="let user of manageUsers" class="table-entry">
+      <tr *ngFor="let user of storeUsers" class="table-entry">
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
@@ -105,7 +109,7 @@
       </div>
 
       <div class="modal-body">
-        <app-add-user [storeUsers]="manageUsers" [filteredUserList]="filteredUserList"></app-add-user>
+        <app-add-user [storeUsers]="storeUsers" [filteredUserList]="filteredUserList"></app-add-user>
       </div>
     </div>
   </div>

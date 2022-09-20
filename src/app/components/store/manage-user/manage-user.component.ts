@@ -17,7 +17,9 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private activeUser?: User|null;
   private accountType: any;
-  manageUsers: User[] = [];
+  private usernameSort: boolean = true;
+  private accountTypeSort: boolean = true;
+  storeUsers: User[] = [];
   manageUserMessage?: string;
   filteredUserList: User[] = [];
   accountTypeForm = new FormGroup({
@@ -35,7 +37,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.manageUserMessage = _msg));
     this.subscriptions.add(this.userService.accountType.subscribe(_types => this.accountType = _types));
-    this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.manageUsers = _list));
+    this.subscriptions.add(this.userService.storeUsers.subscribe(_list => this.storeUsers = _list));
     this.subscriptions.add(this.userService.activeUser.subscribe(_user => this.activeUser = _user));
     this.getStoreUsers();
   }
@@ -112,6 +114,21 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     });
   };
 
+  sortList(term: string): void {
+    if (!this.storeUsers.length) return;
+    const elemId = `manageUser${term[0].toUpperCase()}${term.substring(1)}`;
+    const direction = term === 'username' ? this.usernameSort : this.accountTypeSort;
+    const current = direction ? elemId : `${elemId}Reverse`;
+    const next = direction ? `${elemId}Reverse` : elemId;
+    const temp = direction ? this.globalService.reverseSortList([...this.storeUsers], term)
+    : this.globalService.sortList([...this.storeUsers], term);
+    term === 'username' ? this.usernameSort = !this.usernameSort
+    : this.accountTypeSort = !this.accountTypeSort;
+    $(`#${current}`).addClass('hide');
+    $(`#${next}`).removeClass('hide');
+    this.userService.changeStoreUsers(temp);
+  };
+
   getManageUserList(): void {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#manageUserMsg');
@@ -124,7 +141,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     this.userService.getManageUserList(token).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
-        const temp = this.globalService.filterList(this.manageUsers, _list.msg, 0);
+        const temp = this.globalService.filterList(this.storeUsers, _list.msg, 0);
         this.filteredUserList = this.globalService.sortList(temp, 'username');
         (<any>$('#manageUserModal')).modal('show');
       } else {
