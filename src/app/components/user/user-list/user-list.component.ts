@@ -67,10 +67,10 @@ export class UserListComponent implements OnInit, OnDestroy {
   sortList(term: string): void{
     if (!this.userList) return;
     const elemId = this.buildElemId(term);
-    const type = term === 'username' ? this.usernameSort : this.accountTypeSort;
-    const current = type ? elemId : `${elemId}Reverse`;
-    const next = type ? `${elemId}Reverse` : elemId;
-    const temp = type ? this.globalService.reverseSortList([...this.userList], term)
+    const direction = term === 'username' ? this.usernameSort : this.accountTypeSort;
+    const current = direction ? elemId : `${elemId}Reverse`;
+    const next = direction ? `${elemId}Reverse` : elemId;
+    const temp = direction ? this.globalService.reverseSortList([...this.userList], term)
     : this.globalService.sortList([...this.userList], term);
     term === 'username' ? this.usernameSort = !this.usernameSort
     : this.accountTypeSort = !this.accountTypeSort;

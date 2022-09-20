@@ -17,6 +17,10 @@ import { Item } from 'src/app/interfaces/item';
 })
 export class ItemListComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private nameSort: boolean = true;
+  private priceSort: boolean = true;
+  private activeSort: boolean = true;
+  private availableSort: boolean = true;
   targetIngredients: Ingredient[] = [];
   fullIngredientList: any[] = [];
   targetItem: Item|null = null;
@@ -75,6 +79,46 @@ export class ItemListComponent implements OnInit, OnDestroy {
     });
   };
 
+  displaySortIcon(direction: boolean, elemId: string): void {
+    const current = direction ? elemId : `${elemId}Reverse`;
+    const next = direction ? `${elemId}Reverse` : elemId;
+    $(`#${current}`).addClass('hide');
+    $(`#${next}`).removeClass('hide');
+  };
+
+  handleSortList(term: string, elemId: string): any {
+    const temp = [...this.itemList];
+    let direction;
+
+    switch (term) {
+      case 'name':
+        this.displaySortIcon(this.nameSort, elemId);
+        direction = this.nameSort;
+        this.nameSort = !this.nameSort;
+        break;
+      case 'price':
+        this.displaySortIcon(this.priceSort, elemId);
+        this.priceSort ? this.globalService.reverseSortNumberList(temp, term)
+        : this.globalService.sortNumberList(temp, term);
+        this.priceSort = !this.priceSort;
+        return temp;
+      case 'active':
+        this.displaySortIcon(this.activeSort, elemId);
+        direction = this.activeSort;
+        this.activeSort = !this.activeSort;
+        break;
+      case 'available':
+        this.displaySortIcon(this.availableSort, elemId);
+        direction = this.availableSort;
+        this.availableSort = !this.availableSort;
+        break;
+    };
+
+    direction ? this.globalService.reverseSortList(temp, term)
+    : this.globalService.sortList(temp, term);
+    return temp;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -88,12 +132,20 @@ export class ItemListComponent implements OnInit, OnDestroy {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.convertPrice(_list.msg);
+        this.globalService.sortList(_list.msg, 'name');
         this.itemService.changeItemList(_list.msg);
       } else {
         this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#itemListMsg');
       };
     });
+  };
+
+  sortList(term: string): void {
+    if (!this.itemList) return;
+    const elemId = `itemList${term[0].toUpperCase()}${term.substring(1)}`;
+    const temp = this.handleSortList(term, elemId);
+    this.itemService.changeItemList(temp);
   };
 
   onEditDetails(item: Item): void {

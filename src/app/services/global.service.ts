@@ -123,16 +123,40 @@ export class GlobalService {
 
   sortList(list: any[], field: string): any[] {
     return list.sort((a, b) => {
-      return a[field].toLowerCase() < b[field].toLowerCase() ? -1
-      : a[field].toLowerCase() > b[field].toLowerCase() ? 1
+      const one = String(a[field]).toLowerCase();
+      const two = String(b[field]).toLowerCase();
+      return one < two ? -1
+      : one > two ? 1
       : 0;
     });
   };
 
   reverseSortList(list: any[], field: string): any[] {
     return list.sort((a, b) => {
-      return a[field].toLowerCase() < b[field].toLowerCase() ? 1
-      : a[field].toLowerCase() > b[field].toLowerCase() ? -1
+      const one = String(a[field]).toLowerCase();
+      const two = String(b[field]).toLowerCase();
+      return one < two ? 1
+      : one > two ? -1
+      : 0;
+    });
+  };
+
+  sortNumberList(list: any[], field: string): any[] {
+    return list.sort((a, b) => {
+      const one = Number(a[field].substring(1));
+      const two = Number(b[field].substring(1));
+      return one < two ? -1
+      : one > two ? 1
+      : 0;
+    });
+  };
+
+  reverseSortNumberList(list: any[], field: string): any[] {
+    return list.sort((a, b) => {
+      const one = Number(a[field].substring(1));
+      const two = Number(b[field].substring(1));
+      return one < two ? 1
+      : one > two ? -1
       : 0;
     });
   };

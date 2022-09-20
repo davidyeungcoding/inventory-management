@@ -88,7 +88,8 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   };
 
   checkForChanges(form: any, item: any): boolean {
-    return !form.name && !form.price && item.active === JSON.stringify(this.targetItem!.active)
+    return !form.name && !form.price
+      && item.active === JSON.stringify(this.targetItem!.active)
       && item.available === JSON.stringify(this.targetItem!.available) ? true : false;
   };
 
