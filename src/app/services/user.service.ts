@@ -58,7 +58,7 @@ export class UserService {
     );
   };
 
-  updateAccountType(form: any, token: string) {
+  updateAccountType(token: string, form: any) {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 
     return this.http.put(`${this.api}/change-account-type`, form, validateHeader).pipe(
@@ -66,7 +66,7 @@ export class UserService {
     );
   };
 
-  editUserDetails(form: any, token: string) {
+  editUserDetails(token: string, form: any) {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 
     return this.http.put(`${this.api}/edit-details`, form, validateHeader).pipe(

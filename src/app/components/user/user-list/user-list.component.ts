@@ -5,6 +5,7 @@ import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { User } from 'src/app/interfaces/user';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-list',
@@ -18,6 +19,11 @@ export class UserListComponent implements OnInit, OnDestroy {
   targetUser?: User;
   userListMessage?: string;
   userList?: User[];
+  editUserForm = new FormGroup({
+    username: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
+    password: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
+    accountType: new FormControl('')
+  });
 
   constructor(
     private globalService: GlobalService,
@@ -42,6 +48,16 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   buildElemId(term: string): string {
     return `userList${term[0].toUpperCase()}${term.substring(1)}`;
+  };
+
+  setupEditUserForm(user: User): void {
+    this.editUserForm.setValue({
+      username: '',
+      password: '',
+      accountType: user.accountType
+    });
+
+    $('#editUserUsername').attr('placeholder', user.username);
   };
 
   // =======================
@@ -80,21 +96,17 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.userService.changeFullUserList(temp);
   };
 
-  onResetPassword(user: User): void {
+  onShowModal(user: User, target: string): void {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#userListMsg');
-    $('#resetPasswordMsgContainer').css('display', 'none');
-    $('#resetPasswordBtn').prop('disabled', false);
+    $(`#${target}MsgContainer`).css('display', 'none');
+    $(`#${target}Btn`).prop('disabled', false);
     this.targetUser = user;
-    (<any>$('#resetPasswordModal')).modal('show');
+    (<any>$(`#${target}Modal`)).modal('show');
   };
 
-  onDeleteUser(user: User): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#userListMsg');
-    $('#deleteUserMsgContainer').css('display', 'none');
-    $('#deleteUserBtn').prop('disabled', false);
-    this.targetUser = user;
-    (<any>$('#deleteUserModal')).modal('show');
+  onEditUser(user: User, target: string): void {
+    this.setupEditUserForm(user);
+    this.onShowModal(user, target);
   };
 }

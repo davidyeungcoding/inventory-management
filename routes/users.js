@@ -167,8 +167,10 @@ router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (r
   try {
     const password = req.body.password;
     const username = req.body.username;
+    const accountType = req.body.accountType;
     const change = {};
     if (password) change.password = password;
+    if ((req.user.accountType === 'admin' || req.user.accountType === 'manager') && accountType) change.accountType = accountType;
     
     if (username) {
       const duplicate = await duplicateCheck(username);
@@ -183,7 +185,7 @@ router.put('/edit-details', auth.authenticateToken, auth.personalCheck, async (r
       return res.json({ status: 200, msg: resUser, token: req.token });
     });
   } catch {
-    return res.json({ status: 400, msg: 'Unable to process request to edit user' });
+    return res.json({ status: 400, msg: 'Unable to process request to modify user details' });
   };
 });
 

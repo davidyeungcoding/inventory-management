@@ -27,7 +27,8 @@
         <td class="table-center">
           <button type="button"
             class="btn btn-secondary"
-            aria-label="Edit User"><i class="far fa-edit"></i></button>
+            aria-label="Edit User"
+            (click)="onEditUser(user, 'editUser')"><i class="far fa-edit"></i></button>
         </td>
 
         <td>
@@ -41,7 +42,7 @@
         <td class="table-center">
           <button class="btn btn-secondary"
             aria-label="Reset Password"
-            (click)="onResetPassword(user)">
+            (click)="onShowModal(user, 'resetPassword')">
             <i class="fas fa-undo-alt"></i></button>
         </td>
 
@@ -49,10 +50,30 @@
           <button type="button"
             class="btn btn-secondary"
             aria-label="Delete User"
-            (click)="onDeleteUser(user)"><i class="fas fa-trash"></i></button>
+            (click)="onShowModal(user, 'deleteUser')"><i class="fas fa-trash"></i></button>
         </td>
       </tr>
     </table>
+  </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit User</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <app-edit-user [targetUser]="targetUser"
+          [editUserForm]="editUserForm"></app-edit-user>
+      </div>
+    </div>
   </div>
 </div>
 

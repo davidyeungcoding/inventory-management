@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
@@ -14,17 +14,11 @@ import { Item } from 'src/app/interfaces/item';
   styleUrls: ['./create-item.component.css']
 })
 export class CreateItemComponent implements OnInit, OnDestroy {
+  @Input() createItem: any;
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
   private timeout?: number;
   addMessage: string = '';
-  createItem = new FormGroup({
-    name: new FormControl(''),
-    price: new FormControl(''),
-    active: new FormControl('false'),
-    available: new FormControl('false'),
-    storeId: new FormControl('')
-  });
 
   constructor(
     private globalService: GlobalService,
@@ -45,16 +39,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   // ======================
   // || Helper Functions ||
   // ======================
-
-  clearForm(): void {
-    this.createItem.setValue({
-      name: '',
-      price: '',
-      active: 'false',
-      available: 'false',
-      storeId: ''
-    });
-  };
 
   validateName(name: any): boolean {
     const check = this.globalService.testName(name);
@@ -117,21 +101,12 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg('Item successfully created');
         this.globalService.displayMsg('alert-success', '#createItemMsg');
         this.addItemToList(_res.msg);
-        
-        setTimeout(() => {
-          (<any>$('#createItemModal')).modal('hide');
-          this.clearForm();
-        }, this.timeout);
+        setTimeout(() => { (<any>$('#createItemModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_res.msg);
         this.globalService.displayMsg('alert-danger', '#createItemMsg');
         $('#createItemBtn').prop('disabled', false);
       };
     });
-  };
-
-  onCancelCreate(): void {
-    (<any>$('#createItemModal')).modal('hide');
-    this.clearForm();
   };
 }

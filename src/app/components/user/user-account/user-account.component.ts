@@ -92,7 +92,7 @@ export class UserAccountComponent implements OnInit, OnDestroy {
     if (form.username) payload.username = form.username;
     if (form.password) payload.password = form.password;
 
-    this.userService.editUserDetails(payload, token).subscribe(_user => {
+    this.userService.editUserDetails(token, payload).subscribe(_user => {
       if (_user.status === 200) {
         if (_user.token) localStorage.setItem('token', _user.token);
         this.userService.changeActiveUser(_user.msg);

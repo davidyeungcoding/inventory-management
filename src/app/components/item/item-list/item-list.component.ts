@@ -32,6 +32,13 @@ export class ItemListComponent implements OnInit, OnDestroy {
     active: new FormControl(''),
     available: new FormControl('')
   });
+  createItem = new FormGroup({
+    name: new FormControl(''),
+    price: new FormControl(''),
+    active: new FormControl('false'),
+    available: new FormControl('false'),
+    storeId: new FormControl('')
+  });
 
   constructor(
     private ingredientService: IngredientService,
@@ -119,6 +126,16 @@ export class ItemListComponent implements OnInit, OnDestroy {
     return temp;
   };
 
+  resetCreateItemForm(): void {
+    this.createItem.setValue({
+      name: '',
+      price: '',
+      active: 'false',
+      available: 'false',
+      storeId: ''
+    });
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -193,6 +210,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     if (!token) return this.userService.handleMissingToken('#itemListMsg');
     $('#createItemBtn').prop('disabled', false);
     $('#createItemMsgContainer').css('display', 'none');
+    this.resetCreateItemForm();
     (<any>$('#createItemModal')).modal('show');
   };
 

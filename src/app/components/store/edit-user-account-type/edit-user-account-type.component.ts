@@ -56,7 +56,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     if (!token) return this.userService.handleMissingTokenModal('#editUserAccountTypeMsg', '#editUserAccountTypeModal');
     const form = this.accountTypeForm.value;
 
-    this.userService.updateAccountType(form, token).subscribe(_user => {
+    this.userService.updateAccountType(token, form).subscribe(_user => {
       this.userService.changeSystemMsg(_user.msg);
 
       if (_user.status === 200) {

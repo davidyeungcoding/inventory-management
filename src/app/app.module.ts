@@ -33,6 +33,7 @@ import { UserAccountComponent } from './components/user/user-account/user-accoun
 import { NavIntersectionDirective } from './directives/nav-intersection.directive';
 import { ResetPasswordComponent } from './components/user/reset-password/reset-password.component';
 import { DeleteUserComponent } from './components/user/delete-user/delete-user.component';
+import { EditUserComponent } from './components/user/edit-user/edit-user.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { DeleteUserComponent } from './components/user/delete-user/delete-user.c
     NavIntersectionDirective,
     ResetPasswordComponent,
     DeleteUserComponent,
+    EditUserComponent,
   ],
   imports: [
     BrowserModule,

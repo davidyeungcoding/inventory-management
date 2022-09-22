@@ -1,0 +1,83 @@
+<div class="row modal-form-container">
+  <div class="msg-container" id="editUserMsgContainer">
+    <h5 class="alert alert-msg" id="editUserMsg">{{ editUserMessage }}</h5>
+  </div>
+
+  <form [formGroup]="editUserForm" (ngSubmit)="onEditUser()">
+    <section class="form-group-two">
+      <div class="form-group">
+        <label for="editUserUsername">Username:</label>
+
+        <input type="text"
+          class="form-field"
+          id="editUserUsername"
+          formControlName="username">
+
+        <div *ngIf="username?.invalid" class="error-text">
+          <span *ngIf="username?.errors?.['pattern']">Username may not include speical characters</span>
+        </div>
+      </div>
+
+      <div class="form-group password-group">
+        <label for="editUserPassword">Password:</label>
+
+        <input type="password"
+          class="form-field"
+          id="editUserPassword"
+          formControlName="password">
+
+        <i class="far fa-eye show-password"
+          aria-label="Show Password"
+          (click)="onTogglePassword('#editUserPassword')"></i>
+  
+        <i class="far fa-eye-slash hide-password"
+          aria-label="Hide Password"
+          (click)="onTogglePassword('#editUserPassword')"></i>
+
+        <div *ngIf="password?.invalid" class="error-text">
+          <span *ngIf="password?.errors?.['pattern']">Password may not include special characters</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-group form-section">
+      <label for="editUserAccountType" class="form-section-title">Account Type:</label>
+
+      <div class="radio-container" id="editUserAccountType">
+        <label for="editUserAccountTypeAdmin" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="editUserAccountTypeAdmin"
+            formControlName="accountType"
+            value="admin"> Admin
+        </label>
+
+        <label for="editUserAccountTypeManager" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="editUserAccountTypeManager"
+            formControlName="accountType"
+            value="manager"> Manager
+        </label>
+
+        <label for="editUserAccountTypeGeneral" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="editUserAccountTypeGeneral"
+            formControlName="accountType"
+            value="general"> General
+        </label>
+      </div>
+    </section>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="editUserBtn">Edit User</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </form>
+</div>
