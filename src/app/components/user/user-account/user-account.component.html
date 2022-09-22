@@ -15,15 +15,31 @@
           id="editUsername"
           placeholder="{{ activeUser?.username }}"
           formControlName="username">
+
+        <div *ngIf="username?.invalid" class="error-text">
+          <span *ngIf="username?.errors?.['pattern']">{{ usernameError }}</span>
+        </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group password-group">
         <label for="editPassword">Password:</label>
   
         <input type="password"
           class="form-field"
           id="editPassword"
           formControlName="password">
+
+        <i class="far fa-eye show-password"
+          aria-label="Show Password"
+          (click)="onTogglePassword('#editPassword')"></i>
+  
+        <i class="far fa-eye-slash hide-password"
+          aria-label="Hide Password"
+          (click)="onTogglePassword('#editPassword')"></i>
+
+        <div *ngIf="password?.invalid" class="error-text">
+          <span *ngIf="password?.errors?.['pattern']">{{ passwordError }}</span>
+        </div>
       </div>
     </div>
 

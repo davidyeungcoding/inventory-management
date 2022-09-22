@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
@@ -15,11 +15,12 @@ import { User } from 'src/app/interfaces/user';
 export class UserAccountComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   userAccountMessage?: string;
+  usernameError?: string;
+  passwordError?: string;
   activeUser?: User|null;
   userForm = new FormGroup({
-    _id: new FormControl(''),
-    username: new FormControl(''),
-    password: new FormControl('')
+    username: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
+    password: new FormControl('', Validators.pattern('^[\\w\\s]+$'))
   });
 
   constructor(
@@ -29,6 +30,8 @@ export class UserAccountComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.userAccountMessage = _msg));
+    this.subscriptions.add(this.userService.usernameError.subscribe(_msg => this.usernameError = _msg));
+    this.subscriptions.add(this.userService.passwordError.subscribe(_msg => this.passwordError = _msg));
     this.subscriptions.add(this.userService.activeUser.subscribe(_user => this.activeUser = _user));
     this.globalService.makeActiveNav('#navUserAccount');
   }
@@ -36,6 +39,13 @@ export class UserAccountComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get username() { return this.userForm.get('username') };
+  get password() { return this.userForm.get('password') };
 
   // ======================
   // || Helper Functions ||
@@ -80,6 +90,10 @@ export class UserAccountComponent implements OnInit, OnDestroy {
   // =======================
   // || General Functions ||
   // =======================
+
+  onTogglePassword(field: string): void {
+    this.globalService.togglePassword(field);
+  };
 
   onEditUserAccount(): void {
     $('#userAccountBtn').prop('disabled', true);

@@ -26,6 +26,10 @@ export class UserService {
   // || Fixed Variables ||
   // =====================
 
+  private usernameErrorSource = new BehaviorSubject<string>('Username may not include speical characters');
+  usernameError = this.usernameErrorSource.asObservable();
+  private passwordErrorSource = new BehaviorSubject<string>('Password may not include speical characters');
+  passwordError = this.passwordErrorSource.asObservable();
   private missingTokenMsg = 'User missing authorization credentials, logging out shortly.';
   private timeoutLong = 3500;
 
