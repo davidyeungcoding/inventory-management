@@ -11,7 +11,14 @@
         <input type="text"
           class="form-field"
           id="editIngredientName"
+          required
           formControlName="name">
+
+        <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="error-text">
+          <span *ngIf="name?.errors?.['required']">Name is required</span>
+
+          <span *ngIf="name?.errors?.['pattern']">{{ nameError }}</span>
+        </div>
       </section>
     </div>
 

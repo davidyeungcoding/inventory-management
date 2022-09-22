@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
@@ -20,7 +20,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   ingredientList: Ingredient[] = [];
   errorMessage: string = '';
   editIngredientForm = new FormGroup({
-    name: new FormControl('')
+    name: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')])
   });
 
   constructor(

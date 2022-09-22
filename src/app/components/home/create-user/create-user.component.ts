@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
@@ -10,6 +11,9 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./create-user.component.css']
 })
 export class CreateUserComponent implements OnInit, OnDestroy {
+  private subscriptions = new Subscription();
+  usernameError?: string;
+  passwordError?: string;
   addUser = new FormGroup({
     username: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
     password: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')])
@@ -21,9 +25,12 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.usernameError.subscribe(_msg => this.usernameError = _msg));
+    this.subscriptions.add(this.userService.passwordError.subscribe(_msg => this.passwordError = _msg));
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   // ==================

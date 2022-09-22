@@ -19,6 +19,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   private ingredientList: Ingredient[] = [];
   private timeout?: number;
   editMessage: string = '';
+  nameError?: string;
 
   constructor(
     private ingredientService: IngredientService,
@@ -28,6 +29,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
+    this.subscriptions.add(this.ingredientService.nameError.subscribe(_msg => this.nameError = _msg));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editMessage = _msg));
     this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
@@ -35,6 +37,12 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get name() { return this.editIngredient.get('name') };
 
   // ======================
   // || Helper Functions ||

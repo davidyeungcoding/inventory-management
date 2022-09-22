@@ -18,6 +18,8 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
   private timeout?: number;
+  nameError?: string;
+  priceError?: string;
   addMessage: string = '';
 
   constructor(
@@ -30,11 +32,20 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.addMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
     this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
+    this.subscriptions.add(this.itemService.nameError.subscribe(_msg => this.nameError = _msg));
+    this.subscriptions.add(this.itemService.priceError.subscribe(_msg => this.priceError = _msg));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get name() { return this.createItem.get('name') };
+  get price() { return this.createItem.get('price') };
 
   // ======================
   // || Helper Functions ||
@@ -86,6 +97,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   // =======================
 
   onCreateItem(): void {
+    console.log(this.name.errors)
     $('#createItemMsgContainer').css('display', 'none');
     $('#createItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');

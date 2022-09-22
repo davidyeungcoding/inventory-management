@@ -11,7 +11,14 @@
         <input type="text"
           class="form-field"
           id="itemName"
+          required
           formControlName="name">
+
+        <div *ngIf="name?.invalid && (name?.dirty || name?.touched)" class="error-text">
+          <span *ngIf="name?.errors?.['required']">Name is required</span>
+
+          <span *ngIf="name?.errors?.['pattern']">{{ nameError }}</span>
+        </div>
       </div>
   
       <div class="form-group">
@@ -22,6 +29,10 @@
           id="itemPrice"
           formControlName="price"
           placeholder="0.00">
+
+        <div *ngIf="price?.invalid" class="error-text">
+          <span *ngIf="price?.errors?.['pattern']">{{ priceError }}</span>
+        </div>
       </div>
     </section>
 

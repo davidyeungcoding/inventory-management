@@ -18,6 +18,8 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private itemList: Item[] = [];
   private timeout?: number;
+  nameError?: string;
+  priceError?: string;
   editMessage: string = '';
 
   constructor(
@@ -30,11 +32,20 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.itemList = _list));
     this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
+    this.subscriptions.add(this.itemService.nameError.subscribe(_msg => this.nameError = _msg));
+    this.subscriptions.add(this.itemService.priceError.subscribe(_msg => this.priceError = _msg));
   }
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get name() { return this.editItem.get('name') };
+  get price() { return this.editItem.get('price') };
 
   // ======================
   // || Helper Functions ||
@@ -133,9 +144,5 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
         $('#editItemBtn').prop('disabled', false);
       };
     });
-  };
-
-  onCancelEdit(): void {
-    (<any>$('#editItemModal')).modal('hide');
   };
 }

@@ -14,7 +14,7 @@
           formControlName="username">
 
         <div *ngIf="username?.invalid" class="error-text">
-          <span *ngIf="username?.errors?.['pattern']">Username may not include speical characters</span>
+          <span *ngIf="username?.errors?.['pattern']">{{ usernameError }}</span>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
           (click)="onTogglePassword('#editUserPassword')"></i>
 
         <div *ngIf="password?.invalid" class="error-text">
-          <span *ngIf="password?.errors?.['pattern']">Password may not include special characters</span>
+          <span *ngIf="password?.errors?.['pattern']">{{ passwordError }}</span>
         </div>
       </div>
     </section>

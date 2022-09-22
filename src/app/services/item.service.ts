@@ -11,6 +11,15 @@ import { Item } from '../interfaces/item';
 })
 export class ItemService {
   private api = 'http://localhost:3000/items';
+  
+  // =====================
+  // || Fixed Variables ||
+  // =====================
+
+  private nameErrorSource = new BehaviorSubject<string>('Name may not contain special characters');
+  nameError = this.nameErrorSource.asObservable();
+  private priceErrorSource = new BehaviorSubject<string>('No more than two digits past the decimal point');
+  priceError = this.priceErrorSource.asObservable();
 
   // =================
   // || Observables ||

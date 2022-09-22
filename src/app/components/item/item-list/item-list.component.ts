@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
@@ -27,14 +27,14 @@ export class ItemListComponent implements OnInit, OnDestroy {
   itemListMessage: string = '';
   itemList: Item[] = [];
   editForm = new FormGroup({
-    name: new FormControl(''),
-    price: new FormControl(''),
+    name: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
+    price: new FormControl('', Validators.pattern('^\\d*[.]{0,1}\\d{0,2}$')),
     active: new FormControl(''),
     available: new FormControl('')
   });
   createItem = new FormGroup({
-    name: new FormControl(''),
-    price: new FormControl(''),
+    name: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
+    price: new FormControl('', Validators.pattern('^\\d*[.]{0,1}\\d{0,2}$')),
     active: new FormControl('false'),
     available: new FormControl('false'),
     storeId: new FormControl('')

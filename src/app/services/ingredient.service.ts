@@ -12,6 +12,13 @@ import { Ingredient } from '../interfaces/ingredient';
 export class IngredientService {
   private api = 'http://localhost:3000/ingredients';
 
+  // =====================
+  // || Fixed Variables ||
+  // =====================
+
+  private nameErrorSource = new BehaviorSubject<string>('Name may not include special characters');
+  nameError = this.nameErrorSource.asObservable();
+
   // =================
   // || Observables ||
   // =================

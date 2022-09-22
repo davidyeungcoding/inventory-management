@@ -12,7 +12,7 @@
       <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="error-text">
         <span *ngIf="username?.errors?.['required']">Username is required</span>
 
-        <span *ngIf="username?.errors?.['pattern']">Username may not include special characters</span>
+        <span *ngIf="username?.errors?.['pattern']">{{ usernameError }}</span>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
       <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-text">
         <span *ngIf="password?.errors?.['required']">Password is required</span>
 
-        <span *ngIf="password?.errors?.['pattern']">Password may not include special characters</span>
+        <span *ngIf="password?.errors?.['pattern']">{{ passwordError }}</span>
       </div>
     </div>
 

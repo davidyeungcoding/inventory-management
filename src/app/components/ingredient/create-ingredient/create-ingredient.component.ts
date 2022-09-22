@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
@@ -18,8 +18,9 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   private timeout?: number;
   ingredientList: Ingredient[] = [];
   createMessage?: string;
+  nameError?: string;
   createIngredient = new FormGroup({
-    name: new FormControl(''),
+    name: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
     storeId: new FormControl('')
   });
 
@@ -31,6 +32,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.ingredientService.ingredientList.subscribe(_list => this.ingredientList = _list));
+    this.subscriptions.add(this.ingredientService.nameError.subscribe(_msg => this.nameError = _msg));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.createMessage = _msg));
     this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
   }
@@ -38,6 +40,12 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  // ==================
+  // || Form Getters ||
+  // ==================
+
+  get name() { return this.createIngredient.get('name') };
 
   // ======================
   // || Helper Functions ||
@@ -54,7 +62,7 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
     const check = this.globalService.testName(name);
 
     if(!check) {
-      this.userService.changeSystemMsg('Please enter a valid item name. Name may not include special characters.');
+      this.userService.changeSystemMsg('Please enter a valid name. Name may not include special characters.');
       this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
       $('#createIngredientBtn').prop('disabled', false);
     };

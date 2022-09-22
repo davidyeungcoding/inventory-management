@@ -18,6 +18,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
   private userList?: User[];
   private timeout?: number;
   editUserMessage?: string;
+  usernameError?: string;
+  passwordError?: string;
 
   constructor(
     private globalService: GlobalService,
@@ -25,6 +27,8 @@ export class EditUserComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.userService.usernameError.subscribe(_msg => this.usernameError = _msg));
+    this.subscriptions.add(this.userService.passwordError.subscribe(_msg => this.passwordError = _msg));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editUserMessage = _msg));
     this.subscriptions.add(this.userService.fullUserList.subscribe(_list => this.userList = _list));
     this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
