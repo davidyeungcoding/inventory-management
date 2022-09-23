@@ -34,6 +34,7 @@ import { NavIntersectionDirective } from './directives/nav-intersection.directiv
 import { ResetPasswordComponent } from './components/user/reset-password/reset-password.component';
 import { DeleteUserComponent } from './components/user/delete-user/delete-user.component';
 import { EditUserComponent } from './components/user/edit-user/edit-user.component';
+import { SearchUserComponent } from './components/user/search-user/search-user.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { EditUserComponent } from './components/user/edit-user/edit-user.compone
     ResetPasswordComponent,
     DeleteUserComponent,
     EditUserComponent,
+    SearchUserComponent,
   ],
   imports: [
     BrowserModule,

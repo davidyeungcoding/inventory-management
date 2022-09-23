@@ -131,6 +131,14 @@ export class UserService {
       catchError(err => of(err))
     );
   };
+
+  searchUser(token: string, term: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/search?term=${term}`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
   
   deleteUser(token: string, payload: any) {
     const validateHeader = this.globalService.buildValidateHeaders(token);

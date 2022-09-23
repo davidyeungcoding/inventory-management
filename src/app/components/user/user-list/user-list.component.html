@@ -1,8 +1,21 @@
 <div class="container">
   <h1 class="page-title">User List</h1>
 
-  <div class="msg-container" id="userListMsgContainer">
-    <h5 class="alert alert-msg" id="userListMsg">{{ userListMessage }}</h5>
+  <div class="row search-group-container">
+    <div class="search-group">
+      <div class="search-form-group">
+        <app-search-user></app-search-user>
+      </div>
+
+      <button type="button"
+        class="btn btn-secondary"
+        id="createUser"
+        (click)="onCreateUser()"><i class="fas fa-users"></i> Create User</button>
+    </div>
+
+    <div class="msg-container" id="userListMsgContainer">
+      <h5 class="alert alert-msg" id="userListMsg">{{ userListMessage }}</h5>
+    </div>
   </div>
 
   <div class="row scrollable">
@@ -28,7 +41,7 @@
           <button type="button"
             class="btn btn-secondary"
             aria-label="Edit User"
-            (click)="onEditUser(user, 'editUser')"><i class="far fa-edit"></i></button>
+            (click)="onEditUser(user, 'editUser')"><i class="fas fa-user-edit"></i></button>
         </td>
 
         <td>

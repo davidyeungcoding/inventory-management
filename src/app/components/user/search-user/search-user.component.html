@@ -1,17 +1,17 @@
-<form [formGroup]="searchQuery" (ngSubmit)="onSearch()">
+<form [formGroup]="searchUser" (ngSubmit)="onSearchUser()">
   <div class="search-form">
     <input type="text"
       class="form-field search-field"
-      id="searchStoreField"
-      placeholder="Search for Store"
+      id="searchUserField"
+      placeholder="Search for User"
       formControlName="term">
-  
-    <Button type="submit"
+
+    <button type="submit"
       class="btn btn-secondary search-btn"
-      id="searchStoreBtn">
+      if="searchUserBtn">
       <i class="fas fa-search"></i>
       
       <span class="search-text"> Search</span>
-    </Button>
+    </button>
   </div>
 </form>

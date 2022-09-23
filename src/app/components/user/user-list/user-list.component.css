@@ -1,8 +1,21 @@
+/* ================= */
+/* || Create User || */
+/* ================= */
+
+#createUser {
+  white-space: nowrap;
+  width: fit-content;
+}
+
+/* =============== */
+/* || User List || */
+/* =============== */
+
 .table-body {
   max-width: var(--base-width);
 }
 
 #userListMsg {
-  margin: auto;
+  margin: 2rem auto auto;
   width: var(--base-width);
 }

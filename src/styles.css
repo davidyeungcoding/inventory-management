@@ -208,6 +208,67 @@ section:last-of-type {
   cursor: pointer;
 }
 
+/* ============ */
+/* || Search || */
+/* ============ */
+
+.search-group-container {
+  margin: auto;
+  padding: 16px 0;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-background);
+  max-width: var(--base-width-wide);
+}
+
+.search-group {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0;
+}
+
+.search-form-group {
+  padding-right: 58px;
+  width: 100%;
+}
+
+@media screen and (min-width: 576px) {
+  .search-group {
+    padding: 0 20px;
+  }
+
+  .search-form-group {
+    padding-right: 0;
+    width: 60%;
+  }
+}
+
+.search-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.search-field {
+  border-radius: 5px 0 0 5px;
+}
+
+.search-text {
+  display: none;
+}
+
+@media screen and (min-width: 450px) {
+  .search-text {
+    display: inline;
+  }
+}
+
+.search-btn {
+  border-radius: 0 5px 5px 0;
+  width: fit-content;
+}
+
 /* ==================== */
 /* || Modal Group Two|| */
 /* ==================== */

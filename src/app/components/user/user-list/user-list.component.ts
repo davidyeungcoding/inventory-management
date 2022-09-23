@@ -109,4 +109,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.setupEditUserForm(user);
     this.onShowModal(user, target);
   };
+
+  onCreateUser(): void {};
 }
