@@ -22,6 +22,10 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   editIngredientForm = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')])
   });
+  createIngredientForm = new FormGroup({
+    name: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
+    storeId: new FormControl('')
+  });
 
   constructor(
     private ingredientService: IngredientService,
@@ -39,6 +43,38 @@ export class IngredientListComponent implements OnInit, OnDestroy {
     this.ingredientService.changeIngredientList([]);
     this.subscriptions.unsubscribe();
   }
+
+  // ======================
+  // || Helper Functions ||
+  // ======================
+
+  resetEditIngredient(): void {
+    this.editIngredientForm.setValue({
+      name: ''
+    });
+
+    $('#editIngredientName').attr('placeholder', this.targetIngredient!.name);
+    this.editIngredientForm.markAsPristine();
+    this.editIngredientForm.markAsUntouched();
+  };
+
+  resetCreateIngredientForm(): void {
+    this.createIngredientForm.setValue({
+      name: '',
+      storeId: ''
+    });
+
+    this.createIngredientForm.markAsPristine();
+    this.createIngredientForm.markAsUntouched();
+  };
+
+  modalPrep(elemId: string): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
+    $(`${elemId}Btn`).prop('disabled', false);
+    $(`${elemId}MsgContainer`).css('display', 'none');
+    (<any>$(`${elemId}Modal`)).modal('show');
+  };
 
   // =======================
   // || General Functions ||
@@ -75,35 +111,19 @@ export class IngredientListComponent implements OnInit, OnDestroy {
   };
 
   onEditIngredient(ingredient: Ingredient): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
     this.targetIngredient = ingredient;
-    $('#editIngredientBtn').prop('disabled', false);
-    $('#editIngredientMsgContainer').css('display', 'none');
-    $('#editIngredientName').attr('placeholder', this.targetIngredient.name);
-    
-    this.editIngredientForm.setValue({
-      name: ''
-    });
-
-    (<any>$('#editIngredientModal')).modal('show');
+    this.resetEditIngredient();
+    this.modalPrep('#editIngredient');
   };
 
   onDeleteIngredient(ingredient: Ingredient): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
     this.targetIngredient = ingredient;
-    $('#deleteIngredientBtn').prop('disabled', false);
-    $('#deleteIngredientMsgContainer').css('display', 'none');
-    (<any>$('#deleteIngredientModal')).modal('show');
+    this.modalPrep('#deleteIngredient');
   };
 
   onCreateIngredient(): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#ingredientListMsg');
-    $('#createIngredientBtn').prop('disabled', false);
-    $('#createIngredientMsgContainer').css('display', 'none');
-    (<any>$('#createIngredientModal')).modal('show');
+    this.resetCreateIngredientForm();
+    this.modalPrep('#createIngredient');
   };
 
   onBack(): void {

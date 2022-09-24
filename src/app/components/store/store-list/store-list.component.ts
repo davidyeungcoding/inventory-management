@@ -58,6 +58,9 @@ export class StoreListComponent implements OnInit, OnDestroy {
       state: '',
       zip: ''
     });
+
+    this.createStore.markAsPristine();
+    this.createStore.markAsUntouched();
   };
 
   // =======================

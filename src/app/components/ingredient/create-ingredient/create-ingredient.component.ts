@@ -1,5 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { IngredientService } from 'src/app/services/ingredient.service';
@@ -14,15 +13,12 @@ import { Ingredient } from 'src/app/interfaces/ingredient';
   styleUrls: ['./create-ingredient.component.css']
 })
 export class CreateIngredientComponent implements OnInit, OnDestroy {
+  @Input() createIngredient: any;
   private subscriptions = new Subscription();
   private timeout?: number;
   ingredientList: Ingredient[] = [];
   createMessage?: string;
   nameError?: string;
-  createIngredient = new FormGroup({
-    name: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
-    storeId: new FormControl('')
-  });
 
   constructor(
     private ingredientService: IngredientService,
@@ -50,13 +46,6 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
   // ======================
   // || Helper Functions ||
   // ======================
-
-  clearForm(): void {
-    this.createIngredient.setValue({
-      name: '',
-      storeId: ''
-    });
-  };
 
   validateName(name: any): boolean {
     const check = this.globalService.testName(name);
@@ -95,21 +84,12 @@ export class CreateIngredientComponent implements OnInit, OnDestroy {
         this.userService.changeSystemMsg('Ingredient successfully created');
         this.globalService.displayMsg('alert-success', '#createIngredientMsg');
         this.addIngredientToList(_ingredient.msg);
-
-        setTimeout(() => {
-          (<any>$('#createIngredientModal')).modal('hide');
-          this.clearForm();
-        }, this.timeout);
+        setTimeout(() => { (<any>$('#createIngredientModal')).modal('hide') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_ingredient.msg);
         this.globalService.displayMsg('alert-danger', '#createIngredientMsg');
         $('#createIngredientBtn').prop('disabled', false);
       };
     });
-  };
-
-  onCancelCreate(): void {
-    (<any>$('#createIngredientModal')).modal('hide');
-    this.clearForm();
   };
 }

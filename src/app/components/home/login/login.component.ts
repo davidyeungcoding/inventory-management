@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
@@ -10,10 +9,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  login = new FormGroup({
-    username: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required)
-  });
+  @Input() login: any;
 
   constructor(
     private globalServvice: GlobalService,
@@ -33,13 +29,6 @@ export class LoginComponent implements OnInit {
   // ======================
   // || Helper Functions ||
   // ======================
-
-  clearForm(): void {
-    this.login.setValue({
-      username: '',
-      password: ''
-    });
-  };
 
   validateEntry(term: any): boolean {
     const check = this.globalServvice.testName(term);
@@ -65,7 +54,6 @@ export class LoginComponent implements OnInit {
 
     this.userService.loginUser(form).subscribe(_user => {
       if (_user.status === 200) {
-        this.clearForm();
         this.userService.changeActiveUser(_user.msg);
         this.userService.changeAccountType(_user.msg.accountType);
         localStorage.setItem('token', _user.token);

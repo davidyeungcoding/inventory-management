@@ -126,6 +126,18 @@ export class ItemListComponent implements OnInit, OnDestroy {
     return temp;
   };
 
+  editFormSetup(item: Item): void {
+    this.editForm.setValue({
+      name: '',
+      price: '',
+      active: item.active.toString(),
+      available: item.available.toString()
+    });
+
+    $('#editName').attr('placeholder', this.targetItem!.name);
+    $('#editPrice').attr('placeholder', this.targetItem!.price);
+  };
+
   resetCreateItemForm(): void {
     this.createItem.setValue({
       name: '',
@@ -134,6 +146,17 @@ export class ItemListComponent implements OnInit, OnDestroy {
       available: 'false',
       storeId: ''
     });
+
+    this.createItem.markAsPristine();
+    this.createItem.markAsUntouched();
+  };
+
+  modalPrep(elemId: string): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#itemListMsg');
+    $(`${elemId}Btn`).prop('disabled', false);
+    $(`${elemId}MsgContainer`).css('display', 'none');
+    (<any>$(`${elemId}Modal`)).modal('show');
   };
 
   // =======================
@@ -166,22 +189,9 @@ export class ItemListComponent implements OnInit, OnDestroy {
   };
 
   onEditDetails(item: Item): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     this.targetItem = item;
-    $('#editItemBtn').prop('disabled', false);
-    $('#editItemMsgContainer').css('display', 'none');
-    $('#editName').attr('placeholder', this.targetItem!.name);
-    $('#editPrice').attr('placeholder', this.targetItem!.price);
-    
-    this.editForm.setValue({
-      name: '',
-      price: '',
-      active: item.active.toString(),
-      available: item.available.toString()
-    });
-    
-    (<any>$('#editItemModal')).modal('show');
+    this.editFormSetup(item);
+    this.modalPrep('#editItem');
   };
 
   onEditItemIngredients(item: Item): void {
@@ -197,21 +207,13 @@ export class ItemListComponent implements OnInit, OnDestroy {
   };
 
   onDeleteItem(item: Item): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#itemListMsg');
     this.targetItem = item;
-    $('#deleteItemBtn').prop('disabled', false);
-    $('#deleteItemMsgContainer').css('display', 'none');
-    (<any>$('#deleteItemModal')).modal('show');
+    this.modalPrep('#deleteItem');
   };
 
   onCreateItem(): void {
-    const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#itemListMsg');
-    $('#createItemBtn').prop('disabled', false);
-    $('#createItemMsgContainer').css('display', 'none');
     this.resetCreateItemForm();
-    (<any>$('#createItemModal')).modal('show');
+    this.modalPrep('#createItem');
   };
 
   onBack(): void {
