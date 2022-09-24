@@ -1,0 +1,89 @@
+<div class="row modal-form-container">
+  <div class="msg-container" id="adminCreateUserMsgContainer">
+    <h5 class="alert alert-msg" id="adminCreateUserMsg">{{ adminCreateUserMessage }}</h5>
+  </div>
+
+  <form [formGroup]="createUserForm" (ngSubmit)="onCreateUser()">
+    <section class="form-group-two">
+      <div class="form-group">
+        <label for="adminCreateUserUsername">Username:</label>
+
+        <input type="text"
+          class="form-field"
+          id="adminCreateUserUsername"
+          required
+          formControlName="username">
+
+        <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="error-text">
+          <span *ngIf="username?.errors?.['required']">Username is required</span>
+
+          <span *ngIf="username?.errors?.['pattern']">{{ usernameError }}</span>
+        </div>
+      </div>
+
+      <div class="form-group password-group">
+        <label for="adminCreateUserPassword">Password:</label>
+
+        <input type="password"
+          class="form-field"
+          id="adminCreateUserPassword"
+          required
+          formControlName="password">
+
+        <i class="far fa-eye show-password"
+          aria-label="Show Password"
+          (click)="onTogglePassword('#adminCreateUserPassword')"></i>
+  
+        <i class="far fa-eye-slash hide-password"
+          aria-label="Hide Password"
+          (click)="onTogglePassword('#adminCreateUserPassword')"></i>
+
+        <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="error-text">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+
+          <span *ngIf="password?.errors?.['pattern']">{{ passwordError }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-group form-section">
+      <label for="adminCreateUserAccountType" class="form-section-title">Account Type:</label>
+
+      <div class="radio-container" id="adminCreateUserAccountType">
+        <label for="adminCreateUserAccountTypeAdmin" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="adminCreateUserAccountTypeAdmin"
+            formControlName="accountType"
+            value="admin"> Admin
+        </label>
+
+        <label for="adminCreateUserAccountTypeManager" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="adminCreateUserAccountTypeManager"
+            formControlName="accountType"
+            value="manager"> Manager
+        </label>
+
+        <label for="adminCreateUserAccountTypeGeneral" class="radio-item">
+          <input type="radio"
+            class="radio-item"
+            id="adminCreateUserAccountTypeGeneral"
+            formControlName="accountType"
+            value="general"> General
+        </label>
+      </div>
+    </section>
+
+    <div class="row modal-btn-container">
+      <button type="submit"
+        class="btn btn-secondary modal-btn"
+        id="adminCreateUserBtn">Create User</button>
+
+      <button type="button"
+        class="btn btn-secondary modal-btn"
+        data-bs-dismiss="modal">Cancel</button>
+    </div>
+  </form>
+</div>

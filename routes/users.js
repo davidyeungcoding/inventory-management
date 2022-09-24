@@ -114,7 +114,26 @@ router.post('/create', async (req, res, next) => {
       : res.json({ status: 201, msg: _user });
     });
   } catch {
-    return res.json({ status: 400, msg: 'Unable to process request for new user' });
+    return res.json({ status: 400, msg: 'Unable to process request to register new user' });
+  };
+});
+
+router.post('/admin-create', auth.authenticateToken, auth.adminCheck, async (req, res, next) => {
+  try {
+    const duplicate = await duplicateCheck(req.body.username);
+    if (duplicate) return res.json({ status: 400, msg: 'Duplicate username' });
+    const payload = new userModel({
+      username: req.body.username,
+      password: req.body.password,
+      accountType: req.body.accountType
+    });
+
+    User.createUser(payload, (err, _user) => {
+      return err ? res.json({ status: 400, msg: 'Unable to create new user' })
+      : res.json({ status: 201, msg: buildResUser(_user), token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unalbe to process request to create new user' });
   };
 });
 

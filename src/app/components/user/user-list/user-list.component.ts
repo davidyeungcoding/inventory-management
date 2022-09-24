@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { User } from 'src/app/interfaces/user';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user-list',
@@ -23,6 +23,11 @@ export class UserListComponent implements OnInit, OnDestroy {
     username: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
     password: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
     accountType: new FormControl('')
+  });
+  createUserForm = new FormGroup({
+    username: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
+    password: new FormControl('', [Validators.required, Validators.pattern('^[\\w\\s]+$')]),
+    accountType: new FormControl('general')
   });
 
   constructor(
@@ -58,6 +63,19 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
 
     $('#editUserUsername').attr('placeholder', user.username);
+    this.editUserForm.markAsPristine();
+    this.editUserForm.markAsUntouched();
+  };
+  
+  resetCreateUserForm(): void {
+    this.createUserForm.setValue({
+      username: '',
+      password: '',
+      accountType: 'general'
+    });
+    
+    this.createUserForm.markAsPristine();
+    this.createUserForm.markAsUntouched();
   };
 
   // =======================
@@ -110,5 +128,12 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.onShowModal(user, target);
   };
 
-  onCreateUser(): void {};
+  onCreateUser(): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#userListMsg');
+    this.resetCreateUserForm();
+    $('#adminCreateUserBtn').prop('disabled', false);
+    $('#adminCreateUserMsgContainer').css('display', 'none');
+    (<any>$('#adminCreateUserModal')).modal('show');
+  };
 }

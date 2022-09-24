@@ -62,6 +62,14 @@ export class UserService {
     );
   };
 
+  adminCreateUser(token: string, form: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.post(`${this.api}/admin-create`, form, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   updateAccountType(token: string, form: any) {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 

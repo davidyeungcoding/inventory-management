@@ -35,6 +35,7 @@ import { ResetPasswordComponent } from './components/user/reset-password/reset-p
 import { DeleteUserComponent } from './components/user/delete-user/delete-user.component';
 import { EditUserComponent } from './components/user/edit-user/edit-user.component';
 import { SearchUserComponent } from './components/user/search-user/search-user.component';
+import { AdminCreateUserComponent } from './components/user/admin-create-user/admin-create-user.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { SearchUserComponent } from './components/user/search-user/search-user.c
     DeleteUserComponent,
     EditUserComponent,
     SearchUserComponent,
+    AdminCreateUserComponent,
   ],
   imports: [
     BrowserModule,
