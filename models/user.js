@@ -131,7 +131,8 @@ module.exports.editStoreList = (payload, callback) => {
   const action = payload.action === 'add' ? '$push' : '$pull';
   const modifier = action === '$push' ? '$each': '$in';
   const update = { [action]: { stores: { [modifier]: payload.storeList } } };
-  this.userModel.findByIdAndUpdate(payload._id, update, { new: true }, callback);
+  this.userModel.findByIdAndUpdate(payload._id, update, { new: true }, callback)
+  .populate('stores', 'name');
 };
 
 // =================

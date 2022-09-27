@@ -3,8 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
+import { StoreService } from 'src/app/services/store.service';
 import { UserService } from 'src/app/services/user.service';
 
+import { Store } from 'src/app/interfaces/store';
 import { User } from 'src/app/interfaces/user';
 
 @Component({
@@ -18,6 +20,9 @@ export class UserListComponent implements OnInit, OnDestroy {
   private usernameSort: boolean = true;
   targetUser?: User;
   userListMessage?: string;
+  storesToChange: any = {};
+  userStores? : Store[];
+  storeList?: Store[];
   userList?: User[];
   editUserForm = new FormGroup({
     username: new FormControl('', Validators.pattern('^[\\w\\s]+$')),
@@ -32,6 +37,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   constructor(
     private globalService: GlobalService,
+    private storeService: StoreService,
     private userService: UserService
   ) { }
 
@@ -76,6 +82,25 @@ export class UserListComponent implements OnInit, OnDestroy {
     
     this.createUserForm.markAsPristine();
     this.createUserForm.markAsUntouched();
+  };
+
+  retrieveStoreList(user: User): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#userListMsg');
+
+    this.storeService.getStoreList(token).subscribe(_list => {
+      if (_list.status === 200) {
+        if (_list.token) localStorage.setItem('token', _list.token);
+        this.storeList = this.globalService.filterList(user.stores, _list.msg, 0);
+      } else {
+        this.userService.changeSystemMsg(_list.msg);
+        this.globalService.displayMsg('alert-danger', '#userListMsg');
+      };
+    });
+  };
+
+  setupFilteredStoreList(user: User): void {
+    this.retrieveStoreList(user);
   };
 
   // =======================
@@ -125,6 +150,14 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   onEditUser(user: User, target: string): void {
     this.setupEditUserForm(user);
+    this.onShowModal(user, target);
+  };
+
+  onManageStores(user: User, target: string): void {
+    this.setupFilteredStoreList(user);
+    this.userStores = user.stores;
+    this.storesToChange = {};
+    this.globalService.clearHighlight();
     this.onShowModal(user, target);
   };
 

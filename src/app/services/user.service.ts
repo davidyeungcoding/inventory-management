@@ -86,6 +86,14 @@ export class UserService {
     );
   };
 
+  editUserStores(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/edit-stores`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
   loginUser(form: any) {
     return this.http.post(`${this.api}/login`, form, this.httpOptions).pipe(
       catchError(err => of(err))

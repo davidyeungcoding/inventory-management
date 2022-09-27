@@ -31,6 +31,8 @@
           <i class="fas fa-sort-up" id="userListAccountType"></i>
           <i class="fas fa-sort-down hide" id="userListAccountTypeReverse"></i> Account Type</th>
 
+        <th class="table-center">Manage Stores</th>
+
         <th class="table-center">Rest Password</th>
 
         <th class="table-center">Delete User</th>
@@ -50,6 +52,13 @@
 
         <td class="table-center">
           <span>{{ user.accountType }}</span>
+        </td>
+
+        <td class="table-center">
+          <button class="btn btn-secondary"
+            aria-label="Manage Stores"
+            (click)="onManageStores(user, 'manageStores')">
+            <i class="fas fa-store-alt"></i></button>
         </td>
 
         <td class="table-center">
@@ -104,6 +113,28 @@
       <div class="modal-body">
         <app-edit-user [targetUser]="targetUser"
           [editUserForm]="editUserForm"></app-edit-user>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="manageStoresModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Manage Stores</h5>
+
+        <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <app-manage-stores [activeUser]="targetUser"
+          [filteredStoreList]="storeList"
+          [userStores]="userStores"
+          [toChange]="storesToChange"></app-manage-stores>
       </div>
     </div>
   </div>
