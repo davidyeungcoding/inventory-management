@@ -123,8 +123,8 @@ export class GlobalService {
 
   sortList(list: any[], field: string): any[] {
     return list.sort((a, b) => {
-      const one = String(a[field]).toLowerCase();
-      const two = String(b[field]).toLowerCase();
+      const one: string = String(a[field]).toLowerCase();
+      const two: string = String(b[field]).toLowerCase();
       return one < two ? -1
       : one > two ? 1
       : 0;
@@ -133,8 +133,8 @@ export class GlobalService {
 
   reverseSortList(list: any[], field: string): any[] {
     return list.sort((a, b) => {
-      const one = String(a[field]).toLowerCase();
-      const two = String(b[field]).toLowerCase();
+      const one: string = String(a[field]).toLowerCase();
+      const two: string = String(b[field]).toLowerCase();
       return one < two ? 1
       : one > two ? -1
       : 0;
@@ -143,8 +143,8 @@ export class GlobalService {
 
   sortNumberList(list: any[], field: string): any[] {
     return list.sort((a, b) => {
-      const one = Number(a[field].substring(1));
-      const two = Number(b[field].substring(1));
+      const one: number = Number(a[field].substring(1));
+      const two: number = Number(b[field].substring(1));
       return one < two ? -1
       : one > two ? 1
       : 0;
@@ -153,8 +153,8 @@ export class GlobalService {
 
   reverseSortNumberList(list: any[], field: string): any[] {
     return list.sort((a, b) => {
-      const one = Number(a[field].substring(1));
-      const two = Number(b[field].substring(1));
+      const one: number = Number(a[field].substring(1));
+      const two: number = Number(b[field].substring(1));
       return one < two ? 1
       : one > two ? -1
       : 0;

@@ -19,9 +19,10 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   private accountType: any;
   private usernameSort: boolean = true;
   private accountTypeSort: boolean = true;
-  storeUsers: User[] = [];
   manageUserMessage?: string;
+  storeUsers: User[] = [];
   filteredUserList: User[] = [];
+  userToChange: any = {};
   accountTypeForm = new FormGroup({
     _id: new FormControl(''),
     username: new FormControl(''),
@@ -136,7 +137,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     $('#addUserMsgContainer').css('display', 'none');
     $('#manageUserMsgContainer').css('display', 'none');
     this.globalService.clearHighlight();
-    this.userService.changeToChange({});
+    this.userToChange = {};
 
     this.userService.getManageUserList(token).subscribe(_list => {
       if (_list.status === 200) {

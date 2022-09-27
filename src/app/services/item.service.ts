@@ -27,8 +27,6 @@ export class ItemService {
 
   private itemListSource = new BehaviorSubject<Item[]>([]);
   itemList = this.itemListSource.asObservable();
-  private toChangeSource = new BehaviorSubject<any>({});
-  toChange = this.toChangeSource.asObservable();
 
   constructor(
     private globalService: GlobalService,
@@ -104,9 +102,5 @@ export class ItemService {
 
   changeItemList(list: Item[]): void {
     this.itemListSource.next(list);
-  };
-
-  changeToChange(targets: any): void {
-    this.toChangeSource.next(targets);
   };
 }

@@ -23,6 +23,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
   private availableSort: boolean = true;
   targetIngredients: Ingredient[] = [];
   fullIngredientList: any[] = [];
+  ingredientsToChange: any = {};
   targetItem: Item|null = null;
   itemListMessage: string = '';
   itemList: Item[] = [];
@@ -202,7 +203,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     $('#editItemIngredientBtn').prop('disabled', false);
     $('#editItemIngredientMsgContainer').css('display', 'none');
     this.globalService.clearHighlight();
-    this.itemService.changeToChange({});
+    this.ingredientsToChange = {};
     this.retrieveIngredientList(token);
   };
 

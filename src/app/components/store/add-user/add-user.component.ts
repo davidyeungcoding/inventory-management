@@ -15,8 +15,8 @@ import { User } from 'src/app/interfaces/user';
 export class AddUserComponent implements OnInit, OnDestroy {
   @Input() filteredUserList!: User[];
   @Input() storeUsers!: User[];
+  @Input() toChange?: any;
   private subscriptions = new Subscription();
-  private toChange: any = {};
   private timeout?: number;
   addUserMessage!: string;
   
@@ -30,7 +30,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.addUserMessage = _msg));
     this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
-    this.subscriptions.add(this.userService.toChange.subscribe(_obj => this.toChange = _obj));
   }
 
   ngOnDestroy(): void {
@@ -42,9 +41,13 @@ export class AddUserComponent implements OnInit, OnDestroy {
   // ======================
 
   changeSelected(id: string, action: string): void {
-    const temp = {...this.toChange};
-    temp[id] ? delete temp[id] : temp[id] = action;
-    this.userService.changeToChange(temp);
+    this.toChange[id] ? delete this.toChange[id] : this.toChange[id] = action;
+  };
+
+  handleNoChanges(): void {
+    this.userService.changeSystemMsg('No changes detected');
+    this.globalService.displayMsg('alert-danger', '#addUserMsg');
+    $('#updateStoreUsersBtn').prop('disabled', false);
   };
 
   // =======================
@@ -67,13 +70,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingTokenModal('#addUserMsg', '#manageUserModal');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-
-    if (!Object.keys(this.toChange).length) {
-      this.userService.changeSystemMsg('No changes detected');
-      this.globalService.displayMsg('alert-danger', '#addUserMsg');
-      $('#updateStoreUsersBtn').prop('disabled', false);
-      return;
-    };
+    if (!Object.keys(this.toChange).length) return this.handleNoChanges();
 
     const payload = {
       _id: storeId,
@@ -94,10 +91,5 @@ export class AddUserComponent implements OnInit, OnDestroy {
         $('#updateStoreUsersBtn').prop('disabled', false);
       };
     });
-  };
-
-  onCancel(): void {
-    (<any>$('#manageUserModal')).modal('hide');
-    this.userService.changeToChange({});
   };
 }
