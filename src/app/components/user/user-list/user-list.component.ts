@@ -115,6 +115,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.globalService.sortList(_list.msg, 'username');
+        $('.skeleton-entry').css('display', 'none');
         this.userService.changeFullUserList(_list.msg);
       } else {
         this.userService.changeFullUserList([]);

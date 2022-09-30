@@ -81,3 +81,67 @@
   transition-duration: .75s;
   transition-property: translate;
 }
+
+/* ============== */
+/* || Skeleton || */
+/* ============== */
+
+.skeleton-title,
+.skeleton-street,
+.skeleton-location,
+.skeleton-action {
+  margin: 0 auto 8px;
+  background-color: var(--skeleton-color-content);
+  border-radius: 5px;
+  animation: skeleton 1s linear infinite alternate;
+}
+
+.skeleton-title {
+  height: 3rem;
+  width: 100%;
+}
+
+.skeleton-street {
+  height: 1.4rem;
+  width: 60%;
+}
+
+.skeleton-location {
+  height: 1.4rem;
+  width: 80%;
+}
+
+.skeleton-action {
+  height: 1rem;
+  width: 6rem;
+  margin: 8px auto;
+}
+
+.skeleton-action:nth-child(odd) {
+  width: 8rem;
+}
+
+@media screen and (min-width: 525px) {
+  .skeleton-title {
+    width: 25rem;
+  }
+
+  .skeleton-street {
+    width: 13rem;
+  }
+
+  .skeleton-location {
+    width: 18rem;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .skeleton-action:nth-child(odd) {
+    width: 6rem;
+  }
+
+  .skeleton-action:first-child,
+  .skeleton-action:nth-child(n+4):nth-child(-n+5) {
+    width: 8rem;
+  }
+}

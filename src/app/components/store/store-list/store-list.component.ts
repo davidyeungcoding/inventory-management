@@ -74,6 +74,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
     this.storeService.getStoreList(token).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
+        $('.skeleton-container').css('display', 'none');
 
         if (_list.msg.length) {
           this.storeService.changeStoreList(_list.msg)

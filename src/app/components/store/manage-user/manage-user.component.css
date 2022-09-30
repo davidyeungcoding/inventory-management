@@ -1,8 +1,0 @@
-.table-body {
-  max-width: var(--base-width);
-}
-
-#manageUserMsg {
-  margin: auto;
-  width: var(--base-width);
-}

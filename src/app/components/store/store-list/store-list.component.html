@@ -21,6 +21,63 @@
 
   <div appStoreListIntersection></div>
 
+  <div class="row store-container skeleton-container">
+    <div class="container store-details">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-street"></div>
+      <div class="skeleton-location"></div>
+    </div>
+
+    <div class="container store-actions-container">
+      <ul class="store-actions-list">
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="row store-container skeleton-container">
+    <div class="container store-details">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-street"></div>
+      <div class="skeleton-location"></div>
+    </div>
+
+    <div class="container store-actions-container">
+      <ul class="store-actions-list">
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="row store-container skeleton-container">
+    <div class="container store-details">
+      <div class="skeleton-title"></div>
+      <div class="skeleton-street"></div>
+      <div class="skeleton-location"></div>
+    </div>
+
+    <div class="container store-actions-container">
+      <ul class="store-actions-list">
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+        <li class="store-action skeleton-action"></li>
+      </ul>
+    </div>
+  </div>
+
   <div class="row store-container" *ngFor="let store of storeList">
     <div class="container store-details">
       <h3 class="store-title">{{ store.name }}</h3>
@@ -32,7 +89,7 @@
 
     <div class="container store-actions-container">
       <ul class="store-actions-list">
-        <li class="store-action" (click)="onStoreActionRedirect('order-list', store._id)">View/Edit Orders</li>
+        <li class="store-action" (click)="onStoreActionRedirect('edit-order', store._id)">View/Edit Orders</li>
 
         <li *ngIf="accountType.manager"
           class="store-action"

@@ -89,6 +89,7 @@ export class IngredientListComponent implements OnInit, OnDestroy {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.globalService.sortList(_list.msg, 'name');
+        $('.skeleton-entry').css('display', 'none');
         this.ingredientService.changeIngredientList(_list.msg);
       } else {
         this.userService.changeSystemMsg(_list.msg);

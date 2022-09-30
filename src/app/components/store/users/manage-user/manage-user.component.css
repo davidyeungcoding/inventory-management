@@ -1,22 +1,9 @@
-/* ================= */
-/* || Create User || */
-/* ================= */
-
-#createUser {
-  white-space: nowrap;
-  width: fit-content;
-}
-
-/* =============== */
-/* || User List || */
-/* =============== */
-
 .table-body {
   max-width: var(--base-width);
 }
 
-#userListMsg {
-  margin: 2rem auto auto;
+#manageUserMsg {
+  margin: auto;
   width: var(--base-width);
 }
 
@@ -29,11 +16,11 @@
 }
 
 .skeleton-data {
-  width: 4rem;
+  width: 5rem;
 }
 
 .skeleton-data-alt {
-  width: 5rem;
+  width: 4rem;
 }
 
 .skeleton-data-wide {
@@ -42,6 +29,6 @@
 }
 
 .skeleton-data-wide-alt {
-  width: 6rem;
+  width: 10rem;
   margin: 0;
 }

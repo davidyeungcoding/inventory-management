@@ -5,10 +5,11 @@ import { HomeComponent } from './components/home/home/home.component';
 import { StoreListComponent } from './components/store/store-list/store-list.component';
 import { ItemListComponent } from './components/item/item-list/item-list.component';
 import { IngredientListComponent } from './components/ingredient/ingredient-list/ingredient-list.component';
-import { ManageUserComponent } from './components/store/manage-user/manage-user.component';
+import { ManageUserComponent } from './components/store/users/manage-user/manage-user.component';
 import { UserListComponent } from './components/user/user-list/user-list.component';
 import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
 import { UserAccountComponent } from './components/user/user-account/user-account.component';
+import { EditOrderComponent } from './components/store/orders/edit-order/edit-order.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'manage-user/:storeId', component: ManageUserComponent },
   { path: 'user-list', component: UserListComponent },
   { path: 'user-account', component: UserAccountComponent },
+  { path: 'edit-order/:storeId', component: EditOrderComponent },
   { path: '**', redirectTo: 'home' }
 ];
 

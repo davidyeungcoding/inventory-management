@@ -174,6 +174,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.convertPrice(_list.msg);
         this.globalService.sortList(_list.msg, 'name');
+        $('.skeleton-entry').css('display', 'none');
         this.itemService.changeItemList(_list.msg);
       } else {
         this.userService.changeSystemMsg(_list.msg);

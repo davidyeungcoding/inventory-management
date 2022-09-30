@@ -20,3 +20,33 @@
     justify-content: flex-end;
   }
 }
+
+/* ============== */
+/* || Skeleton || */
+/* ============== */
+
+.skeleton-data {
+  width: 4rem;
+}
+
+.skeleton-data-alt {
+  width: 5rem;
+}
+
+.skeleton-data-wide {
+  width: 8rem;
+  margin: 0;
+}
+
+.skeleton-data-wide-alt {
+  width: 6rem;
+  margin: 0;
+}
+
+.skeleton-btn {
+  width: 3rem;
+}
+
+.skeleton-btn-wide {
+  width: 6rem;
+}

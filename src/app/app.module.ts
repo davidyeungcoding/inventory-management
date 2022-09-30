@@ -19,13 +19,13 @@ import { UserListComponent } from './components/user/user-list/user-list.compone
 import { HomeComponent } from './components/home/home/home.component';
 import { LoginComponent } from './components/home/login/login.component';
 import { StoreListComponent } from './components/store/store-list/store-list.component';
-import { ManageUserComponent } from './components/store/manage-user/manage-user.component';
-import { AddUserComponent } from './components/store/add-user/add-user.component';
-import { EditUserAccountTypeComponent } from './components/store/edit-user-account-type/edit-user-account-type.component';
+import { ManageUserComponent } from './components/store/users/manage-user/manage-user.component';
+import { AddUserComponent } from './components/store/users/add-user/add-user.component';
+import { EditUserAccountTypeComponent } from './components/store/users/edit-user-account-type/edit-user-account-type.component';
 import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
 import { SearchStoreComponent } from './components/store/search-store/search-store.component';
 import { DeleteStoreComponent } from './components/store/delete-store/delete-store.component';
-import { RemoveUserComponent } from './components/store/remove-user/remove-user.component';
+import { RemoveUserComponent } from './components/store/users/remove-user/remove-user.component';
 import { CreateStoreComponent } from './components/store/create-store/create-store.component';
 import { NavbarComponent } from './components/navbar/navbar/navbar.component';
 import { StoreListIntersectionDirective } from './directives/store-list-intersection.directive';
@@ -37,6 +37,7 @@ import { EditUserComponent } from './components/user/edit-user/edit-user.compone
 import { SearchUserComponent } from './components/user/search-user/search-user.component';
 import { AdminCreateUserComponent } from './components/user/admin-create-user/admin-create-user.component';
 import { ManageStoresComponent } from './components/user/manage-stores/manage-stores.component';
+import { EditOrderComponent } from './components/store/orders/edit-order/edit-order.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { ManageStoresComponent } from './components/user/manage-stores/manage-st
     SearchUserComponent,
     AdminCreateUserComponent,
     ManageStoresComponent,
+    EditOrderComponent,
   ],
   imports: [
     BrowserModule,

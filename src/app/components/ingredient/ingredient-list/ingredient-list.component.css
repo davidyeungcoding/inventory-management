@@ -14,3 +14,21 @@
 .table-body {
   max-width: var(--base-width);
 }
+
+/* ============== */
+/* || Skeleton || */
+/* ============== */
+
+.skeleton-btn {
+  width: 3rem;
+}
+
+.skeleton-data-wide {
+  width: 10rem;
+  margin: 0;
+}
+
+.skeleton-data-wide-alt {
+  width: 14rem;
+  margin: 0;
+}

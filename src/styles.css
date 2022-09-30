@@ -7,6 +7,7 @@
   --table-color-secondary: hsl(0, 0%, 87%);
   --table-color-tertiary: hsl(0, 0%, 75%);
   --text-color-warning: hsl(355, 80%, 42%);
+  --skeleton-color-content: hsl(200, 5%, 75%);
   --base-width: 650px;
   --base-width-wide: 950px;
 }
@@ -215,8 +216,9 @@ section:last-of-type {
 .search-group-container {
   margin: auto;
   padding: 16px 0;
-  position: sticky;
   top: 0;
+  z-index: 1;
+  position: sticky;
   background-color: var(--color-background);
   max-width: var(--base-width-wide);
 }
@@ -352,6 +354,51 @@ section:last-of-type {
   }
 }
 
+/* ============ */
+/* || Button || */
+/* ============ */
+
+.btn-home {
+  width: 80%;
+  margin: auto;
+}
+
+/* ============== */
+/* || Skeleton || */
+/* ============== */
+
+.skeleton-data,
+.skeleton-data-wide,
+.skeleton-data-alt,
+.skeleton-data-wide-alt,
+.skeleton-btn,
+.skeleton-btn-wide {
+  margin: auto;
+  background-color: var(--skeleton-color-content);
+  animation: skeleton 1s linear infinite alternate;
+}
+
+.skeleton-data,
+.skeleton-data-wide,
+.skeleton-data-alt,
+.skeleton-data-wide-alt {
+  height: 1rem;
+}
+
+.skeleton-btn,
+.skeleton-btn-wide {
+  height: 2.25rem;
+}
+
+/* =============== */
+/* || Animation || */
+/* =============== */
+
+@keyframes skeleton {
+  0% { opacity: 40%; }
+  100% { opacity: 100%; }
+}
+
 /* ============= */
 /* || General || */
 /* ============= */
@@ -367,13 +414,4 @@ section:last-of-type {
 
 .scrollable {
   overflow-x: auto;
-}
-
-/* ============ */
-/* || Button || */
-/* ============ */
-
-.btn-home {
-  width: 80%;
-  margin: auto;
 }
