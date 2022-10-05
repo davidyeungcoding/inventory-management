@@ -39,10 +39,26 @@ const storeSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Ingredient',
     default: []
+  },
+  orders: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Order',
+    default: []
   }
 });
 
 module.exports.storeModel = mongoose.model('Store', storeSchema);
+
+// ======================
+// || Shared Variables ||
+// ======================
+
+const importOrders = {
+  from: 'orders',
+  localField: 'orders',
+  foreignField: '_id',
+  as: 'orders'
+};
 
 // ==================
 // || Create Store ||
@@ -102,7 +118,7 @@ module.exports.adminSearchStores = (term, callback) => {
 };
 
 module.exports.retrieveStoreDetails = (storeId, callback) => {
-  this.storeModel.findById(storeId, { users: 0, items: 0, ingredients: 0 }, callback);
+  this.storeModel.findById(storeId, { users: 0, items: 0, ingredients: 0, orders: 0 }, callback);
 };
 
 // ==================

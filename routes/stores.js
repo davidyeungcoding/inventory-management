@@ -64,10 +64,6 @@ const adminSearch = async (term, token) => {
   });
 };
 
-const buildUserList = list => {
-  return list.map(user => user._id);
-};
-
 const generateUpdateArray = async obj => {
   return new Promise(resolve => {
     const insertion = [];
@@ -203,7 +199,7 @@ router.get('/details/:storeId', auth.authenticateToken, auth.managerCheck, (req,
     const storeId = req.params.storeId;
 
     Store.retrieveStoreDetails(storeId, (err, _store) => {
-      return err ? res.json({ status: 400, msg: 'An error has occurred while retrieving store details' })
+      return err ? res.json({ status: 400, msg: 'An error occurred while retrieving store details' })
       : res.json({ status: 200, msg: _store, token: req.token });
     });
   } catch {

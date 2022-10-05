@@ -1,3 +1,5 @@
+import { Order } from "./order";
+
 export interface Store {
   _id: string,
   name: string,
@@ -7,5 +9,6 @@ export interface Store {
   zip: string,
   users: [],
   items: [],
-  ingredients: []
+  ingredients: [],
+  orders: Order[]
 }

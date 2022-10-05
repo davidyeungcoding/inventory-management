@@ -6,5 +6,57 @@
   </div>
 
   <div class="row scrollable">
+    <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
+      <div formGroupName="date">
+        <label for="dateSelection">Choose Order Date:</label>
+  
+        <div id="dateSelection">
+          <input type="text"
+            class="form-field"
+            id="month"
+            maxlength="2"
+            placeholder="MM"
+            required
+            formControlName="month"> /
+  
+          <input type="text"
+            class="form-field"
+            id="day"
+            maxlength="2"
+            placeholder="DD"
+            required
+            formControlName="day"> /
+  
+          <input type="text"
+            class="form-field"
+            id="year"
+            maxlength="4"
+            placeholder="YYYY"
+            required
+            formControlName="year">
+        </div>
+  
+        <div *ngIf="month?.invalid && (month?.dirty || month?.touched)" class="error-text">
+          <span *ngIf="month?.errors?.['required']">Month is required</span>
+          <span *ngIf="month?.errors?.['pattern']">Please enter a two digit number in place for the month</span>
+        </div>
+          
+        <div *ngIf="day?.invalid && (day?.dirty || day?.touched)" class="error-text">
+          <span *ngIf="day?.errors?.['required']">Day is required</span>
+          <span *ngIf="day?.errors?.['pattern']">Please enter a two digit number in place for the day</span>
+        </div>
+  
+        <div *ngIf="year?.invalid && (year?.dirty || year?.touched)" class="error-text">
+          <span *ngIf="year?.errors?.['required']">Year is required</span>
+          <span *ngIf="year?.errors?.['pattern']">Please enter a four digit number in place for the year</span>
+        </div>
+      </div>
+
+      <div class="row table-end">
+        <button type="submit"
+          class="btn btn-secondary table-end-btn"
+          id="submitOrderBtn">Submit</button>
+      </div>
+    </form>
   </div>
 </div>

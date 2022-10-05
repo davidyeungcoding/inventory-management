@@ -189,6 +189,10 @@ section:last-of-type {
   overflow-x: hidden;
 }
 
+.dropdown-item:hover {
+  cursor: pointer;
+}
+
 /* ============== */
 /* || Password || */
 /* ============== */

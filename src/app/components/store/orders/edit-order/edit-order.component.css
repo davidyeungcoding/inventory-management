@@ -1,0 +1,9 @@
+#month, #day {
+  width: 5ch;
+  text-align: center;
+}
+
+#year {
+  width: 7ch;
+  text-align: center;
+}
