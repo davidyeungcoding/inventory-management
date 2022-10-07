@@ -12,19 +12,21 @@
   
         <div id="dateSelection">
           <input type="text"
-            class="form-field"
+            class="form-field two-ch"
             id="month"
             maxlength="2"
             placeholder="MM"
             required
+            (keyup)="onDateKeyup('month', '#day')"
             formControlName="month"> /
   
           <input type="text"
-            class="form-field"
+            class="form-field two-ch"
             id="day"
             maxlength="2"
             placeholder="DD"
             required
+            (keyup)="onDateKeyup('day', '#year')"
             formControlName="day"> /
   
           <input type="text"
@@ -35,21 +37,74 @@
             required
             formControlName="year">
         </div>
-  
+
         <div *ngIf="month?.invalid && (month?.dirty || month?.touched)" class="error-text">
-          <span *ngIf="month?.errors?.['required']">Month is required</span>
+          <span *ngIf="month?.errors?.['required']">Month required</span>
           <span *ngIf="month?.errors?.['pattern']">Please enter a two digit number in place for the month</span>
         </div>
           
         <div *ngIf="day?.invalid && (day?.dirty || day?.touched)" class="error-text">
-          <span *ngIf="day?.errors?.['required']">Day is required</span>
+          <span *ngIf="day?.errors?.['required']">Day required</span>
           <span *ngIf="day?.errors?.['pattern']">Please enter a two digit number in place for the day</span>
         </div>
   
         <div *ngIf="year?.invalid && (year?.dirty || year?.touched)" class="error-text">
-          <span *ngIf="year?.errors?.['required']">Year is required</span>
+          <span *ngIf="year?.errors?.['required']">Year required</span>
           <span *ngIf="year?.errors?.['pattern']">Please enter a four digit number in place for the year</span>
         </div>
+      </div>
+
+      <div class="list-item-container">
+        <ng-container formGroupName="orderDetails">
+          <ng-container formArrayName="lineItems">
+            <ng-container *ngFor="let item of lineItems.controls; let i = index">
+              <div class="line-item" formGroupName="{{ i }}">
+                <label for="lineItemQuantity{{ i }}">Quantity:</label>
+
+                <input type="text"
+                  class="form-field two-ch"
+                  id="lineItemQuantity{{ i }}"
+                  maxlength="2"
+                  required
+                  (keyup)="onChangeQuantity(item, i)"
+                  formControlName="quantity">
+
+                <span class="item-price">{{ item?.value.totalCost }}</span>
+
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                    id="itemSelection{{ i }}"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">Change Item</button>
+
+                  <ul class="dropdown-menu">
+                    <li *ngFor="let target of fullItemList">
+                      <a class="dropdown-item" (click)="onSelectItem(target, i)">{{ target.name }}</a>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="item-details">
+                  <label for="itemName{{ i }}">Item Name:</label>
+  
+                  <span class="item-name" id="itemName{{ i }}">{{ item?.value.orderItem.name }}</span>
+
+                  <label for="itemIngredients{{ i }}">Ingredients:</label>
+
+                  <div class="order-item-ingredients" id="itemIngredients{{ i }}">
+                    <ng-container *ngFor="let ingredient of item?.value.orderItem.ingredients">
+                      <span class="item-ingredients">{{ ingredient.name }}</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <button type="button"
+          class="btn btn-secondary"
+          (click)="onAddItem()">Add Item</button>
       </div>
 
       <div class="row table-end">

@@ -64,13 +64,6 @@ export class ItemListComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
-  convertPrice(list: Item[]): void {
-    list.forEach(item => {
-      const price = item.price;
-      item.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
-    });
-  };
-
   retrieveIngredientList(token: string): void {
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
@@ -172,7 +165,7 @@ export class ItemListComponent implements OnInit, OnDestroy {
     this.itemService.getFullItemList(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
-        this.convertPrice(_list.msg);
+        this.globalService.convertPrice(_list.msg);
         this.globalService.sortList(_list.msg, 'name');
         $('.skeleton-entry').css('display', 'none');
         this.itemService.changeItemList(_list.msg);

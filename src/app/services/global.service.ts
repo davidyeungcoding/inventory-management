@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 
+import { Item } from '../interfaces/item';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -185,5 +187,12 @@ export class GlobalService {
     };
 
     return temp;
+  };
+
+  convertPrice(list: Item[]): void {
+    list.forEach(item => {
+      const price = item.price;
+      item.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
+    });
   };
 }
