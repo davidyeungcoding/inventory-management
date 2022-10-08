@@ -7,3 +7,48 @@
   width: 7ch;
   text-align: center;
 }
+
+/* ====================== */
+/* || Order Containers || */
+/* ====================== */
+
+.list-item-container {
+  padding: 16px;
+  height: clamp(300px, 65vh, 80vh);
+  max-width: 400px;
+  overflow: auto;
+  border: solid 1px red;
+}
+
+.line-item-card {
+  border: solid 1px limegreen;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.line-item-card:last-of-type {
+  background-color: aquamarine;
+  margin: 16px 0 0;
+}
+
+.line-item-card:first-of-type {
+  background-color: aqua;
+  margin: 0 0 16px;
+}
+
+/* =================== */
+/* || Order Details || */
+/* =================== */
+
+.order-header,
+.item-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown,
+.item-ingredients {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -77,6 +77,19 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     return `$${calculatedPrice.substring(0, calculatedPrice.length - 2)}.${calculatedPrice.substring(calculatedPrice.length - 2)}`;
   };
 
+  validateOrder(): void {
+    const order = this.lineItems.value;
+    let toPurge: number[] = [];
+    
+    for (let i = order.length - 1; i >= 0; i--) {
+      if (order[i].quantity === '' || order[i].quantity === '0' || !order[i].orderItem._id) toPurge.push(i);
+    };
+
+    if (toPurge.length) {
+      toPurge.forEach(index => this.lineItems.removeAt(index));
+    };
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -123,7 +136,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
     this.quantityTimeout = setTimeout(() => {
       // to do: error handling for quantity field
-      if (!quantity) return;
+      if (!quantity) return this.lineItems.controls[index].patchValue({ totalCost: '-----' });
       const calculatedPrice = this.calculateQuantityPrice(itemPrice, quantity);
       this.lineItems.controls[index].patchValue({ totalCost: calculatedPrice });
     }, 500);
@@ -131,14 +144,16 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
   onSelectItem(item: Item, index: number): void {
     const quantity = this.lineItems.value[index].quantity;
-    const price = quantity ? this.calculateQuantityPrice(item.price, quantity) : '';
+    const price = quantity ? this.calculateQuantityPrice(item.price, quantity) : '-----';
     this.lineItems.controls[index].patchValue({ 
       orderItem: item,
       totalCost: price
     });
   };
   
-  onRemoveItem(i: number): void {};
+  onRemoveItem(index: number): void {
+    this.lineItems.removeAt(index);
+  };
 
   onSubmitOrder(): void {
     const token = localStorage.getItem('token');
@@ -148,6 +163,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     const month = Number(this.month?.value) - 1;
     const day = Number(this.day?.value);
     const formDate = new Date(year, month, day);
+    this.validateOrder();
     console.log(this.order.value)
   };
 }

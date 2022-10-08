@@ -5,7 +5,7 @@
     <h5 class="alert alert-msg" id="editOrderMsg">{{ editOrderMessage }}</h5>
   </div>
 
-  <div class="row scrollable">
+  <div class="row">
     <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
       <div formGroupName="date">
         <label for="dateSelection">Choose Order Date:</label>
@@ -58,18 +58,24 @@
         <ng-container formGroupName="orderDetails">
           <ng-container formArrayName="lineItems">
             <ng-container *ngFor="let item of lineItems.controls; let i = index">
-              <div class="line-item" formGroupName="{{ i }}">
-                <label for="lineItemQuantity{{ i }}">Quantity:</label>
-
-                <input type="text"
-                  class="form-field two-ch"
-                  id="lineItemQuantity{{ i }}"
-                  maxlength="2"
-                  required
-                  (keyup)="onChangeQuantity(item, i)"
-                  formControlName="quantity">
-
-                <span class="item-price">{{ item?.value.totalCost }}</span>
+              <div class="line-item-card" formGroupName="{{ i }}">
+                <div class="order-header">
+                  <div class="quantity-group">
+                    <label for="lineItemQuantity{{ i }}">Quantity:</label>
+  
+                    <input type="text"
+                      class="form-field two-ch"
+                      id="lineItemQuantity{{ i }}"
+                      maxlength="2"
+                      required
+                      (keyup)="onChangeQuantity(item, i)"
+                      formControlName="quantity">
+                  </div>
+  
+                  <button class="btn btn-secondary"
+                    aria-label="Remove Item"
+                    (click)="onRemoveItem(i)"><i class="fas fa-trash"></i></button>
+                </div>
 
                 <div class="dropdown">
                   <button class="btn btn-secondary dropdown-toggle"
@@ -77,7 +83,7 @@
                     data-bs-toggle="dropdown"
                     aria-expanded="false">Change Item</button>
 
-                  <ul class="dropdown-menu">
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
                     <li *ngFor="let target of fullItemList">
                       <a class="dropdown-item" (click)="onSelectItem(target, i)">{{ target.name }}</a>
                     </li>
@@ -85,11 +91,11 @@
                 </div>
 
                 <div class="item-details">
-                  <label for="itemName{{ i }}">Item Name:</label>
+                  <div class="item-main">
+                    <span class="item-name" id="itemName{{ i }}">{{ item?.value.orderItem.name }}</span>
   
-                  <span class="item-name" id="itemName{{ i }}">{{ item?.value.orderItem.name }}</span>
-
-                  <label for="itemIngredients{{ i }}">Ingredients:</label>
+                    <span class="item-price">{{ item?.value.totalCost }}</span>
+                  </div>
 
                   <div class="order-item-ingredients" id="itemIngredients{{ i }}">
                     <ng-container *ngFor="let ingredient of item?.value.orderItem.ingredients">
@@ -101,11 +107,11 @@
             </ng-container>
           </ng-container>
         </ng-container>
-
-        <button type="button"
-          class="btn btn-secondary"
-          (click)="onAddItem()">Add Item</button>
       </div>
+      
+      <button type="button"
+        class="btn btn-secondary"
+        (click)="onAddItem()">Add Item</button>
 
       <div class="row table-end">
         <button type="submit"
