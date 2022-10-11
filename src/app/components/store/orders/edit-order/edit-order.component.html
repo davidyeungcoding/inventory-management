@@ -99,7 +99,7 @@
 
                   <div class="order-item-ingredients" id="itemIngredients{{ i }}">
                     <ng-container *ngFor="let ingredient of item?.value.orderItem.ingredients">
-                      <span class="item-ingredients">{{ ingredient.name }}</span>
+                      <span class="item-ingredients">> {{ ingredient.name }}</span>
                     </ng-container>
                   </div>
                 </div>
@@ -107,6 +107,10 @@
             </ng-container>
           </ng-container>
         </ng-container>
+      </div>
+
+      <div id="totalCostContainer">
+        <h6 id="totalCost">Order Total: {{ totalCost?.value }}</h6>
       </div>
       
       <button type="button"

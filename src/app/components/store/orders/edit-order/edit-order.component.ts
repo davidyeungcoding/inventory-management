@@ -17,6 +17,7 @@ import { Item } from 'src/app/interfaces/item';
 export class EditOrderComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private quantityTimeout: any = null;
+  private priceArray: number[] = [];
   editOrderMessage?: string;
   fullItemList?: Item[];
   order = new FormGroup({
@@ -28,8 +29,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     orderDetails: new FormGroup({
       lineItems: new FormArray(<any>[]),
       orderIngredients: new FormArray(<any>[]),
-      totalCost: new FormControl(''),
-      storeId: new FormControl('')
+      totalCost: new FormControl('$0.00'),
+      storeId: new FormControl(`${document.URL.substring(document.URL.lastIndexOf('/') + 1)}`)
     })
   });
 
@@ -58,6 +59,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   get day() { return this.order.controls.date.get('day') };
   get year() { return this.order.controls.date.get('year') };
   get lineItems() { return this.order.controls.orderDetails.get('lineItems') as FormArray };
+  get totalCost() { return this.order.controls.orderDetails.get('totalCost') };
 
   // ======================
   // || Helper Functions ||
@@ -67,14 +69,39 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     return !this.month?.errors && !this.day?.errors && !this.year?.errors;
   };
 
-  calculateQuantityPrice(price: string, quantity: number): string {
+  convertStringPrice(price: string): string {
+    return price.length === 1 ? `00${price}`
+    : price.length === 2 ? `0${price}`
+    : price;
+  };
+
+  displayPrice(price: string): string {
+    return `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
+  };
+
+  calculateQuantityPrice(price: string, quantity: number, index: number): string {
     const start = price.substring(1, price.length - 3);
     const end = price.substring(price.length - 2);
     let calculatedPrice = (Number(`${start}${end}`) * quantity).toString();
-    calculatedPrice = calculatedPrice.length === 1 ? `00${calculatedPrice}`
-    : calculatedPrice.length === 2 ? `0${calculatedPrice}`
-    : calculatedPrice;
-    return `$${calculatedPrice.substring(0, calculatedPrice.length - 2)}.${calculatedPrice.substring(calculatedPrice.length - 2)}`;
+    calculatedPrice = this.convertStringPrice(calculatedPrice);
+    this.calculateTotal(calculatedPrice, index);
+    return this.displayPrice(calculatedPrice);
+  };
+
+  removeFromTotal(index: number): void {
+    this.priceArray.splice(index, 1);
+    const total = this.priceArray.reduce((previous, current) => previous + current);
+    let temp = this.convertStringPrice(total.toString());
+    temp = this.displayPrice(temp);
+    this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
+  };
+
+  calculateTotal(price: string, index: number): void {
+    this.priceArray[index] = Number(price);
+    const total = this.priceArray.reduce((previous, current) => previous + current);
+    let temp = this.convertStringPrice(total.toString());
+    temp = this.displayPrice(temp);
+    this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
   };
 
   validateOrder(): void {
@@ -136,15 +163,19 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
     this.quantityTimeout = setTimeout(() => {
       // to do: error handling for quantity field
-      if (!quantity) return this.lineItems.controls[index].patchValue({ totalCost: '-----' });
-      const calculatedPrice = this.calculateQuantityPrice(itemPrice, quantity);
+      if (!quantity) {
+        this.priceArray[index] = 0;
+        return this.lineItems.controls[index].patchValue({ totalCost: '-----' });
+      };
+
+      const calculatedPrice = this.calculateQuantityPrice(itemPrice, quantity, index);
       this.lineItems.controls[index].patchValue({ totalCost: calculatedPrice });
     }, 500);
   };
 
   onSelectItem(item: Item, index: number): void {
     const quantity = this.lineItems.value[index].quantity;
-    const price = quantity ? this.calculateQuantityPrice(item.price, quantity) : '-----';
+    const price = quantity ? this.calculateQuantityPrice(item.price, quantity, index) : '-----';
     this.lineItems.controls[index].patchValue({ 
       orderItem: item,
       totalCost: price
@@ -153,6 +184,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   
   onRemoveItem(index: number): void {
     this.lineItems.removeAt(index);
+    this.removeFromTotal(index);
   };
 
   onSubmitOrder(): void {
