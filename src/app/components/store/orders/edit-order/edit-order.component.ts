@@ -7,6 +7,7 @@ import { StoreService } from 'src/app/services/store.service';
 import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 
+import { Ingredient } from 'src/app/interfaces/ingredient';
 import { Item } from 'src/app/interfaces/item';
 
 @Component({
@@ -18,6 +19,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private quantityTimeout: any = null;
   private priceArray: number[] = [];
+  private ingredientArray: any[] = [];
+  ingredientObj: any = {};
   editOrderMessage?: string;
   fullItemList?: Item[];
   order = new FormGroup({
@@ -59,6 +62,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   get day() { return this.order.controls.date.get('day') };
   get year() { return this.order.controls.date.get('year') };
   get lineItems() { return this.order.controls.orderDetails.get('lineItems') as FormArray };
+  get orderIngredients() { return this.order.controls.orderDetails.get('orderIngredients') as FormArray};
   get totalCost() { return this.order.controls.orderDetails.get('totalCost') };
 
   // ======================
@@ -90,7 +94,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
   removeFromTotal(index: number): void {
     this.priceArray.splice(index, 1);
-    const total = this.priceArray.reduce((previous, current) => previous + current);
+    const total = this.priceArray.length ? this.priceArray.reduce((previous, current) => previous + current) : 0;
     let temp = this.convertStringPrice(total.toString());
     temp = this.displayPrice(temp);
     this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
@@ -102,6 +106,33 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     let temp = this.convertStringPrice(total.toString());
     temp = this.displayPrice(temp);
     this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
+  };
+
+  updateIngredientObj(difference: number, index: number): void {
+    const ingredients = this.ingredientArray[index].ingredients;
+    if (ingredients.length === 0) return;
+
+    ingredients.forEach((ingredient: any) => {
+      this.ingredientObj[ingredient._id].quantity += difference;
+      if (!this.ingredientObj[ingredient._id].quantity) delete this.ingredientObj[ingredient._id];
+    });
+  };
+
+  selectIngredients(ingredients: Ingredient[], quantity: number, index: number): void {
+    if (this.ingredientArray[index]) this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
+    this.ingredientArray[index] = { ingredients: ingredients, quantity: quantity };
+    
+    ingredients?.forEach(ingredient => {
+      this.ingredientObj[ingredient._id] ? this.ingredientObj[ingredient._id].quantity += quantity
+      : this.ingredientObj[ingredient._id] = { name: ingredient.name, quantity: quantity };
+    });
+  };
+
+  updateIngredientQuantity(quantity: number, index: number): void {
+    if (quantity === this.ingredientArray[index].quantity) return;
+    const difference = quantity - this.ingredientArray[index].quantity;
+    this.updateIngredientObj(difference, index);
+    this.ingredientArray[index].quantity = quantity;
   };
 
   validateOrder(): void {
@@ -158,14 +189,17 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   onChangeQuantity(item: any, index: number): void {
     const itemPrice = item.value.orderItem.price;
     const quantity = this.lineItems.value[index].quantity;
-    if (!itemPrice) return;
     if (this.quantityTimeout != null) clearTimeout(this.quantityTimeout);
 
     this.quantityTimeout = setTimeout(() => {
       // to do: error handling for quantity field
+      this.updateIngredientQuantity(Number(quantity), index);
+      if (!itemPrice) return;
+
       if (!quantity) {
         this.priceArray[index] = 0;
-        return this.lineItems.controls[index].patchValue({ totalCost: '-----' });
+        this.lineItems.controls[index].patchValue({ totalCost: '-----' });
+        return;
       };
 
       const calculatedPrice = this.calculateQuantityPrice(itemPrice, quantity, index);
@@ -174,8 +208,10 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
 
   onSelectItem(item: Item, index: number): void {
-    const quantity = this.lineItems.value[index].quantity;
+    const quantity = Number(this.lineItems.value[index].quantity);
     const price = quantity ? this.calculateQuantityPrice(item.price, quantity, index) : '-----';
+    this.selectIngredients(item.ingredients, quantity, index);
+    
     this.lineItems.controls[index].patchValue({ 
       orderItem: item,
       totalCost: price
@@ -183,6 +219,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
   
   onRemoveItem(index: number): void {
+    this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
+    this.ingredientArray.splice(index, 1);
     this.lineItems.removeAt(index);
     this.removeFromTotal(index);
   };

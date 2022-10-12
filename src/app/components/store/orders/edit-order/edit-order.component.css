@@ -72,3 +72,12 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.group-header {
+  text-decoration: underline;
+}
+
+.ingredient-group {
+  display: flex;
+  justify-content: space-between;
+}

@@ -61,7 +61,7 @@
               <div class="line-item-card" formGroupName="{{ i }}">
                 <div class="order-header">
                   <div class="quantity-group">
-                    <label for="lineItemQuantity{{ i }}">Quantity:</label>
+                    <label class="group-header" for="lineItemQuantity{{ i }}">Quantity:</label>
   
                     <input type="text"
                       class="form-field two-ch"
@@ -107,6 +107,22 @@
             </ng-container>
           </ng-container>
         </ng-container>
+
+        <div class="line-item-card">
+          <div class="ingredient-group">
+            <h6 class="group-header">Ingredient</h6>
+
+            <h6 class="group-header">Qty.</h6>
+          </div>
+
+          <ng-container *ngFor="let ingredient of ingredientObj | keyvalue">
+            <div class="ingredient-group ingredient-group-ingredient">
+              <span>{{ $any(ingredient).value.name }}</span>
+
+              <span>{{ $any(ingredient).value.quantity }}</span>
+            </div>
+          </ng-container>
+        </div>
       </div>
 
       <div id="totalCostContainer">
