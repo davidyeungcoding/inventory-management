@@ -108,6 +108,11 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
   };
 
+  invalidatePrice(index: number): void {
+    this.priceArray[index] = 0;
+    this.lineItems.controls[index].patchValue({ totalCost: '-----' });
+  };
+
   updateIngredientObj(difference: number, index: number): void {
     const ingredients = this.ingredientArray[index].ingredients;
     if (ingredients.length === 0) return;
@@ -139,6 +144,17 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.ingredientArray[index].quantity = quantity;
   };
 
+  handleQuantityError(item: any, index: number): void {
+    const quantityControl = item.controls.quantity;
+    if (quantityControl.errors['required']) $(`#${index}Required`).removeClass('hide');
+    if (quantityControl.errors['pattern']) $(`#${index}Pattern`).removeClass('hide');
+    if (!item.controls.orderItem.value._id) return;
+    this.calculateTotal('0', index);
+    this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
+    this.ingredientArray[index].quantity = 0;
+    this.invalidatePrice(index);
+  };
+
   validateOrder(): void {
     const order = this.lineItems.value;
     let toPurge: number[] = [];
@@ -148,24 +164,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
       || isNaN(order[i].quantity) || !order[i].orderItem._id) toPurge.push(i);
     };
 
-    if (toPurge.length) {
-      toPurge.forEach(index => this.lineItems.removeAt(index));
-    };
-  };
-
-  handleQuantityError(item: any, index: number): void {
-    const quantityControl = item.controls.quantity;
-    if (quantityControl.errors['required']) $(`#${index}Required`).removeClass('hide');
-    if (quantityControl.errors['pattern']) $(`#${index}Pattern`).removeClass('hide');
-    if (!item.controls.orderItem.value._id) return;
-    this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
-    this.ingredientArray[index].quantity = 0;
-    this.invalidatePrice(index);
-  };
-
-  invalidatePrice(index: number): void {
-    this.priceArray[index] = 0;
-    this.lineItems.controls[index].patchValue({ totalCost: '-----' });
+    if (toPurge.length) toPurge.forEach(index => this.lineItems.removeAt(index));
   };
 
   // =======================
