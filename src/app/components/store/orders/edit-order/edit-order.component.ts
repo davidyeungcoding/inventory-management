@@ -111,20 +111,24 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   updateIngredientObj(difference: number, index: number): void {
     const ingredients = this.ingredientArray[index].ingredients;
     if (ingredients.length === 0) return;
-
+    
     ingredients.forEach((ingredient: any) => {
-      this.ingredientObj[ingredient._id].quantity += difference;
-      if (!this.ingredientObj[ingredient._id].quantity) delete this.ingredientObj[ingredient._id];
+      const objTarget = this.ingredientObj[ingredient._id];
+      objTarget ? this.ingredientObj[ingredient._id].quantity += difference
+      : this.ingredientObj[ingredient._id] = { name: ingredient.name, quantity: difference };
+      if (this.ingredientObj[ingredient._id] && !this.ingredientObj[ingredient._id].quantity) delete this.ingredientObj[ingredient._id];
     });
   };
 
   selectIngredients(ingredients: Ingredient[], quantity: number, index: number): void {
+    const parsedQuantity = quantity ? quantity : 0;
     if (this.ingredientArray[index]) this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
-    this.ingredientArray[index] = { ingredients: ingredients, quantity: quantity };
+    this.ingredientArray[index] = { ingredients: ingredients, quantity: parsedQuantity };
+    if (!quantity || isNaN(quantity)) return;
     
     ingredients?.forEach(ingredient => {
-      this.ingredientObj[ingredient._id] ? this.ingredientObj[ingredient._id].quantity += quantity
-      : this.ingredientObj[ingredient._id] = { name: ingredient.name, quantity: quantity };
+      this.ingredientObj[ingredient._id] ? this.ingredientObj[ingredient._id].quantity += parsedQuantity
+      : this.ingredientObj[ingredient._id] = { name: ingredient.name, quantity: parsedQuantity };
     });
   };
 
@@ -140,12 +144,28 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     let toPurge: number[] = [];
     
     for (let i = order.length - 1; i >= 0; i--) {
-      if (order[i].quantity === '' || order[i].quantity === '0' || !order[i].orderItem._id) toPurge.push(i);
+      if (order[i].quantity === '' || order[i].quantity === '0'
+      || isNaN(order[i].quantity) || !order[i].orderItem._id) toPurge.push(i);
     };
 
     if (toPurge.length) {
       toPurge.forEach(index => this.lineItems.removeAt(index));
     };
+  };
+
+  handleQuantityError(item: any, index: number): void {
+    const quantityControl = item.controls.quantity;
+    if (quantityControl.errors['required']) $(`#${index}Required`).removeClass('hide');
+    if (quantityControl.errors['pattern']) $(`#${index}Pattern`).removeClass('hide');
+    if (!item.controls.orderItem.value._id) return;
+    this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
+    this.ingredientArray[index].quantity = 0;
+    this.invalidatePrice(index);
+  };
+
+  invalidatePrice(index: number): void {
+    this.priceArray[index] = 0;
+    this.lineItems.controls[index].patchValue({ totalCost: '-----' });
   };
 
   // =======================
@@ -187,21 +207,19 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
 
   onChangeQuantity(item: any, index: number): void {
+    if (!$(`#${index}Required`)[0].classList.contains('hide')) $(`#${index}Required`).addClass('hide');
+    if (!$(`#${index}Pattern`)[0].classList.contains('hide')) $(`#${index}Pattern`).addClass('hide');
+    const quantityControl = item.controls.quantity;
+    if (quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)) return this.handleQuantityError(item, index);
+    if (!item.value.orderItem._id) return;
     const itemPrice = item.value.orderItem.price;
     const quantity = this.lineItems.value[index].quantity;
     if (this.quantityTimeout != null) clearTimeout(this.quantityTimeout);
 
     this.quantityTimeout = setTimeout(() => {
-      // to do: error handling for quantity field
       this.updateIngredientQuantity(Number(quantity), index);
       if (!itemPrice) return;
-
-      if (!quantity) {
-        this.priceArray[index] = 0;
-        this.lineItems.controls[index].patchValue({ totalCost: '-----' });
-        return;
-      };
-
+      if (!quantity) return this.invalidatePrice(index);
       const calculatedPrice = this.calculateQuantityPrice(itemPrice, quantity, index);
       this.lineItems.controls[index].patchValue({ totalCost: calculatedPrice });
     }, 500);
@@ -219,8 +237,11 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
   
   onRemoveItem(index: number): void {
-    this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
-    this.ingredientArray.splice(index, 1);
+    if (this.ingredientArray[index]) {
+      this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
+      this.ingredientArray.splice(index, 1);
+    };
+
     this.lineItems.removeAt(index);
     this.removeFromTotal(index);
   };

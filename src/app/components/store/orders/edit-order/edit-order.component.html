@@ -70,11 +70,17 @@
                       required
                       (keyup)="onChangeQuantity(item, i)"
                       formControlName="quantity">
+
                   </div>
   
                   <button class="btn btn-secondary"
                     aria-label="Remove Item"
                     (click)="onRemoveItem(i)"><i class="fas fa-trash"></i></button>
+                </div>
+                  
+                <div class="error-text">
+                  <span class="hide" id="{{ i }}Required">Quantity is required</span>
+                  <span class="hide" id="{{ i }}Pattern">Quantity must be a number</span>
                 </div>
 
                 <div class="dropdown">
@@ -91,6 +97,12 @@
                 </div>
 
                 <div class="item-details">
+                  <div class="item-details-header">
+                    <h6 class="group-header">Item:</h6>
+
+                    <h6 class="group-header">Cost:</h6>
+                  </div>
+
                   <div class="item-main">
                     <span class="item-name" id="itemName{{ i }}">{{ item?.value.orderItem.name }}</span>
   
@@ -110,9 +122,9 @@
 
         <div class="line-item-card">
           <div class="ingredient-group">
-            <h6 class="group-header">Ingredient</h6>
+            <h6 class="group-header">Ingredients:</h6>
 
-            <h6 class="group-header">Qty.</h6>
+            <h6 class="group-header">Qty:</h6>
           </div>
 
           <ng-container *ngFor="let ingredient of ingredientObj | keyvalue">
@@ -126,7 +138,7 @@
       </div>
 
       <div id="totalCostContainer">
-        <h6 id="totalCost">Order Total: {{ totalCost?.value }}</h6>
+        <h4 id="totalCost">Order Total: {{ totalCost?.value }}</h4>
       </div>
       
       <button type="button"
