@@ -8,14 +8,25 @@
   text-align: center;
 }
 
+/* ========== */
+/* || Date || */
+/* ========== */
+
+#dateContainer {
+  margin: 16px;
+}
+
 /* ====================== */
 /* || Order Containers || */
 /* ====================== */
 
+.order-container {
+  max-width: 400px;
+}
+
 .list-item-container {
   padding: 16px;
   height: clamp(300px, 65vh, 80vh);
-  max-width: 400px;
   overflow: auto;
   border: solid 1px red;
   position: relative;
@@ -69,8 +80,13 @@
 /* ================= */
 
 #totalCostContainer {
+  margin: 16px;
   display: flex;
   justify-content: flex-end;
+}
+
+#totalCost {
+  margin: 0;
 }
 
 .group-header {

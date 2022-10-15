@@ -18,8 +18,11 @@ import { Item } from 'src/app/interfaces/item';
 export class EditOrderComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private quantityTimeout: any = null;
+  private dateTimeout: any = null;
   private priceArray: number[] = [];
   private ingredientArray: any[] = [];
+  formDate?: Date;
+  displayDate?: string;
   ingredientObj: any = {};
   editOrderMessage?: string;
   fullItemList?: Item[];
@@ -33,7 +36,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
       lineItems: new FormArray(<any>[]),
       orderIngredients: new FormArray(<any>[]),
       totalCost: new FormControl('$0.00'),
-      storeId: new FormControl(`${document.URL.substring(document.URL.lastIndexOf('/') + 1)}`)
+      dBPrice: new FormControl('000')
     })
   });
 
@@ -89,6 +92,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     let calculatedPrice = (Number(`${start}${end}`) * quantity).toString();
     calculatedPrice = this.convertStringPrice(calculatedPrice);
     this.calculateTotal(calculatedPrice, index);
+    this.lineItems.controls[index].patchValue({ databasePrice: calculatedPrice });
     return this.displayPrice(calculatedPrice);
   };
 
@@ -103,9 +107,9 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   calculateTotal(price: string, index: number): void {
     this.priceArray[index] = Number(price);
     const total = this.priceArray.reduce((previous, current) => previous + current);
-    let temp = this.convertStringPrice(total.toString());
-    temp = this.displayPrice(temp);
-    this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
+    const dBPrice = this.convertStringPrice(total.toString());
+    const totalCost = this.displayPrice(dBPrice);
+    this.order.controls.orderDetails.patchValue({ totalCost: totalCost, dBPrice: dBPrice });
   };
 
   invalidatePrice(index: number): void {
@@ -167,6 +171,31 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     if (toPurge.length) toPurge.forEach(index => this.lineItems.removeAt(index));
   };
 
+  parseIngredientsForPayload(): any[] {
+    const ingredients: any[] = [];
+
+    for (const key in this.ingredientObj) {
+      ingredients.push({
+        quantity: Number(this.ingredientObj[key].quantity),
+        orderIngredient: key
+      });
+    };
+
+    return ingredients;
+  };
+
+  buildPayload(): any {
+    const ingredients = this.parseIngredientsForPayload();
+
+    return {
+      date: this.formDate?.toString(),
+      orderItems: this.lineItems.value,
+      orderIngredients: ingredients,
+      orderTotal: this.order.controls.orderDetails.value.dBPrice,
+      store: `${document.URL.substring(document.URL.lastIndexOf('/') + 1)}`
+    };
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -189,17 +218,30 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     });
   };
 
-  onDateKeyup(current: string, next: string): void {
-    const length = current === 'month' ? this.month?.value?.length
-    : this.day?.value?.length;
-    if (length === 2) $(next).focus();
+  onDateKeyDown(event: any, current: string, next: string|null = null): void {
+    const target = current === 'month' ? this.month
+    : current === 'day' ? this.day
+    : this.year;
+    const keyCheck = event.key === 'Backspace' || event.key === 'Delete' ? false : true;
+    if (!target!.invalid && keyCheck && next) $(next).focus();
+    if (this.dateTimeout !== null) clearTimeout(this.dateTimeout);
+
+    this.dateTimeout = setTimeout(() => {
+      if (this.validateOrderDate()) {
+        this.formDate = new Date(Number(this.year?.value), Number(this.month?.value) - 1, Number(this.day?.value));
+        const temp = this.formDate.toString().split(' ');
+        this.displayDate = `${temp[0]}, ${temp[1]}. ${temp[2]}, ${temp[4]}`;
+        // to do: add query to DB for existing orders on same day
+      };
+    }, 500);
   };
 
   onAddItem(): void {
     const lineItem = new FormGroup({
       quantity: new FormControl(1, Validators.pattern('^\\d+$')),
       orderItem: new FormControl(<Item>{}),
-      totalCost: new FormControl('')
+      totalCost: new FormControl(''),
+      databasePrice: new FormControl('')
     });
 
     this.lineItems.push(lineItem);
@@ -212,15 +254,15 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     if (quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)) return this.handleQuantityError(item, index);
     if (!item.value.orderItem._id) return;
     const itemPrice = item.value.orderItem.price;
-    const quantity = this.lineItems.value[index].quantity;
-    if (this.quantityTimeout != null) clearTimeout(this.quantityTimeout);
+    const quantity = Number(this.lineItems.value[index].quantity);
+    if (this.quantityTimeout !== null) clearTimeout(this.quantityTimeout);
 
     this.quantityTimeout = setTimeout(() => {
       this.updateIngredientQuantity(Number(quantity), index);
       if (!itemPrice) return;
       if (!quantity) return this.invalidatePrice(index);
       const calculatedPrice = this.calculateQuantityPrice(itemPrice, quantity, index);
-      this.lineItems.controls[index].patchValue({ totalCost: calculatedPrice });
+      this.lineItems.controls[index].patchValue({ quantity: Number(quantity), totalCost: calculatedPrice });
     }, 500);
   };
 
@@ -229,7 +271,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     const price = quantity ? this.calculateQuantityPrice(item.price, quantity, index) : '-----';
     this.selectIngredients(item.ingredients, quantity, index);
     
-    this.lineItems.controls[index].patchValue({ 
+    this.lineItems.controls[index].patchValue({
+      quantity: quantity,
       orderItem: item,
       totalCost: price
     });
@@ -249,11 +292,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#editOrderMsg');
     if (!this.validateOrderDate()) return;
-    const year = Number(this.year?.value);
-    const month = Number(this.month?.value) - 1;
-    const day = Number(this.day?.value);
-    const formDate = new Date(year, month, day);
     this.validateOrder();
-    console.log(this.order.value)
+    const payload = this.buildPayload();
+    console.log(payload)
   };
 }

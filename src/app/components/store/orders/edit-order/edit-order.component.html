@@ -6,150 +6,155 @@
   </div>
 
   <div class="row">
-    <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
-      <div formGroupName="date">
-        <label for="dateSelection">Choose Order Date:</label>
-  
-        <div id="dateSelection">
-          <input type="text"
-            class="form-field two-ch"
-            id="month"
-            maxlength="2"
-            placeholder="MM"
-            required
-            (keyup)="onDateKeyup('month', '#day')"
-            formControlName="month"> /
-  
-          <input type="text"
-            class="form-field two-ch"
-            id="day"
-            maxlength="2"
-            placeholder="DD"
-            required
-            (keyup)="onDateKeyup('day', '#year')"
-            formControlName="day"> /
-  
-          <input type="text"
-            class="form-field"
-            id="year"
-            maxlength="4"
-            placeholder="YYYY"
-            required
-            formControlName="year">
-        </div>
-
-        <div *ngIf="month?.invalid && (month?.dirty || month?.touched)" class="error-text">
-          <span *ngIf="month?.errors?.['required']">Month required</span>
-          <span *ngIf="month?.errors?.['pattern']">Please enter a two digit number in place for the month</span>
-        </div>
-          
-        <div *ngIf="day?.invalid && (day?.dirty || day?.touched)" class="error-text">
-          <span *ngIf="day?.errors?.['required']">Day required</span>
-          <span *ngIf="day?.errors?.['pattern']">Please enter a two digit number in place for the day</span>
-        </div>
-  
-        <div *ngIf="year?.invalid && (year?.dirty || year?.touched)" class="error-text">
-          <span *ngIf="year?.errors?.['required']">Year required</span>
-          <span *ngIf="year?.errors?.['pattern']">Please enter a four digit number in place for the year</span>
-        </div>
-      </div>
-
-      <div class="list-item-container">
-        <ng-container formGroupName="orderDetails">
-          <ng-container formArrayName="lineItems">
-            <ng-container *ngFor="let item of lineItems.controls; let i = index">
-              <div class="line-item-card" formGroupName="{{ i }}">
-                <div class="order-header">
-                  <div class="quantity-group">
-                    <label class="group-header" for="lineItemQuantity{{ i }}">Quantity:</label>
-  
-                    <input type="text"
-                      class="form-field two-ch"
-                      id="lineItemQuantity{{ i }}"
-                      maxlength="2"
-                      required
-                      (keyup)="onChangeQuantity(item, i)"
-                      formControlName="quantity">
-
-                  </div>
-  
-                  <button class="btn btn-secondary"
-                    aria-label="Remove Item"
-                    (click)="onRemoveItem(i)"><i class="fas fa-trash"></i></button>
-                </div>
-                  
-                <div class="error-text">
-                  <span class="hide" id="{{ i }}Required">Quantity is required</span>
-                  <span class="hide" id="{{ i }}Pattern">Quantity must be a number</span>
-                </div>
-
-                <div class="dropdown">
-                  <button class="btn btn-secondary dropdown-toggle"
-                    id="itemSelection{{ i }}"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">Change Item</button>
-
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                    <li *ngFor="let target of fullItemList">
-                      <a class="dropdown-item" (click)="onSelectItem(target, i)">{{ target.name }}</a>
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="item-details">
-                  <div class="item-details-header">
-                    <h6 class="group-header">Item:</h6>
-
-                    <h6 class="group-header">Cost:</h6>
-                  </div>
-
-                  <div class="item-main">
-                    <span class="item-name" id="itemName{{ i }}">{{ item?.value.orderItem.name }}</span>
-  
-                    <span class="item-price">{{ item?.value.totalCost }}</span>
-                  </div>
-
-                  <div class="order-item-ingredients" id="itemIngredients{{ i }}">
-                    <ng-container *ngFor="let ingredient of item?.value.orderItem.ingredients">
-                      <span class="item-ingredients">> {{ ingredient.name }}</span>
-                    </ng-container>
-                  </div>
-                </div>
-              </div>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-
-        <div class="line-item-card">
-          <div class="ingredient-group">
-            <h6 class="group-header">Ingredients:</h6>
-
-            <h6 class="group-header">Qty:</h6>
+    <div class="order-container">
+      <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
+        <div id="dateContainer" formGroupName="date">
+          <label for="dateSelection">Choose Order Date:</label>
+    
+          <div id="dateSelection">
+            <input type="text"
+              class="form-field two-ch"
+              id="month"
+              maxlength="2"
+              placeholder="MM"
+              required
+              (keydown)="onDateKeyDown($event, 'month', '#day')"
+              formControlName="month"> /
+    
+            <input type="text"
+              class="form-field two-ch"
+              id="day"
+              maxlength="2"
+              placeholder="DD"
+              required
+              (keydown)="onDateKeyDown($event, 'day', '#year')"
+              formControlName="day"> /
+    
+            <input type="text"
+              class="form-field"
+              id="year"
+              maxlength="4"
+              placeholder="YYYY"
+              required
+              (keydown)="onDateKeyDown($event, 'year')"
+              formControlName="year">
           </div>
 
-          <ng-container *ngFor="let ingredient of ingredientObj | keyvalue">
-            <div class="ingredient-group ingredient-group-ingredient">
-              <span>{{ $any(ingredient).value.name }}</span>
+          <div *ngIf="month?.invalid && (month?.dirty || month?.touched)" class="error-text">
+            <span *ngIf="month?.errors?.['required']">Month required</span>
+            <span *ngIf="month?.errors?.['pattern']">Please enter a two digit number in place for the month</span>
+          </div>
+            
+          <div *ngIf="day?.invalid && (day?.dirty || day?.touched)" class="error-text">
+            <span *ngIf="day?.errors?.['required']">Day required</span>
+            <span *ngIf="day?.errors?.['pattern']">Please enter a two digit number in place for the day</span>
+          </div>
+    
+          <div *ngIf="year?.invalid && (year?.dirty || year?.touched)" class="error-text">
+            <span *ngIf="year?.errors?.['required']">Year required</span>
+            <span *ngIf="year?.errors?.['pattern']">Please enter a four digit number in place for the year</span>
+          </div>
 
-              <span>{{ $any(ingredient).value.quantity }}</span>
-            </div>
-          </ng-container>
+          <span>{{ displayDate | json }}</span>
         </div>
-      </div>
 
-      <div id="totalCostContainer">
-        <h4 id="totalCost">Order Total: {{ totalCost?.value }}</h4>
-      </div>
-      
-      <button type="button"
-        class="btn btn-secondary"
-        (click)="onAddItem()">Add Item</button>
+        <div class="list-item-container">
+          <ng-container formGroupName="orderDetails">
+            <ng-container formArrayName="lineItems">
+              <ng-container *ngFor="let item of lineItems.controls; let i = index">
+                <div class="line-item-card" formGroupName="{{ i }}">
+                  <div class="order-header">
+                    <div class="quantity-group">
+                      <label class="group-header" for="lineItemQuantity{{ i }}">Quantity:</label>
+    
+                      <input type="text"
+                        class="form-field two-ch"
+                        id="lineItemQuantity{{ i }}"
+                        maxlength="2"
+                        required
+                        (keydown)="onChangeQuantity(item, i)"
+                        formControlName="quantity">
 
-      <div class="row table-end">
-        <button type="submit"
-          class="btn btn-secondary table-end-btn"
-          id="submitOrderBtn">Submit</button>
-      </div>
-    </form>
+                    </div>
+    
+                    <button class="btn btn-secondary"
+                      aria-label="Remove Item"
+                      (click)="onRemoveItem(i)"><i class="fas fa-trash"></i></button>
+                  </div>
+                    
+                  <div class="error-text">
+                    <span class="hide" id="{{ i }}Required">Quantity is required</span>
+                    <span class="hide" id="{{ i }}Pattern">Quantity must be a number</span>
+                  </div>
+
+                  <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle"
+                      id="itemSelection{{ i }}"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">Change Item</button>
+
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                      <li *ngFor="let target of fullItemList">
+                        <a class="dropdown-item" (click)="onSelectItem(target, i)">{{ target.name }}</a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div class="item-details">
+                    <div class="item-details-header">
+                      <h6 class="group-header">Item:</h6>
+
+                      <h6 class="group-header">Cost:</h6>
+                    </div>
+
+                    <div class="item-main">
+                      <span class="item-name" id="itemName{{ i }}">{{ item?.value.orderItem.name }}</span>
+    
+                      <span class="item-price">{{ item?.value.totalCost }}</span>
+                    </div>
+
+                    <div class="order-item-ingredients" id="itemIngredients{{ i }}">
+                      <ng-container *ngFor="let ingredient of item?.value.orderItem.ingredients">
+                        <span class="item-ingredients">> {{ ingredient.name }}</span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+
+          <div class="line-item-card">
+            <div class="ingredient-group">
+              <h6 class="group-header">Ingredients:</h6>
+
+              <h6 class="group-header">Qty:</h6>
+            </div>
+
+            <ng-container *ngFor="let ingredient of ingredientObj | keyvalue">
+              <div class="ingredient-group ingredient-group-ingredient">
+                <span>{{ $any(ingredient).value.name }}</span>
+
+                <span>{{ $any(ingredient).value.quantity }}</span>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div id="totalCostContainer">
+          <h4 id="totalCost">Order Total: {{ totalCost?.value }}</h4>
+        </div>
+        
+        <button type="button"
+          class="btn btn-secondary"
+          (click)="onAddItem()">Add Item</button>
+
+        <div class="row table-end">
+          <button type="submit"
+            class="btn btn-secondary table-end-btn"
+            id="submitOrderBtn">Submit</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

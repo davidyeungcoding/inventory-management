@@ -10,6 +10,7 @@
 
 .navbar-list-container {
   justify-content: center;
+  margin: 32px;
 }
 
 .navbar-list-container>ul {
@@ -23,6 +24,10 @@
 }
 
 @media screen and (min-width: 992px) {
+  .navbar-list-container {
+    margin: 0;
+  }
+
   .nav-item {
     font-size: 16px;
   }
@@ -66,7 +71,8 @@
 /* =============== */
 
 .offcanvas {
-  background-color: hsl(0, 0%, 0%, .8);
+  background-color: hsl(0, 0%, 0%, .77);
+  backdrop-filter: blur(5px);
 }
 
 .offcanvas-close-btn {
