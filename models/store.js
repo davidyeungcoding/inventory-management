@@ -103,6 +103,11 @@ module.exports.editIngredientFromIngredient = (payload, callback) => {
   this.storeModel.findByIdAndUpdate(payload.storeId, update, callback);
 };
 
+module.exports.addOrder = (orderId, storeId, callback) => {
+  const update = { $push: { orders: orderId } };
+  this.storeModel.findByIdAndUpdate(storeId, update, callback);
+};
+
 // ==================
 // || Search Store ||
 // ==================

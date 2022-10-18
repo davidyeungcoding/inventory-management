@@ -40,11 +40,13 @@ const ingredients = require('./routes/ingredients');
 const items = require('./routes/items');
 const users = require('./routes/users');
 const stores = require('./routes/stores');
+const orders = require('./routes/orders');
 
 app.use('/ingredients', ingredients);
 app.use('/items', items);
 app.use('/users', users);
 app.use('/stores', stores);
+app.use('/orders', orders);
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);

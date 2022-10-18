@@ -72,7 +72,7 @@
                         id="lineItemQuantity{{ i }}"
                         maxlength="2"
                         required
-                        (keydown)="onChangeQuantity(item, i)"
+                        (keyup)="onChangeQuantity(item, i)"
                         formControlName="quantity">
 
                     </div>
@@ -152,7 +152,7 @@
         <div class="row table-end">
           <button type="submit"
             class="btn btn-secondary table-end-btn"
-            id="submitOrderBtn">Submit</button>
+            id="editOrderBtn">Submit</button>
         </div>
       </form>
     </div>

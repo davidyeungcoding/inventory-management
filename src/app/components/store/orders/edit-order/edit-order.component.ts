@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
-import { StoreService } from 'src/app/services/store.service';
+import { OrderService } from 'src/app/services/order.service';
 import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -42,7 +42,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
   constructor(
     private globalService: GlobalService,
-    private storeService: StoreService,
+    private orderService: OrderService,
     private itemService: ItemService,
     private userService: UserService
   ) { }
@@ -72,9 +72,9 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
-  validateOrderDate(): boolean {
-    return !this.month?.errors && !this.day?.errors && !this.year?.errors;
-  };
+    // ===========
+    // || Price ||
+    // ===========
 
   convertStringPrice(price: string): string {
     return price.length === 1 ? `00${price}`
@@ -117,6 +117,10 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.lineItems.controls[index].patchValue({ totalCost: '-----' });
   };
 
+    // =================
+    // || Ingredients ||
+    // =================
+
   updateIngredientObj(difference: number, index: number): void {
     const ingredients = this.ingredientArray[index].ingredients;
     if (ingredients.length === 0) return;
@@ -141,6 +145,10 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     });
   };
 
+    // ==============
+    // || Quantity ||
+    // ==============
+
   updateIngredientQuantity(quantity: number, index: number): void {
     if (quantity === this.ingredientArray[index].quantity) return;
     const difference = quantity - this.ingredientArray[index].quantity;
@@ -157,6 +165,17 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
     this.ingredientArray[index].quantity = 0;
     this.invalidatePrice(index);
+  };
+
+    // ==============
+    // || Checkout ||
+    // ==============
+
+  validateOrderDate(): boolean {
+    this.month?.markAsTouched();
+    this.day?.markAsTouched();
+    this.year?.markAsTouched();
+    return !this.month?.errors && !this.day?.errors && !this.year?.errors;
   };
 
   validateOrder(): void {
@@ -184,13 +203,25 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     return ingredients;
   };
 
-  buildPayload(): any {
-    const ingredients = this.parseIngredientsForPayload();
+  parseOrderItemsForPayload(): any[] {
+    const orderItems: any[] = [];
 
+    this.lineItems.value.forEach((order: any) => {
+      orderItems.push({
+        quantity: order.quantity,
+        orderItem: order.orderItem._id,
+        totalCost: order.databasePrice
+      });
+    });
+
+    return orderItems;
+  };
+
+  buildPayload(): any {
     return {
       date: this.formDate?.toString(),
-      orderItems: this.lineItems.value,
-      orderIngredients: ingredients,
+      orderItems: this.parseOrderItemsForPayload(),
+      orderIngredients: this.parseIngredientsForPayload(),
       orderTotal: this.order.controls.orderDetails.value.dBPrice,
       store: `${document.URL.substring(document.URL.lastIndexOf('/') + 1)}`
     };
@@ -289,11 +320,30 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
 
   onSubmitOrder(): void {
+    $('#editOrderBtn').prop('disabled', true);
+    this.parseOrderItemsForPayload()
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#editOrderMsg');
-    if (!this.validateOrderDate()) return;
+
+    if (!this.validateOrderDate()) {
+      $('#editOrderBtn').prop('disabled', false);
+      return;
+    };
+
     this.validateOrder();
     const payload = this.buildPayload();
-    console.log(payload)
+
+    this.orderService.createOrder(token, payload).subscribe(_order => {
+      if (_order.status === 201) {
+        if (_order.token) localStorage.setItem('token', _order.token);
+        this.userService.changeSystemMsg('Order created');
+        this.globalService.displayMsg('alert-success', '#editOrderMsg');
+      } else {
+        this.userService.changeSystemMsg(_order.msg);
+        this.globalService.displayMsg('alert-danger', '#editOrderMsg');
+      };
+
+      $('#editOrderBtn').prop('disabled', false);
+    });
   };
 }
