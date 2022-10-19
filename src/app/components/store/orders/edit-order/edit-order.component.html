@@ -1,11 +1,11 @@
-<div class="container">
+<div class="container order-group-container">
   <h1 class="page-title">Edit Order</h1>
 
   <div class="msg-container" id="editOrderMsgContainer">
     <h5 class="alert alert-msg" id="editOrderMsg">{{ editOrderMessage }}</h5>
   </div>
 
-  <div class="row">
+  <div class="order-group">
     <div class="order-container">
       <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
         <div id="dateContainer" formGroupName="date">
@@ -156,5 +156,7 @@
         </div>
       </form>
     </div>
+
+    <app-existing-orders [previousOrders]="previousOrders"></app-existing-orders>
   </div>
 </div>

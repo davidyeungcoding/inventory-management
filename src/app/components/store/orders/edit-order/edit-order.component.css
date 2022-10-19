@@ -1,11 +1,12 @@
-.two-ch {
-  width: 5ch;
-  text-align: center;
+.order-group-container {
+  overflow: auto;
 }
 
-#year {
-  width: 7ch;
-  text-align: center;
+.order-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(296px, auto));
+  column-gap: 24px;
+  min-width: 616px;
 }
 
 /* ========== */
@@ -16,12 +17,23 @@
   margin: 16px;
 }
 
+.two-ch {
+  width: 5ch;
+  text-align: center;
+}
+
+#year {
+  width: 7ch;
+  text-align: center;
+}
+
 /* ====================== */
 /* || Order Containers || */
 /* ====================== */
 
 .order-container {
-  max-width: 400px;
+  width: clamp(296px, 50%, 400px);
+  margin: auto;
 }
 
 .list-item-container {

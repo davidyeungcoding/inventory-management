@@ -38,6 +38,7 @@ import { SearchUserComponent } from './components/user/search-user/search-user.c
 import { AdminCreateUserComponent } from './components/user/admin-create-user/admin-create-user.component';
 import { ManageStoresComponent } from './components/user/manage-stores/manage-stores.component';
 import { EditOrderComponent } from './components/store/orders/edit-order/edit-order.component';
+import { ExistingOrdersComponent } from './components/store/orders/existing-orders/existing-orders.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { EditOrderComponent } from './components/store/orders/edit-order/edit-or
     AdminCreateUserComponent,
     ManageStoresComponent,
     EditOrderComponent,
+    ExistingOrdersComponent,
   ],
   imports: [
     BrowserModule,

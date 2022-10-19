@@ -26,4 +26,12 @@ export class OrderService {
       catchError(err => of(err))
     );
   };
+
+  searchByDate(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/search-date/${payload.storeId}/${payload.date}`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
 }

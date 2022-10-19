@@ -8,6 +8,7 @@ import { ItemService } from 'src/app/services/item.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { Ingredient } from 'src/app/interfaces/ingredient';
+import { Order } from 'src/app/interfaces/order';
 import { Item } from 'src/app/interfaces/item';
 
 @Component({
@@ -21,7 +22,9 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   private dateTimeout: any = null;
   private priceArray: number[] = [];
   private ingredientArray: any[] = [];
+  previousOrders: Order[] = [];
   formDate?: Date;
+  searchDate?: string;
   displayDate?: string;
   ingredientObj: any = {};
   editOrderMessage?: string;
@@ -71,6 +74,43 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   // ======================
   // || Helper Functions ||
   // ======================
+
+    // ==========
+    // || Date ||
+    // ==========
+
+  activateDate(): void {
+    this.month?.markAsTouched();
+    this.day?.markAsTouched();
+    this.year?.markAsTouched();
+  };
+
+  checkSameDate(): boolean {
+    if (!this.formDate || !this.searchDate) return false;
+    const regex = new RegExp(this.searchDate.split('-').join(' '));
+    return regex.test(this.formDate.toString());
+  };
+
+  searchOrdersByDate(): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#editOrderMsg');
+    if (this.checkSameDate()) return;
+    this.searchDate = this.formDate!.toString().split(' ', 4).join('-');
+    const payload = {
+      date: this.searchDate,
+      storeId: document.URL.substring(document.URL.lastIndexOf('/') + 1)
+    };
+
+    this.orderService.searchByDate(token, payload).subscribe(_orders => {
+      if (_orders.status === 200) {
+        if (_orders.token) localStorage.setItem('token', _orders.token);
+        this.previousOrders = _orders.msg;
+      } else {
+        this.userService.changeSystemMsg(_orders.msg);
+        this.globalService.displayMsg('alert-danger', '#editOrderMsg');
+      };
+    });
+  };
 
     // ===========
     // || Price ||
@@ -172,9 +212,6 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     // ==============
 
   validateOrderDate(): boolean {
-    this.month?.markAsTouched();
-    this.day?.markAsTouched();
-    this.year?.markAsTouched();
     return !this.month?.errors && !this.day?.errors && !this.year?.errors;
   };
 
@@ -263,6 +300,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
         const temp = this.formDate.toString().split(' ');
         this.displayDate = `${temp[0]}, ${temp[1]}. ${temp[2]}, ${temp[4]}`;
         // to do: add query to DB for existing orders on same day
+        this.searchOrdersByDate();
       };
     }, 500);
   };
@@ -324,6 +362,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.parseOrderItemsForPayload()
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#editOrderMsg');
+    this.activateDate();
 
     if (!this.validateOrderDate()) {
       $('#editOrderBtn').prop('disabled', false);
