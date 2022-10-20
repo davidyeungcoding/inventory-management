@@ -19,7 +19,7 @@
               placeholder="MM"
               required
               (keydown)="onDateKeyDown($event, 'month', '#day')"
-              formControlName="month"> /
+              formControlName="month">/
     
             <input type="text"
               class="form-field two-ch"
@@ -28,7 +28,7 @@
               placeholder="DD"
               required
               (keydown)="onDateKeyDown($event, 'day', '#year')"
-              formControlName="day"> /
+              formControlName="day">/
     
             <input type="text"
               class="form-field"
@@ -38,6 +38,44 @@
               required
               (keydown)="onDateKeyDown($event, 'year')"
               formControlName="year">
+          </div>
+
+          <div id="timeSelection">
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">{{ selectedHour }}</button>
+
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                <li *ngFor="let hour of hours">
+                  <a class="dropdown-item" (click)="onSelectTime('hour', hour)">{{ hour }}</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">{{ selectedMinute }}</button>
+
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                <li *ngFor="let minute of minutes">
+                  <a class="dropdown-item" (click)="onSelectTime('minute', minute)">{{ minute }}</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="dropdown">
+              <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">{{ selectedTimeModifier }}</button>
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                  <li *ngFor="let modifier of timeModifier">
+                    <a class="dropdown-item" (click)="onSelectTime('timeModifier', modifier)">{{ modifier }}</a>
+                  </li>
+                </ul>
+            </div>
           </div>
 
           <div *ngIf="month?.invalid && (month?.dirty || month?.touched)" class="error-text">
@@ -77,7 +115,7 @@
 
                     </div>
     
-                    <button class="btn btn-secondary"
+                    <button class="btn btn-outline-secondary remove-item"
                       aria-label="Remove Item"
                       (click)="onRemoveItem(i)"><i class="fas fa-trash"></i></button>
                   </div>
@@ -88,7 +126,7 @@
                   </div>
 
                   <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle"
+                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
                       id="itemSelection{{ i }}"
                       data-bs-toggle="dropdown"
                       aria-expanded="false">Change Item</button>

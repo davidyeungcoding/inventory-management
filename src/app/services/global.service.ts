@@ -20,12 +20,18 @@ export class GlobalService {
 
   private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'user-list', 'user-account']);
   navLinks = this.navLinksSource.asObservable();
-  private statesSource = new BehaviorSubject<string[]>(["AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
-    "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI",
-    "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH",
-    "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VI", "VT",
-    "WA", "WI", "WV", "WY"]);
+  private statesSource = new BehaviorSubject<string[]>(['AK', 'AL', 'AR', 'AS', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
+    'GU', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI',
+    'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM', 'NV', 'NY', 'OH',
+    'OK', 'OR', 'PA', 'PR', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VA', 'VI', 'VT',
+    'WA', 'WI', 'WV', 'WY']);
   states = this.statesSource.asObservable();
+  private hoursSource = new BehaviorSubject<string[]>(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']);
+  hours = this.hoursSource.asObservable();
+  private minutesSource = new BehaviorSubject<string[]>(['00', '15', '30', '45']);
+  minutes = this.minutesSource.asObservable();
+  private timeModifierSource = new BehaviorSubject<string[]>(['AM', 'PM']);
+  timeModifier = this.timeModifierSource.asObservable();
   private timeoutSource = new BehaviorSubject<number>(1500);
   timeout = this.timeoutSource.asObservable();
 

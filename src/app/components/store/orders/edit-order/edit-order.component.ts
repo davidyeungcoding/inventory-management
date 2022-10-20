@@ -23,6 +23,12 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   private priceArray: number[] = [];
   private ingredientArray: any[] = [];
   previousOrders: Order[] = [];
+  hours?: string[];
+  selectedHour: string = '12';
+  minutes?: string[];
+  selectedMinute: string = '00';
+  timeModifier?: string[];
+  selectedTimeModifier: string = 'AM';
   formDate?: Date;
   searchDate?: string;
   displayDate?: string;
@@ -53,6 +59,9 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editOrderMessage = _msg));
     this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.fullItemList = _list));
+    this.subscriptions.add(this.globalService.hours.subscribe(_hours => this.hours = _hours));
+    this.subscriptions.add(this.globalService.minutes.subscribe(_minutes => this.minutes = _minutes));
+    this.subscriptions.add(this.globalService.timeModifier.subscribe(_timeModifier => this.timeModifier = _timeModifier));
     this.retrieveStoreItems();
   }
 
@@ -78,6 +87,26 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     // ==========
     // || Date ||
     // ==========
+
+  setDate(): void {
+    const hour = this.selectedTimeModifier === 'AM' && this.selectedHour === '12' ? 0
+    : this.selectedTimeModifier === 'AM' ? Number(this.selectedHour)
+    : this.selectedTimeModifier === 'PM' && this.selectedHour === '12' ? 12
+    : Number(this.selectedHour) + 12;
+    this.formDate = new Date(Number(this.year?.value), Number(this.month?.value) - 1, Number(this.day?.value), hour, Number(this.selectedMinute));
+    const temp = this.formDate.toString().split(' ');
+    temp[4] = hour === 0 ? `12${temp[4].substring(2)}`
+    : hour > 12 ? `${hour - 12}${temp[4].substring(2)}`
+    : temp[4];
+    this.displayDate = `${temp[0]}, ${temp[1]}. ${temp[2]}, ${temp[4]} ${this.selectedTimeModifier}`;
+  };
+
+  onSelectTime(target: string, value: string): void {
+    target === 'hour' ? this.selectedHour = value
+    : target === 'minute' ? this.selectedMinute = value
+    : this.selectedTimeModifier = value;
+    if (this.validateOrderDate()) this.setDate();
+  };
 
   activateDate(): void {
     this.month?.markAsTouched();
@@ -296,10 +325,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
     this.dateTimeout = setTimeout(() => {
       if (this.validateOrderDate()) {
-        this.formDate = new Date(Number(this.year?.value), Number(this.month?.value) - 1, Number(this.day?.value));
-        const temp = this.formDate.toString().split(' ');
-        this.displayDate = `${temp[0]}, ${temp[1]}. ${temp[2]}, ${temp[4]}`;
-        // to do: add query to DB for existing orders on same day
+        this.setDate();
         this.searchOrdersByDate();
       };
     }, 500);

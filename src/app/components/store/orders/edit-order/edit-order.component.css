@@ -4,9 +4,21 @@
 
 .order-group {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(296px, auto));
+  grid-template-columns: 1fr 1fr;
   column-gap: 24px;
-  min-width: 616px;
+  width: calc(200vw - 24px);
+}
+
+@media screen and (min-width: 576px) {
+  .order-group {
+    width: auto;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .order-group {
+    grid-template-columns: 1fr 2fr;
+  }
 }
 
 /* ========== */
@@ -14,7 +26,29 @@
 /* ========== */
 
 #dateContainer {
+  display: flex;
+  flex-direction: column;
   margin: 16px;
+}
+
+#dateSelection,
+#timeSelection {
+  display: flex;
+}
+
+#dateSelection>*,
+#timeSelection>* {
+  margin: 0 5px;
+}
+
+#dateSelection>*:first-of-type,
+#timeSelection>*:first-of-type {
+  margin-left: 0;
+}
+
+#dateSelection>*:last-of-type,
+#timeSelection>*:last-of-type {
+  margin-right: 0;
 }
 
 .two-ch {
@@ -75,6 +109,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.remove-item {
+  border: none;
 }
 
 .dropdown {
