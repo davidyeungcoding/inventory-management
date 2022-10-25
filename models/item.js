@@ -79,6 +79,12 @@ module.exports.searchItem = (term, storeId, callback) => {
   .populate('ingredients', 'name');
 };
 
+module.exports.searchActiveItems = (storeId, callback) => {
+  const query = { store: storeId, active: true };
+  this.itemModel.find(query, callback)
+  .populate('ingredients', 'name');
+};
+
 // =================
 // || Delete Item ||
 // =================

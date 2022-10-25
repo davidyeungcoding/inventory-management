@@ -21,7 +21,7 @@ const Store = require('../models/store');
 const updateStore = (order, token) => {
   try {
     return new Promise(resolve => {
-      Store.addOrder(order._ids, order.store, (err, _store) => {
+      Store.addOrder(order._id, order.store, (err, _store) => {
         return err ? resolve({ status: 400, msg: 'An error occured while adding order to store' })
         : resolve({ status: 201, msg: order, token: token });
       });

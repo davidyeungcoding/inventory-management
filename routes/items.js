@@ -173,6 +173,19 @@ router.get('/search/:storeId', auth.authenticateToken, (req, res, next) => {
   };
 });
 
+router.get('/search-active/:storeId', auth.authenticateToken, (req, res, next) => {
+  try {
+    const storeId = req.params.storeId;
+
+    Item.searchActiveItems(storeId, (err, _list) => {
+      return err ? res.json({ status: 400, msg: 'Unable to retrieve active item data' })
+      : res.json({ status: 200, msg: _list, token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process search request for active items' });
+  };
+});
+
 // =================
 // || Delete Item ||
 // =================

@@ -22,6 +22,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   private dateTimeout: any = null;
   private priceArray: number[] = [];
   private ingredientArray: any[] = [];
+  private timeout?: number;
   previousOrders: Order[] = [];
   hours?: string[];
   selectedHour: string = '12';
@@ -30,11 +31,12 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   timeModifier?: string[];
   selectedTimeModifier: string = 'AM';
   formDate?: Date;
+  orderDate?: string;
   searchDate?: string;
   displayDate?: string;
   ingredientObj: any = {};
   editOrderMessage?: string;
-  fullItemList?: Item[];
+  activeItemList?: Item[];
   order = new FormGroup({
     date: new FormGroup({
       month: new FormControl('', [Validators.required, Validators.pattern('\\d{2}')]),
@@ -57,8 +59,9 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.subscriptions.add(this.itemService.activeItemList.subscribe(_list => this.activeItemList = _list));
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.editOrderMessage = _msg));
-    this.subscriptions.add(this.itemService.itemList.subscribe(_list => this.fullItemList = _list));
+    this.subscriptions.add(this.globalService.timeout.subscribe(_time => this.timeout = _time));
     this.subscriptions.add(this.globalService.hours.subscribe(_hours => this.hours = _hours));
     this.subscriptions.add(this.globalService.minutes.subscribe(_minutes => this.minutes = _minutes));
     this.subscriptions.add(this.globalService.timeModifier.subscribe(_timeModifier => this.timeModifier = _timeModifier));
@@ -84,9 +87,47 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   // || Helper Functions ||
   // ======================
 
+    // =====================
+    // || Order List Prep ||
+    // =====================
+
+  parseItemList(orderItem: any[]): void {
+    orderItem.forEach(item => {
+      item.totalCost = this.displayPrice(item.totalCost);
+    });
+  };
+
+  parseOrdersForDisplay(orders: any[]): any {
+    if (!orders.length) {
+      this.userService.changeSystemMsg(`No orders found for given date: ${this.orderDate}`);
+      this.globalService.displayMsg('alert-light', '#existingOrdersMsg');
+      $('#previousOrdersContainer').scrollTop(0);
+      return;
+    };
+    
+    $('#existingOrdersMsgContainer').css('display', 'none');
+
+    orders.forEach((order: any) => {
+      order.date = this.parseDateForDisplay(order.date);
+      order.orderTotal = this.displayPrice(order.orderTotal);
+      order.store = order.store[0];
+      this.parseItemList(order.orderItems);
+    });
+  };
+
     // ==========
     // || Date ||
     // ==========
+
+  parseDateForDisplay(date: Date): string {
+    const temp = date.toString().split(' ');
+    const hour = Number(temp[4].substring(0, 2));
+    const modifier = hour < 12 ? 'AM' : 'PM';
+    temp[4] = hour === 0 ? `12${temp[4].substring(2)}`
+    : hour > 12 ? `${hour - 12}${temp[4].substring(2)}`
+    : temp[4];
+    return `${temp[0]}, ${temp[1]} ${temp[2]}, ${temp[3]} ${temp[4]} ${modifier}`;
+  };
 
   setDate(): void {
     const hour = this.selectedTimeModifier === 'AM' && this.selectedHour === '12' ? 0
@@ -94,11 +135,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     : this.selectedTimeModifier === 'PM' && this.selectedHour === '12' ? 12
     : Number(this.selectedHour) + 12;
     this.formDate = new Date(Number(this.year?.value), Number(this.month?.value) - 1, Number(this.day?.value), hour, Number(this.selectedMinute));
-    const temp = this.formDate.toString().split(' ');
-    temp[4] = hour === 0 ? `12${temp[4].substring(2)}`
-    : hour > 12 ? `${hour - 12}${temp[4].substring(2)}`
-    : temp[4];
-    this.displayDate = `${temp[0]}, ${temp[1]}. ${temp[2]}, ${temp[4]} ${this.selectedTimeModifier}`;
+    this.displayDate = this.parseDateForDisplay(this.formDate);
+    this.orderDate = this.displayDate.substring(0, 17);
   };
 
   onSelectTime(target: string, value: string): void {
@@ -120,10 +158,11 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     return regex.test(this.formDate.toString());
   };
 
-  searchOrdersByDate(): void {
+  searchOrdersByDate(check: boolean = true): void {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#editOrderMsg');
-    if (this.checkSameDate()) return;
+    if (check && this.checkSameDate()) return;
+    $('#editOrderMsgContainer').css('display', 'none');
     this.searchDate = this.formDate!.toString().split(' ', 4).join('-');
     const payload = {
       date: this.searchDate,
@@ -133,6 +172,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.orderService.searchByDate(token, payload).subscribe(_orders => {
       if (_orders.status === 200) {
         if (_orders.token) localStorage.setItem('token', _orders.token);
+        this.parseOrdersForDisplay(_orders.msg);
         this.previousOrders = _orders.msg;
       } else {
         this.userService.changeSystemMsg(_orders.msg);
@@ -227,8 +267,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
   handleQuantityError(item: any, index: number): void {
     const quantityControl = item.controls.quantity;
-    if (quantityControl.errors['required']) $(`#${index}Required`).removeClass('hide');
-    if (quantityControl.errors['pattern']) $(`#${index}Pattern`).removeClass('hide');
+    if (quantityControl.errors['required']) $(`#required${index}`).removeClass('hide');
+    if (quantityControl.errors['pattern']) $(`#pattern${index}`).removeClass('hide');
     if (!item.controls.orderItem.value._id) return;
     this.calculateTotal('0', index);
     this.updateIngredientObj(-this.ingredientArray[index].quantity, index);
@@ -240,11 +280,23 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     // || Checkout ||
     // ==============
 
+  resetOrder(): void {
+    this.lineItems.clear();
+    this.orderIngredients.clear();
+    this.ingredientObj = {};
+    this.priceArray = [];
+    this.ingredientArray = [];
+    this.order.controls.orderDetails.patchValue({
+      dBPrice: '000',
+      totalCost: '$0.00'
+    });
+  };
+
   validateOrderDate(): boolean {
     return !this.month?.errors && !this.day?.errors && !this.year?.errors;
   };
 
-  validateOrder(): void {
+  validateOrder(): boolean {
     const order = this.lineItems.value;
     let toPurge: number[] = [];
     
@@ -254,6 +306,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     };
 
     if (toPurge.length) toPurge.forEach(index => this.lineItems.removeAt(index));
+    return this.lineItems.value.length ? true : false;
   };
 
   parseIngredientsForPayload(): any[] {
@@ -275,7 +328,9 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.lineItems.value.forEach((order: any) => {
       orderItems.push({
         quantity: order.quantity,
-        orderItem: order.orderItem._id,
+        itemId: order.orderItem._id,
+        name: order.orderItem.name,
+        ingredients: order.orderItem.ingredients.map((ingredient: any) => ingredient.name),
         totalCost: order.databasePrice
       });
     });
@@ -302,12 +357,12 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     if (!token) return this.userService.handleMissingToken('#editOrderMsg');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
 
-    this.itemService.getFullItemList(token, storeId).subscribe(_list => {
+    this.itemService.getActiveItemList(token, storeId).subscribe(_list => {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
         this.globalService.convertPrice(_list.msg);
         this.globalService.sortList(_list.msg, 'name');
-        this.itemService.changeItemList(_list.msg);
+        this.itemService.changeActiveItemList(_list.msg);
       } else {
         this.userService.changeSystemMsg(_list.msg);
         this.globalService.displayMsg('alert-danger', '#editOrderMsg');
@@ -319,8 +374,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     const target = current === 'month' ? this.month
     : current === 'day' ? this.day
     : this.year;
-    const keyCheck = event.key === 'Backspace' || event.key === 'Delete' ? false : true;
-    if (!target!.invalid && keyCheck && next) $(next).focus();
+    const keyCheck = event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' ? false : true;
+    if (!target!.invalid && keyCheck && next) $(next).select();
     if (this.dateTimeout !== null) clearTimeout(this.dateTimeout);
 
     this.dateTimeout = setTimeout(() => {
@@ -343,8 +398,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
 
   onChangeQuantity(item: any, index: number): void {
-    if (!$(`#${index}Required`)[0].classList.contains('hide')) $(`#${index}Required`).addClass('hide');
-    if (!$(`#${index}Pattern`)[0].classList.contains('hide')) $(`#${index}Pattern`).addClass('hide');
+    if (!$(`#required${index}`)[0].classList.contains('hide')) $(`#required${index}`).addClass('hide');
+    if (!$(`#pattern${index}`)[0].classList.contains('hide')) $(`#pattern${index}`).addClass('hide');
     const quantityControl = item.controls.quantity;
     if (quantityControl.invalid && (quantityControl.dirty || quantityControl.touched)) return this.handleQuantityError(item, index);
     if (!item.value.orderItem._id) return;
@@ -385,7 +440,6 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
   onSubmitOrder(): void {
     $('#editOrderBtn').prop('disabled', true);
-    this.parseOrderItemsForPayload()
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#editOrderMsg');
     this.activateDate();
@@ -395,14 +449,24 @@ export class EditOrderComponent implements OnInit, OnDestroy {
       return;
     };
 
-    this.validateOrder();
+    if (!this.validateOrder()) {
+      this.userService.changeSystemMsg('No items detected');
+      this.globalService.displayMsg('alert-danger', '#editOrderMsg');
+      $('#editOrderBtn').prop('disabled', false);
+      return;
+    };
+
     const payload = this.buildPayload();
 
     this.orderService.createOrder(token, payload).subscribe(_order => {
       if (_order.status === 201) {
         if (_order.token) localStorage.setItem('token', _order.token);
+        $('#existingOrdersMsgContainer').css('display', 'none');
+        this.searchOrdersByDate(false);
         this.userService.changeSystemMsg('Order created');
         this.globalService.displayMsg('alert-success', '#editOrderMsg');
+        this.resetOrder();
+        setTimeout(() => { $('#editOrderMsgContainer').css('display', 'none') }, this.timeout);
       } else {
         this.userService.changeSystemMsg(_order.msg);
         this.globalService.displayMsg('alert-danger', '#editOrderMsg');

@@ -20,13 +20,14 @@ export class ItemService {
   nameError = this.nameErrorSource.asObservable();
   private priceErrorSource = new BehaviorSubject<string>('No more than two digits past the decimal point');
   priceError = this.priceErrorSource.asObservable();
-
   // =================
   // || Observables ||
   // =================
-
+  
   private itemListSource = new BehaviorSubject<Item[]>([]);
   itemList = this.itemListSource.asObservable();
+  private activeItemListSource = new BehaviorSubject<Item[]>([]);
+  activeItemList = this.activeItemListSource.asObservable();
 
   constructor(
     private globalService: GlobalService,
@@ -41,6 +42,14 @@ export class ItemService {
     const validateHeader = this.globalService.buildValidateHeaders(token);
 
     return this.http.get(`${this.api}/search/${storeId}`, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
+
+  getActiveItemList(token: string, storeId: string) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.get(`${this.api}/search-active/${storeId}`, validateHeader).pipe(
       catchError(err => of(err))
     );
   };
@@ -102,5 +111,9 @@ export class ItemService {
 
   changeItemList(list: Item[]): void {
     this.itemListSource.next(list);
+  };
+
+  changeActiveItemList(list: Item[]): void {
+    this.activeItemListSource.next(list);
   };
 }

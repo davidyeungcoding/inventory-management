@@ -1,0 +1,89 @@
+.previous-orders-container {
+  height: clamp(485px, 75vh, 80vh);
+  padding: 16px;
+  border: solid 1px red;
+  overflow: auto;
+}
+
+@media screen and (min-width: 992px) {
+  .previous-orders {
+    height: clamp(485px, 70vh, 80vh);
+  }
+}
+
+/* ================ */
+/* || Order Card || */
+/* ================ */
+
+.existing-order-card {
+  width: 100%;
+  padding: 16px;
+}
+
+/* ================== */
+/* || Order Header || */
+/* ================== */
+
+.store-info {
+  text-align: center;
+}
+
+.header {
+  text-align: center;
+}
+
+/* ================ */
+/* || Order Info || */
+/* ================ */
+
+.order-info-container {
+  text-align: center;
+}
+
+.order-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  justify-content: center;
+}
+
+/* =================== */
+/* || Order Details || */
+/* =================== */
+
+.order-details-container {
+  padding: 16px;
+  margin: auto;
+  width: 100%;
+}
+
+.order-details-container>.details-header:nth-of-type(2) {
+  margin: 8px 0;
+}
+
+.item-details {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  margin: 8px 0;
+  text-align: center;
+}
+
+.details-header {
+  margin: 0;
+  text-decoration: underline;
+}
+
+.details-name {
+  text-align: left;
+}
+
+.ingredient-details {
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  text-align: center;
+}
+
+@media screen and (min-width: 769px) {
+  .order-details-container {
+    width: 70%;
+  }
+}

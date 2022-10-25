@@ -9,10 +9,18 @@ const lineItemSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  orderItem: {
+  itemId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Item',
     required: true
+  },
+  name: {
+    type: String,
+    required: true
+  },
+  ingredients: {
+    type: [String],
+    default: []
   },
   totalCost: {
     type: String,
@@ -66,20 +74,6 @@ module.exports.orderModel = mongoose.model('Order', orderSchema);
 // || Shared Variables ||
 // ======================
 
-const importStore = {
-  from: 'stores',
-  localField: 'store',
-  foreignField: '_id',
-  as: 'store'
-};
-
-const importItem = {
-  from: 'items',
-  localField: 'orderItems.orderItem',
-  foreignField: '_id',
-  as: 'orderItems.orderItem'
-};
-
 const importIngredient = {
   from: 'ingredients',
   localField: 'orderIngredients.orderIngredient',
@@ -105,10 +99,33 @@ module.exports.createOrder = (order, callback) => {
 
 module.exports.searchByDate = (storeId, date, callback) => {
   const query = { store: storeId, date: date };
+
+  const importStore = {
+    from: 'stores',
+    pipeline: [
+      { $match: { _id: storeId } },
+      { $project: {
+        store: { name: '$name', street: '$street', city: '$city', state: '$state', zip: '$zip' }
+      } },
+      { $replaceRoot: { newRoot: '$store' } }
+    ],
+    as: 'store'
+  };
+
+  // const importItem = {
+  //   from: 'items',
+  //   let: { itemId: '$orderItems.orderItem' },
+  //   pipeline: [
+  //     { $match: { $expr: { $in: ['$_id', '$$itemId'] } } },
+  //     { $project: { _id: 0, orderItem: { _id: '$_id', name: '$name', ingredients: '$ingredients' } } }
+  //   ],
+  //   as: 'tempItems'
+  // };
+
   this.orderModel.aggregate([
     { $match: query },
     { $lookup: importStore },
-    { $lookup: importItem },
+    // { $lookup: importItem },
     { $lookup: importIngredient }
   ], callback);
 };

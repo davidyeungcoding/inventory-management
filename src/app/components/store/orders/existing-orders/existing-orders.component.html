@@ -1,4 +1,87 @@
-<p>existing-orders works!</p>
-<ng-container *ngFor="let order of previousOrders">
-  {{ order | json }}
-</ng-container>
+<div id="orderHeader">
+  <h3 class="header">Other Orders</h3>
+
+  <h5 class="header">{{ orderDate }}</h5>
+</div>
+
+<div class="previous-orders-container" id="previousOrdersContainer">
+  <div class="msg-container" id="existingOrdersMsgContainer">
+    <h5 class="alert alert-msg" id="existingOrdersMsg">{{ existingOrdersMessage }}</h5>
+  </div>
+
+  <div class="accordion accordion-flush previous-orders" id="previousOrderAccordion">
+    <ng-container *ngFor="let order of previousOrders; let i = index">
+      <div class="accordion-item">
+        <div class="accordion-header" id="Header{{ i }}">
+          <button type="button"
+            class="accordion-button collapsed"
+            data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#Collapse' + i"
+            aria-expanded="false"
+            [attr.aria-controls]="'Collapse' + i">
+            <div class="existing-order-card">
+              <div class="store-info">
+                <h5 class="store-title">{{ order.store.name }}</h5>
+  
+                <h6 class="store-title">{{ order.store.street }} {{ order.store.city }}, {{ order.store.state }} {{ order.store.zip }}</h6>
+              </div>
+  
+              <div class="order-info-container">
+                <h6 class="order-card-main">{{ order.date }}</h6>
+  
+                <div class="order-info">
+                  <h6 class="order-card-main">Item Count: {{ order.orderItems.length }}</h6>
+  
+                  <ng-container *ngFor="let ingredientList of order.orderIngredients | keyvalue">
+                    <h6 class="order-card-main">Ingredient Count: {{ $any(ingredientList).value.length }}</h6>
+                  </ng-container>
+  
+                  <h6 class="order-card-main">Order Total: {{ order.orderTotal }}</h6>
+                </div>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="accordion-collapse collapse"
+          id="Collapse{{ i }}"
+          [attr.aria-labelledby]="'Header' + i"
+          data-bs-parent="#previousOrderAccordion">
+          <div class="order-details-container">
+            <h5 class="details-header">Items:</h5>
+
+            <div class="item-details">
+              <h6 class="details-header">Qty.</h6>
+  
+              <h6 class="details-header details-name">Name</h6>
+  
+              <h6 class="details-header">Cost</h6>
+            </div>
+            
+            <ng-container *ngFor="let itemList of order.orderItems">
+              <div class="item-details">
+                <span class="order-item">{{ itemList.quantity }}</span>
+  
+                <span class="order-item details-name">{{ itemList.name }}
+                  <ng-container *ngFor="let ingredient of itemList.ingredients">
+                    <span class="order-item order-name"><br>> {{ ingredient }}</span>
+                  </ng-container>
+                </span>
+  
+                <span class="order-item">{{ itemList.totalCost }}</span>
+              </div>
+            </ng-container>
+
+            <h5 class="details-header">Ingredients:</h5>
+
+            <div class="ingredient-details">
+              <h6 class="details-header">Qty.</h6>
+
+              <h6 class="details-header details-name">Name</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

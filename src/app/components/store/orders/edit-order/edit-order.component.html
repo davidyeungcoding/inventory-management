@@ -1,15 +1,11 @@
 <div class="container order-group-container">
   <h1 class="page-title">Edit Order</h1>
 
-  <div class="msg-container" id="editOrderMsgContainer">
-    <h5 class="alert alert-msg" id="editOrderMsg">{{ editOrderMessage }}</h5>
-  </div>
-
   <div class="order-group">
     <div class="order-container">
       <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
         <div id="dateContainer" formGroupName="date">
-          <label for="dateSelection">Choose Order Date:</label>
+          <label for="dateSelection">Set Order Date:</label>
     
           <div id="dateSelection">
             <input type="text"
@@ -97,6 +93,10 @@
         </div>
 
         <div class="list-item-container">
+          <div class="msg-container" id="editOrderMsgContainer">
+            <h5 class="alert alert-msg" id="editOrderMsg">{{ editOrderMessage }}</h5>
+          </div>
+    
           <ng-container formGroupName="orderDetails">
             <ng-container formArrayName="lineItems">
               <ng-container *ngFor="let item of lineItems.controls; let i = index">
@@ -121,18 +121,18 @@
                   </div>
                     
                   <div class="error-text">
-                    <span class="hide" id="{{ i }}Required">Quantity is required</span>
-                    <span class="hide" id="{{ i }}Pattern">Quantity must be a number</span>
+                    <span class="hide" id="required{{ i }}">Quantity is required</span>
+                    <span class="hide" id="pattern{{ i }}">Quantity must be a number</span>
                   </div>
 
-                  <div class="dropdown">
+                  <div class="dropdown item-select">
                     <button class="btn btn-outline-secondary btn-sm dropdown-toggle"
                       id="itemSelection{{ i }}"
                       data-bs-toggle="dropdown"
-                      aria-expanded="false">Change Item</button>
+                      aria-expanded="false">Select Item</button>
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
-                      <li *ngFor="let target of fullItemList">
+                      <li *ngFor="let target of activeItemList">
                         <a class="dropdown-item" (click)="onSelectItem(target, i)">{{ target.name }}</a>
                       </li>
                     </ul>
@@ -180,21 +180,21 @@
         </div>
 
         <div id="totalCostContainer">
-          <h4 id="totalCost">Order Total: {{ totalCost?.value }}</h4>
+          <h5 id="totalCost">Order Total: {{ totalCost?.value }}</h5>
         </div>
-        
-        <button type="button"
-          class="btn btn-secondary"
-          (click)="onAddItem()">Add Item</button>
 
         <div class="row table-end">
+          <button type="button"
+            class="btn btn-secondary grid-end-btn"
+            (click)="onAddItem()">Add Item</button>
+
           <button type="submit"
-            class="btn btn-secondary table-end-btn"
+            class="btn btn-secondary grid-end-btn"
             id="editOrderBtn">Submit</button>
         </div>
       </form>
     </div>
 
-    <app-existing-orders [previousOrders]="previousOrders"></app-existing-orders>
+    <app-existing-orders [previousOrders]="previousOrders" [orderDate]="orderDate"></app-existing-orders>
   </div>
 </div>
