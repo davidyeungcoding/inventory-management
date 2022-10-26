@@ -79,6 +79,7 @@
 .ingredient-details {
   display: grid;
   grid-template-columns: 1fr 4fr;
+  margin: 8px 0;
   text-align: center;
 }
 

@@ -79,6 +79,14 @@
 
               <h6 class="details-header details-name">Name</h6>
             </div>
+
+            <ng-container *ngFor="let ingredientList of order.orderIngredients">
+              <div class="ingredient-details">
+                <span class="order-item">{{ ingredientList.quantity }}</span>
+
+                <span class="order-item details-name">{{ ingredientList.name }}</span>
+              </div>
+            </ng-container>
           </div>
         </div>
       </div>

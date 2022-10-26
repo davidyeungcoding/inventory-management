@@ -101,7 +101,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     if (!orders.length) {
       this.userService.changeSystemMsg(`No orders found for given date: ${this.orderDate}`);
       this.globalService.displayMsg('alert-light', '#existingOrdersMsg');
-      $('#previousOrdersContainer').scrollTop(0);
+      $('#previousOrdersContainer')[0].scroll({ top: 0, behavior: 'smooth' });
       return;
     };
     
@@ -174,6 +174,11 @@ export class EditOrderComponent implements OnInit, OnDestroy {
         if (_orders.token) localStorage.setItem('token', _orders.token);
         this.parseOrdersForDisplay(_orders.msg);
         this.previousOrders = _orders.msg;
+
+        if (!check) {
+          const target = $('#previousOrdersContainer')[0];
+          setTimeout(() => { target.scroll({ top: target.scrollHeight, behavior: 'smooth' }) }, 100);
+        };
       } else {
         this.userService.changeSystemMsg(_orders.msg);
         this.globalService.displayMsg('alert-danger', '#editOrderMsg');
@@ -315,7 +320,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     for (const key in this.ingredientObj) {
       ingredients.push({
         quantity: Number(this.ingredientObj[key].quantity),
-        orderIngredient: key
+        ingredientId: key,
+        name: this.ingredientObj[key].name
       });
     };
 
@@ -387,6 +393,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   };
 
   onAddItem(): void {
+    $('#editOrderMsgContainer').css('display', 'none');
+
     const lineItem = new FormGroup({
       quantity: new FormControl(1, Validators.pattern('^\\d+$')),
       orderItem: new FormControl(<Item>{}),
@@ -395,6 +403,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     });
 
     this.lineItems.push(lineItem);
+    const target = $('#listItemContainer')[0];
+    setTimeout(() => { target.scroll({ top: target.scrollHeight, behavior: 'smooth' }) }, 100);
   };
 
   onChangeQuantity(item: any, index: number): void {
@@ -474,5 +484,11 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
       $('#editOrderBtn').prop('disabled', false);
     });
+  };
+
+  onScroll(direction: string): void {
+    const target = $('#orderGroupContainer')[0];
+    direction === 'left' ? target.scroll({ left: 0, behavior: 'smooth' })
+    : target.scroll({ left: target.scrollWidth, behavior: 'smooth' });
   };
 }

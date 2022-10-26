@@ -39,6 +39,8 @@ import { AdminCreateUserComponent } from './components/user/admin-create-user/ad
 import { ManageStoresComponent } from './components/user/manage-stores/manage-stores.component';
 import { EditOrderComponent } from './components/store/orders/edit-order/edit-order.component';
 import { ExistingOrdersComponent } from './components/store/orders/existing-orders/existing-orders.component';
+import { EditOrderIntersectionDirective } from './directives/edit-order-intersection.directive';
+import { EditOrderIntersectionAltDirective } from './directives/edit-order-intersection-alt.directive';
 
 @NgModule({
   declarations: [
@@ -77,6 +79,8 @@ import { ExistingOrdersComponent } from './components/store/orders/existing-orde
     ManageStoresComponent,
     EditOrderComponent,
     ExistingOrdersComponent,
+    EditOrderIntersectionDirective,
+    EditOrderIntersectionAltDirective,
   ],
   imports: [
     BrowserModule,

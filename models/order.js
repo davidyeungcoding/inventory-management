@@ -33,9 +33,13 @@ const orderIngredientSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  orderIngredient: {
+  ingredientId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ingredient',
+    required: true
+  },
+  name: {
+    type: String,
     required: true
   }
 }, { _id: false });
@@ -70,17 +74,6 @@ const orderSchema = new mongoose.Schema({
 
 module.exports.orderModel = mongoose.model('Order', orderSchema);
 
-// ======================
-// || Shared Variables ||
-// ======================
-
-const importIngredient = {
-  from: 'ingredients',
-  localField: 'orderIngredients.orderIngredient',
-  foreignField: '_id',
-  as: 'orderIngredients.orderIngredient'
-};
-
 // ==================
 // || Create Order ||
 // ==================
@@ -112,21 +105,9 @@ module.exports.searchByDate = (storeId, date, callback) => {
     as: 'store'
   };
 
-  // const importItem = {
-  //   from: 'items',
-  //   let: { itemId: '$orderItems.orderItem' },
-  //   pipeline: [
-  //     { $match: { $expr: { $in: ['$_id', '$$itemId'] } } },
-  //     { $project: { _id: 0, orderItem: { _id: '$_id', name: '$name', ingredients: '$ingredients' } } }
-  //   ],
-  //   as: 'tempItems'
-  // };
-
   this.orderModel.aggregate([
     { $match: query },
-    { $lookup: importStore },
-    // { $lookup: importItem },
-    { $lookup: importIngredient }
+    { $lookup: importStore }
   ], callback);
 };
 

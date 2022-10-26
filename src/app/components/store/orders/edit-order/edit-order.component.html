@@ -1,7 +1,9 @@
-<div class="container order-group-container">
+<div class="container order-group-container" id="orderGroupContainer">
   <h1 class="page-title">Edit Order</h1>
-
+  
   <div class="order-group">
+    <div appEditOrderIntersection></div>
+    
     <div class="order-container">
       <form [formGroup]="order" (ngSubmit)="onSubmitOrder()">
         <div id="dateContainer" formGroupName="date">
@@ -92,7 +94,7 @@
           <span>{{ displayDate | json }}</span>
         </div>
 
-        <div class="list-item-container">
+        <div id="listItemContainer">
           <div class="msg-container" id="editOrderMsgContainer">
             <h5 class="alert alert-msg" id="editOrderMsg">{{ editOrderMessage }}</h5>
           </div>
@@ -195,6 +197,24 @@
       </form>
     </div>
 
+    <div id="temp"></div>
+
     <app-existing-orders [previousOrders]="previousOrders" [orderDate]="orderDate"></app-existing-orders>
+
+    <div appEditOrderIntersectionAlt></div>
   </div>
+</div>
+
+<div id="fixedLeft">
+  <button type="button"
+    class="btn btn-secondary btn-scroll"
+    id="toLeft"
+    (click)="onScroll('left')"><i class="fas fa-caret-left"></i></button>
+</div>
+
+<div id="fixedRight">
+  <button type="button"
+    class="btn btn-secondary btn-scroll"
+    id="toRight"
+    (click)="onScroll('right')"><i class="fas fa-caret-right"></i></button>
 </div>

@@ -1,15 +1,15 @@
-import { Ingredient } from "./ingredient"
-import { Item } from "./item"
-
 interface LineItem {
   quantity: number,
-  orderItem: Item,
+  itemId: string,
+  name: string,
+  ingredients: string[],
   totalCost: string
 }
 
 interface IngredientList {
   quantity: number,
-  orderIngredient: Ingredient
+  ingredientId: string,
+  name: string
 }
 
 export interface Order {
