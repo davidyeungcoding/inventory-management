@@ -10,6 +10,7 @@ import { UserListComponent } from './components/user/user-list/user-list.compone
 import { StoreDetailsComponent } from './components/store/store-details/store-details.component';
 import { UserAccountComponent } from './components/user/user-account/user-account.component';
 import { EditOrderComponent } from './components/store/orders/edit-order/edit-order.component';
+import { ManageOrdersComponent } from './components/store/orders/manage-orders/manage-orders.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'user-list', component: UserListComponent },
   { path: 'user-account', component: UserAccountComponent },
   { path: 'edit-order/:storeId', component: EditOrderComponent },
+  { path: 'manage-orders', component: ManageOrdersComponent},
   { path: '**', redirectTo: 'home' }
 ];
 

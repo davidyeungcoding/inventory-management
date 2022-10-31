@@ -41,6 +41,7 @@ import { EditOrderComponent } from './components/store/orders/edit-order/edit-or
 import { ExistingOrdersComponent } from './components/store/orders/existing-orders/existing-orders.component';
 import { EditOrderIntersectionDirective } from './directives/edit-order-intersection.directive';
 import { EditOrderIntersectionAltDirective } from './directives/edit-order-intersection-alt.directive';
+import { ManageOrdersComponent } from './components/store/orders/manage-orders/manage-orders.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { EditOrderIntersectionAltDirective } from './directives/edit-order-inter
     ExistingOrdersComponent,
     EditOrderIntersectionDirective,
     EditOrderIntersectionAltDirective,
+    ManageOrdersComponent,
   ],
   imports: [
     BrowserModule,

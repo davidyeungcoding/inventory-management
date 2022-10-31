@@ -1,0 +1,77 @@
+<div class="container">
+  <div class="msg-container" id="manageOrdersMsgContainer">
+    <h5 class="alert alert-msg" id="manageOrdersMsg">{{ manageOrdersMessage }}</h5>
+  </div>
+
+  <div>
+    <form id="searchCriteria"
+      [formGroup]="orderDetails"
+      (ngSubmit)="onSearchOrders()">
+      <input type="text"
+        class="form-field two-ch"
+        id="orderMonth"
+        maxlength="2"
+        placeholder="MM"
+        formControlName="month">
+
+      <input type="text"
+        class="form-field two-ch"
+        id="orderDay"
+        maxlength="2"
+        placeholder="DD"
+        formControlName="day">
+
+      <input type="text"
+        class="form-field two-ch date-year"
+        id="orderYear"
+        maxlength="4"
+        placeholder="YYYY"
+        formControlName="year">
+
+      <button type="button"
+        class="btn btn-sm btn-secondary"
+        data-bs-toggle="modal"
+        data-bs-target="#storeSelectionModal"><i class="fas fa-plus"></i> Add Store</button>
+
+      <button type="submit"
+        class="btn btn-sm btn-secondary"
+        id="manageOrdersBtn">Search</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade"
+  id="storeSelectionModal"
+  tabindex="-1"
+  aria-labelledby="storeSelectionModal"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select Stores</h5>
+
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="storeSelectionContainer">
+          <ng-container *ngFor="let store of storeList">
+            <button class="btn btn-outline-secondary selection-btn"
+              id="orders{{ store._id }}"
+              (click)="onSelectStore(store._id)">
+              <div id="plusContainer{{ store._id }}">
+                <i class="fas fa-plus selection-plus"></i>
+              </div>
+
+              <div class="minus-container" id="minusContainer{{ store._id }}">
+                <i class="fas fa-minus selection-minus"></i>
+              </div>
+
+              <span class="icon-btn-text">{{ store.name }}</span>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

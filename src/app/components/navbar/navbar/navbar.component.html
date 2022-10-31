@@ -29,6 +29,12 @@
               (click)="onNavRedirect('store-list')">Store List</a>
           </li>
 
+          <li *ngIf="accountType.manager" class="nav-item">
+            <a class="nav-link"
+              id="navManageOrders"
+              (click)="onNavRedirect('manage-orders')">Manage Orders</a>
+          </li>
+
           <li *ngIf="accountType.admin" class="nav-item">
             <a class="nav-link"
               id="navUserList"

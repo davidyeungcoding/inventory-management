@@ -32,9 +32,7 @@
                 <div class="order-info">
                   <h6 class="order-card-main">Item Count: {{ order.orderItems.length }}</h6>
   
-                  <ng-container *ngFor="let ingredientList of order.orderIngredients | keyvalue">
-                    <h6 class="order-card-main">Ingredient Count: {{ $any(ingredientList).value.length }}</h6>
-                  </ng-container>
+                  <h6 class="order-card-main">Ingredient Count: {{ order.orderIngredients.length }}</h6>
   
                   <h6 class="order-card-main">Order Total: {{ order.orderTotal }}</h6>
                 </div>

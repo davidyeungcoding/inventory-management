@@ -81,7 +81,7 @@ export class StoreListComponent implements OnInit, OnDestroy {
         } else {
           this.storeService.changeStoreList([]);
           this.userService.changeSystemMsg('No stores found for your account');
-          this.globalService.displayMsg('alert-danger', '#storeMsg');
+          this.globalService.displayMsg('alert-light', '#storeMsg');
         };
       } else {
         this.userService.changeSystemMsg(_list.msg);
