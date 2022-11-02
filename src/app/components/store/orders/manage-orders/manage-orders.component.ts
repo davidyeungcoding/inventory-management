@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
@@ -8,6 +8,7 @@ import { OrderService } from 'src/app/services/order.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { Store } from 'src/app/interfaces/store';
+import { Order } from 'src/app/interfaces/order'
 
 @Component({
   selector: 'app-manage-orders',
@@ -18,12 +19,12 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   manageOrdersMessage?: string;
   storeList?: Store[];
-  selectedStoresArray: string[] = [];
   selectedStoresObj: any = {};
+  orderList?: Order[];
   orderDetails = new FormGroup({
-    month: new FormControl(''),
-    day: new FormControl(''),
-    year: new FormControl(''),
+    month: new FormControl('', Validators.pattern('\\d{2}')),
+    day: new FormControl('', Validators.pattern('\\d{2}')),
+    year: new FormControl('', Validators.pattern('\\d{4}')),
     store: new FormArray(<any>[])
   });
 
@@ -51,6 +52,43 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   get day() { return this.orderDetails.get('day') };
   get year() { return this.orderDetails.get('year') };
 
+  // ======================
+  // || Helper Functions ||
+  // ======================
+
+  parseMonth(): string {
+    const target = this.month!.value;
+
+    return target === '01' ? ' (?:Jan) '
+    : target === '02' ? ' (?:Feb) '
+    : target === '03' ? ' (?:Mar) '
+    : target === '04' ? ' (?:Apr) '
+    : target === '05' ? ' (?:May) '
+    : target === '06' ? ' (?:Jun) '
+    : target === '07' ? ' (?:Jul) '
+    : target === '08' ? ' (?:Aug) '
+    : target === '09' ? ' (?:Sep) '
+    : target === '10' ? ' (?:Oct) '
+    : target === '11' ? ' (?:Nov) '
+    : target === '12' ? ' (?:Dec) '
+    : '\\s{1}[a-zA-Z]{3}\\s{1}';
+  };
+
+  buildSearchDate(): string {
+    const month = this.parseMonth();
+    const day = this.day!.value ? `${this.day!.value} ` : '\\d{2}\\s{1}';
+    const year = this.year!.value ? `${this.year!.value} ` : '\\d{4}\\s{1}';
+    return `${month}${day}${year}`;
+  };
+
+  buildStoreArray(): any[] {
+    const target = Object.keys(this.selectedStoresObj);
+    const temp: string[] = [];
+    target.length ? target.forEach(key => { if (this.selectedStoresObj[key]) temp.push(key) })
+    : this.storeList?.forEach(store => temp.push(store._id));
+    return temp;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -76,7 +114,6 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   };
 
   onSelectStore(storeId: string): void {
-    // this.selectedStoresObj[storeId] = this.selectedStoresObj[storeId] ? false : true;
     if (this.selectedStoresObj[storeId]) {
       this.selectedStoresObj[storeId] = false;
       $(`#minusContainer${storeId}`).css('display', 'none');
@@ -90,8 +127,28 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
 
   onSearchOrders(): void {
     $('#manageOrdersBtn').prop('disabled', true);
+    $('#manageOrdersMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
-    if (!token) return this.userService.handleMissingToken('#managerOrdersMsg');
-    console.log(this.orderDetails.value);
+    if (!token) return this.userService.handleMissingToken('#manageOrdersMsg');
+    if (!this.month?.valid || !this.day?.valid || !this.year?.valid) return;
+    const searchDate = this.month.value || this.day.value || this.year.value ?  this.buildSearchDate() : '';
+    
+    const payload = {
+      stores: this.buildStoreArray(),
+      searchDate: searchDate
+    };
+
+    this.orderService.searchByDateAndStore(token, payload).subscribe(_orderList => {
+      if (_orderList.status === 200) {
+        if (_orderList.token) localStorage.setItem('token', _orderList.token);
+        this.orderList = _orderList.msg;
+        console.log(this.orderList)
+      } else {
+        this.userService.changeSystemMsg(_orderList.msg);
+        this.globalService.displayMsg('alert-danger', '#manageOrdersMsg');
+      };
+
+      $('#manageOrdersBtn').prop('disabled', false);
+    });
   };
 }

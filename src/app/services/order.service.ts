@@ -34,4 +34,12 @@ export class OrderService {
       catchError(err => of(err))
     );
   };
+
+  searchByDateAndStore(token: string, payload: any) {
+    const validateHeader = this.globalService.buildValidateHeaders(token);
+
+    return this.http.put(`${this.api}/search-date-store`, payload, validateHeader).pipe(
+      catchError(err => of(err))
+    );
+  };
 }

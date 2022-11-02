@@ -111,6 +111,31 @@ module.exports.searchByDate = (storeId, date, callback) => {
   ], callback);
 };
 
+module.exports.searchByDateAndStore = (date, stores, callback) => {
+  const query = { date: date, store: { $in: stores } };
+
+  const importStores = {
+    from: 'stores',
+    let: { storeId: '$store' },
+    pipeline: [
+      { $match: { $expr: { $in: ['$_id', ['$$storeId']] } } },
+      { $project: {
+        name: '$name',
+        street: '$street',
+        city: '$city',
+        state: '$state',
+        zip: '$zip'
+      } }
+    ],
+    as: 'store'
+  }
+
+  this.orderModel.aggregate([
+    { $match: query },
+    { $lookup: importStores }
+  ], callback);
+};
+
 // ==================
 // || Delete Order ||
 // ==================

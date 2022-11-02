@@ -31,6 +31,10 @@ const updateStore = (order, token) => {
   };
 };
 
+const convertToMongoId = list => {
+  return list.map(string => mongoose.Types.ObjectId(string));
+};
+
 // ==================
 // || Create Order ||
 // ==================
@@ -68,6 +72,20 @@ router.get('/search-date/:storeId/:date', auth.authenticateToken, (req, res, nex
     });
   } catch {
     return res.json({ status: 400, msg: 'Unable to process request to search order by date' });
+  };
+});
+
+router.put('/search-date-store', auth.authenticateToken, (req, res, next) => {
+  try {
+    const date = new RegExp(req.body.searchDate);
+    const storeList = convertToMongoId(req.body.stores);
+
+    Order.searchByDateAndStore(date, storeList, (err, _orders) => {
+      return err ? res.json({ status: 400, msg: 'An error has occured while retrieving orders' })
+      : res.json({ status: 200, msg: _orders, token: req.token });
+    });
+  } catch {
+    return res.json({ status: 400, msg: 'Unable to process request to retrieve orders by store and date' });
   };
 });
 
