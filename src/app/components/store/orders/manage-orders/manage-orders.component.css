@@ -40,3 +40,36 @@
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-gap: 8px;
 }
+
+/* =========== */
+/* || Table || */
+/* =========== */
+
+table {
+  border-spacing: 5px;
+  border-collapse: separate;
+}
+
+table, td {
+  border: 1px solid black;
+}
+
+td {
+  padding: 8px;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.order-header,
+.order-data {
+  min-width: 240px;
+}
+
+.order-price {
+  min-width: 75px;
+  text-align: center;
+}

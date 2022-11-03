@@ -18,10 +18,13 @@ import { Order } from 'src/app/interfaces/order'
 export class ManageOrdersComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private ignoreKeys: string[] = [];
+  private dateSort: boolean = true;
+  private storeSort: boolean = true;
+  private priceSort: boolean = true;
   manageOrdersMessage?: string;
   storeList?: Store[];
   selectedStoresObj: any = {};
-  orderList?: Order[];
+  orderList: Order[] = [];
   orderDetails = new FormGroup({
     month: new FormControl('', Validators.pattern('\\d{2}')),
     day: new FormControl('', Validators.pattern('\\d{2}')),
@@ -91,6 +94,47 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     return temp;
   };
 
+  parseOrderList(): void {
+    this.orderList.forEach(order => {
+      order.orderTotal = this.globalService.displayPrice(order.orderTotal);
+      order.date = this.orderService.parseDateForDisplay(order.date);
+    });
+  };
+
+  changeSortIcon(elemId: string, direction: boolean): void {
+    console.log('here')
+    const current = direction ?  elemId : `${elemId}Reverse`;
+    const next = direction ?  `${elemId}Reverse` : elemId;
+    $(current).addClass('hide');
+    $(next).removeClass('hide');
+  };
+
+  handleSortList(term: string, elemId: string): any {
+    const temp = [...this.orderList];
+    let direction;
+
+    switch (term) {
+      case 'date':
+        direction = this.dateSort;
+        this.changeSortIcon(elemId, direction);
+        this.dateSort = !this.dateSort;
+        break;
+      case 'store':
+        direction = this.storeSort;
+        this.changeSortIcon(elemId, direction);
+        this.storeSort = !this.storeSort;
+        break;
+      case 'total':
+        direction = this.priceSort;
+        this.changeSortIcon(elemId, direction);
+        this.priceSort = !this.priceSort;
+        break;
+    };
+
+    // handle sort here
+    return temp;
+  };
+
   // =======================
   // || General Functions ||
   // =======================
@@ -119,6 +163,7 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     const target = current === 'month' ? this.month
     : current === 'day' ? this.day
     : this.year;
+    console.log(event.key)
     const keyCheck = this.ignoreKeys.includes(event.key) ? false : true;
     if (target!.value!.length === 2 && !target!.invalid && keyCheck && next) $(next).select();
   };
@@ -147,11 +192,13 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
       stores: this.buildStoreArray(),
       searchDate: searchDate
     };
+    console.log(payload)
 
     this.orderService.searchByDateAndStore(token, payload).subscribe(_orderList => {
       if (_orderList.status === 200) {
         if (_orderList.token) localStorage.setItem('token', _orderList.token);
         this.orderList = _orderList.msg;
+        this.parseOrderList();
         console.log(this.orderList)
       } else {
         this.userService.changeSystemMsg(_orderList.msg);
@@ -160,5 +207,11 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
 
       $('#manageOrdersBtn').prop('disabled', false);
     });
+  };
+
+  onSortOrders(term: string): void {
+    if (!this.orderList.length) return;
+    const elemId = `#${term}OrderList`;
+    const temp = this.handleSortList(term, elemId);
   };
 }

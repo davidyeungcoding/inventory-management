@@ -73,10 +73,6 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     return check;
   };
 
-  convertPrice(price: string): string {
-    return `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
-  };
-
   validateForm(form: any): boolean {
     if (form.name.length && !this.validateName(form.name)
       || form.price.length && !this.validatePrice(form.price)) {
@@ -134,7 +130,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
         if (_item.token) localStorage.setItem('token', _item.token);
         this.userService.changeSystemMsg('Item successfully updated');
         this.globalService.displayMsg('alert-success', '#editItemMsg');
-        _item.msg.price = this.convertPrice(_item.msg.price);
+        _item.msg.price = this.globalService.displayPrice(_item.msg.price);
         const temp = this.globalService.replaceInList(this.itemList, _item.msg);
         this.itemService.changeItemList(temp);
         setTimeout(() => { (<any>$('#editItemModal')).modal('hide') }, this.timeout);

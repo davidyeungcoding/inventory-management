@@ -42,4 +42,22 @@ export class OrderService {
       catchError(err => of(err))
     );
   };
+
+  // =======================
+  // || General Functions ||
+  // =======================
+
+  parseDateForDisplay(date: any): string {
+    const temp = date.toString().split(' ');
+    const hour = Number(temp[4].substring(0, 2));
+    const modifier = hour < 12 ? 'AM' : 'PM';
+    temp[4] = hour === 0 ? `12${temp[4].substring(2)}`
+    : hour > 12 ? `${hour - 12}${temp[4].substring(2)}`
+    : temp[4];
+    return `${temp[0]}. ${temp[1]} ${temp[2]}, ${temp[3]} ${temp[4]} ${modifier}`;
+  };
+
+  sortDate(list: string[]): string[] {
+    // sort by year => month => day => hour => min
+  };
 }

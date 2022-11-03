@@ -58,6 +58,50 @@
       </div>
     </form>
   </div>
+
+  <div class="row scrollable">
+    <table>
+      <tr>
+        <td class="order-header">
+          <h6 class="table-header">Order Id</h6>
+        </td>
+
+        <td class="order-header">
+          <h6 class="table-header" (click)="onSortOrders('date')">
+            <i class="fas fa-sort-up" id="dateOrderList"></i>
+            <i class="fas fa-sort-down hide" id="dateOrderListReverse"></i>&nbsp;Date</h6>
+        </td>
+
+        <td class="order-header" (click)="onSortOrders('store')">
+          <h6 class="table-header">
+            <i class="fas fa-sort-up" id="storeOrderList"></i>
+            <i class="fas fa-sort-down hide" id="storeOrderListReverse"></i>&nbsp;Store</h6>
+        </td>
+
+        <td class="order-header order-price" (click)="onSortOrders('total')">
+          <h6 class="table-header">
+            <i class="fas fa-sort-up" id="totalOrderList"></i>
+            <i class="fas fa-sort-down hide" id="totalOrderListReverse"></i>&nbsp;Total</h6>
+        </td>
+      </tr>
+
+      <ng-container *ngFor="let order of orderList">
+        <tr class="order-details">
+          <td class="order-data">{{ order._id }}</td>
+
+          <td class="order-data">{{ order.date }}</td>
+
+          <td class="order-data">
+            <div class="store-name">{{ $any(order).store[0].name }}</div>
+
+            <div class="store-location">{{ $any(order).store[0].street }} {{ $any(order).store[0].city }}, {{ $any(order).store[0].state }} {{ $any(order).store[0].zip }}</div>
+          </td>
+
+          <td class="order-data order-price">{{ order.orderTotal }}</td>
+        </tr>
+      </ng-container>
+    </table>
+  </div>
 </div>
 
 <div class="modal fade"

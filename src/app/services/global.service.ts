@@ -34,8 +34,8 @@ export class GlobalService {
   timeModifier = this.timeModifierSource.asObservable();
   private timeoutSource = new BehaviorSubject<number>(1500);
   timeout = this.timeoutSource.asObservable();
-  private ignoreKeysSource = new BehaviorSubject<string[]>(['Alt', 'Backspace', 'Control', 'Delete', 'End', 'Escape',
-    'Home', 'Insert', 'Meta', 'NumLock', 'PageDown', 'PageUp', 'Shift', 'Tab']);
+  private ignoreKeysSource = new BehaviorSubject<string[]>(['Alt', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'Backspace',
+    'Control', 'Delete', 'End', 'Escape', 'Home', 'Insert', 'Meta', 'NumLock', 'PageDown', 'PageUp', 'Shift', 'Tab']);
   ignoreKeys = this.ignoreKeysSource.asObservable();
 
   // =======================
@@ -198,10 +198,11 @@ export class GlobalService {
     return temp;
   };
 
+  displayPrice(price: string): string {
+    return `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
+  };
+
   convertPrice(list: Item[]): void {
-    list.forEach(item => {
-      const price = item.price;
-      item.price = `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
-    });
+    list.forEach(item => { item.price = this.displayPrice(item.price) });
   };
 }

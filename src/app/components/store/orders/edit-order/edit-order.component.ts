@@ -95,7 +95,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
   parseItemList(orderItem: any[]): void {
     orderItem.forEach(item => {
-      item.totalCost = this.displayPrice(item.totalCost);
+      item.totalCost = this.globalService.displayPrice(item.totalCost);
     });
   };
 
@@ -110,8 +110,8 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     $('#existingOrdersMsgContainer').css('display', 'none');
 
     orders.forEach((order: any) => {
-      order.date = this.parseDateForDisplay(order.date);
-      order.orderTotal = this.displayPrice(order.orderTotal);
+      order.date = this.orderService.parseDateForDisplay(order.date);
+      order.orderTotal = this.globalService.displayPrice(order.orderTotal);
       order.store = order.store[0];
       this.parseItemList(order.orderItems);
     });
@@ -121,23 +121,13 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     // || Date ||
     // ==========
 
-  parseDateForDisplay(date: Date): string {
-    const temp = date.toString().split(' ');
-    const hour = Number(temp[4].substring(0, 2));
-    const modifier = hour < 12 ? 'AM' : 'PM';
-    temp[4] = hour === 0 ? `12${temp[4].substring(2)}`
-    : hour > 12 ? `${hour - 12}${temp[4].substring(2)}`
-    : temp[4];
-    return `${temp[0]}, ${temp[1]} ${temp[2]}, ${temp[3]} ${temp[4]} ${modifier}`;
-  };
-
   setDate(): void {
     const hour = this.selectedTimeModifier === 'AM' && this.selectedHour === '12' ? 0
     : this.selectedTimeModifier === 'AM' ? Number(this.selectedHour)
     : this.selectedTimeModifier === 'PM' && this.selectedHour === '12' ? 12
     : Number(this.selectedHour) + 12;
     this.formDate = new Date(Number(this.year?.value), Number(this.month?.value) - 1, Number(this.day?.value), hour, Number(this.selectedMinute));
-    this.displayDate = this.parseDateForDisplay(this.formDate);
+    this.displayDate = this.orderService.parseDateForDisplay(this.formDate);
     this.orderDate = this.displayDate.substring(0, 17);
   };
 
@@ -198,10 +188,6 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     : price;
   };
 
-  displayPrice(price: string): string {
-    return `$${price.substring(0, price.length - 2)}.${price.substring(price.length - 2)}`;
-  };
-
   calculateQuantityPrice(price: string, quantity: number, index: number): string {
     const start = price.substring(1, price.length - 3);
     const end = price.substring(price.length - 2);
@@ -209,14 +195,14 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     calculatedPrice = this.convertStringPrice(calculatedPrice);
     this.calculateTotal(calculatedPrice, index);
     this.lineItems.controls[index].patchValue({ databasePrice: calculatedPrice });
-    return this.displayPrice(calculatedPrice);
+    return this.globalService.displayPrice(calculatedPrice);
   };
 
   removeFromTotal(index: number): void {
     this.priceArray.splice(index, 1);
     const total = this.priceArray.length ? this.priceArray.reduce((previous, current) => previous + current) : 0;
     let temp = this.convertStringPrice(total.toString());
-    temp = this.displayPrice(temp);
+    temp = this.globalService.displayPrice(temp);
     this.order.controls.orderDetails.patchValue({ totalCost: this.convertStringPrice(temp) });
   };
 
@@ -224,7 +210,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.priceArray[index] = Number(price);
     const total = this.priceArray.reduce((previous, current) => previous + current);
     const dBPrice = this.convertStringPrice(total.toString());
-    const totalCost = this.displayPrice(dBPrice);
+    const totalCost = this.globalService.displayPrice(dBPrice);
     this.order.controls.orderDetails.patchValue({ totalCost: totalCost, dBPrice: dBPrice });
   };
 
