@@ -17,6 +17,7 @@ import { Order } from 'src/app/interfaces/order'
 })
 export class ManageOrdersComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private ignoreKeys: string[] = [];
   manageOrdersMessage?: string;
   storeList?: Store[];
   selectedStoresObj: any = {};
@@ -37,6 +38,7 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.manageOrdersMessage = _msg));
+    this.subscriptions.add(this.globalService.ignoreKeys.subscribe(_list => this.ignoreKeys = _list));
     this.getStoreList();
   }
 
@@ -111,6 +113,14 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
         this.globalService.displayMsg('alert-danger', _list.msg);
       };
     });
+  };
+
+  onDateKeyDown(event: any, current: string, next: string): void {
+    const target = current === 'month' ? this.month
+    : current === 'day' ? this.day
+    : this.year;
+    const keyCheck = this.ignoreKeys.includes(event.key) ? false : true;
+    if (target!.value!.length === 2 && !target!.invalid && keyCheck && next) $(next).select();
   };
 
   onSelectStore(storeId: string): void {

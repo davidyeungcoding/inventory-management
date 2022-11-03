@@ -1,5 +1,5 @@
 <div class="container">
-  <h1 class="page-title">Manage Orders</h1>
+  <h1 class="page-title">Order Report</h1>
 
   <div class="msg-container" id="manageOrdersMsgContainer">
     <h5 class="alert alert-msg" id="manageOrdersMsg">{{ manageOrdersMessage }}</h5>
@@ -9,35 +9,53 @@
     <form id="searchCriteria"
       [formGroup]="orderDetails"
       (ngSubmit)="onSearchOrders()">
-      <input type="text"
-        class="form-field two-ch"
-        id="orderMonth"
-        maxlength="2"
-        placeholder="MM"
-        formControlName="month">
+      <div id="dateInputFields">
+        <input type="text"
+          class="form-field two-ch"
+          id="orderMonth"
+          maxlength="2"
+          placeholder="MM"
+          (keyup)="onDateKeyDown($event, 'month', '#orderDay')"
+          formControlName="month">
+  
+        <input type="text"
+          class="form-field two-ch"
+          id="orderDay"
+          maxlength="2"
+          placeholder="DD"
+          (keyup)="onDateKeyDown($event, 'day', '#orderYear')"
+          formControlName="day">
+  
+        <input type="text"
+          class="form-field two-ch date-year"
+          id="orderYear"
+          maxlength="4"
+          placeholder="YYYY"
+          formControlName="year">
+      </div>
 
-      <input type="text"
-        class="form-field two-ch"
-        id="orderDay"
-        maxlength="2"
-        placeholder="DD"
-        formControlName="day">
+      <div id="searchCriteriaBtnContainer">
+        <button type="button"
+          class="btn btn-sm btn-secondary"
+          data-bs-toggle="modal"
+          data-bs-target="#storeSelectionModal">Select Store</button>
+  
+        <button type="submit"
+          class="btn btn-sm btn-secondary"
+          id="manageOrdersBtn">Search</button>
+      </div>
 
-      <input type="text"
-        class="form-field two-ch date-year"
-        id="orderYear"
-        maxlength="4"
-        placeholder="YYYY"
-        formControlName="year">
+      <div *ngIf="month?.invalid" class="error-text">
+        <span *ngIf="month?.errors?.['pattern']">Please enter a two digit number for the month</span>
+      </div>
 
-      <button type="button"
-        class="btn btn-sm btn-secondary"
-        data-bs-toggle="modal"
-        data-bs-target="#storeSelectionModal"><i class="fas fa-plus"></i> Add Store</button>
+      <div *ngIf="day?.invalid" class="error-text">
+        <span *ngIf="day?.errors?.['pattern']">Please enter a two digit number for the day</span>
+      </div>
 
-      <button type="submit"
-        class="btn btn-sm btn-secondary"
-        id="manageOrdersBtn">Search</button>
+      <div *ngIf="year?.invalid" class="error-text">
+        <span *ngIf="year?.errors?.['pattern']">Please enter a four digit number for the year</span>
+      </div>
     </form>
   </div>
 </div>

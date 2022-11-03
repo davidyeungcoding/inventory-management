@@ -34,6 +34,9 @@ export class GlobalService {
   timeModifier = this.timeModifierSource.asObservable();
   private timeoutSource = new BehaviorSubject<number>(1500);
   timeout = this.timeoutSource.asObservable();
+  private ignoreKeysSource = new BehaviorSubject<string[]>(['Alt', 'Backspace', 'Control', 'Delete', 'End', 'Escape',
+    'Home', 'Insert', 'Meta', 'NumLock', 'PageDown', 'PageUp', 'Shift', 'Tab']);
+  ignoreKeys = this.ignoreKeysSource.asObservable();
 
   // =======================
   // || General Functions ||

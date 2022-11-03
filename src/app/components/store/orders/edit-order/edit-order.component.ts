@@ -23,6 +23,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
   private priceArray: number[] = [];
   private ingredientArray: any[] = [];
   private timeout?: number;
+  private ignoreKeys: string[] = [];
   previousOrders: Order[] = [];
   hours?: string[];
   selectedHour: string = '12';
@@ -65,6 +66,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.globalService.hours.subscribe(_hours => this.hours = _hours));
     this.subscriptions.add(this.globalService.minutes.subscribe(_minutes => this.minutes = _minutes));
     this.subscriptions.add(this.globalService.timeModifier.subscribe(_timeModifier => this.timeModifier = _timeModifier));
+    this.subscriptions.add(this.globalService.ignoreKeys.subscribe(_list => this.ignoreKeys = _list));
     this.retrieveStoreItems();
   }
 
@@ -380,7 +382,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     const target = current === 'month' ? this.month
     : current === 'day' ? this.day
     : this.year;
-    const keyCheck = event.key === 'Backspace' || event.key === 'Delete' || event.key === 'Tab' ? false : true;
+    const keyCheck = this.ignoreKeys.includes(event.key) ? false : true;
     if (!target!.invalid && keyCheck && next) $(next).select();
     if (this.dateTimeout !== null) clearTimeout(this.dateTimeout);
 
