@@ -24,7 +24,7 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   manageOrdersMessage?: string;
   storeList?: Store[];
   selectedStoresObj: any = {};
-  orderList: Order[] = [];
+  orderList: any[] = [];
   orderDetails = new FormGroup({
     month: new FormControl('', Validators.pattern('\\d{2}')),
     day: new FormControl('', Validators.pattern('\\d{2}')),
@@ -89,20 +89,20 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   buildStoreArray(): any[] {
     const target = Object.keys(this.selectedStoresObj);
     const temp: string[] = [];
-    target.length ? target.forEach(key => { if (this.selectedStoresObj[key]) temp.push(key) })
-    : this.storeList?.forEach(store => temp.push(store._id));
+    if (target.length) target.forEach(key => { if (this.selectedStoresObj[key]) temp.push(key) });
+    if (!temp.length) this.storeList?.forEach(store => temp.push(store._id));
     return temp;
   };
 
   parseOrderList(): void {
     this.orderList.forEach(order => {
+      order.totalValue = Number(order.orderTotal);
       order.orderTotal = this.globalService.displayPrice(order.orderTotal);
       order.date = this.orderService.parseDateForDisplay(order.date);
     });
   };
 
   changeSortIcon(elemId: string, direction: boolean): void {
-    console.log('here')
     const current = direction ?  elemId : `${elemId}Reverse`;
     const next = direction ?  `${elemId}Reverse` : elemId;
     $(current).addClass('hide');
@@ -110,7 +110,7 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   };
 
   handleSortList(term: string, elemId: string): any {
-    const temp = [...this.orderList];
+    let temp = [...this.orderList];
     let direction;
 
     switch (term) {
@@ -118,20 +118,21 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
         direction = this.dateSort;
         this.changeSortIcon(elemId, direction);
         this.dateSort = !this.dateSort;
-        break;
+        temp = this.orderService.sortDate(temp, !direction);
+        return temp;
       case 'store':
         direction = this.storeSort;
         this.changeSortIcon(elemId, direction);
         this.storeSort = !this.storeSort;
         break;
-      case 'total':
+      case 'totalValue':
         direction = this.priceSort;
         this.changeSortIcon(elemId, direction);
         this.priceSort = !this.priceSort;
         break;
     };
-
-    // handle sort here
+      
+    temp = this.orderService.mergeSort(temp, term, !direction);
     return temp;
   };
 
@@ -163,7 +164,6 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     const target = current === 'month' ? this.month
     : current === 'day' ? this.day
     : this.year;
-    console.log(event.key)
     const keyCheck = this.ignoreKeys.includes(event.key) ? false : true;
     if (target!.value!.length === 2 && !target!.invalid && keyCheck && next) $(next).select();
   };
@@ -192,14 +192,12 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
       stores: this.buildStoreArray(),
       searchDate: searchDate
     };
-    console.log(payload)
 
     this.orderService.searchByDateAndStore(token, payload).subscribe(_orderList => {
       if (_orderList.status === 200) {
         if (_orderList.token) localStorage.setItem('token', _orderList.token);
         this.orderList = _orderList.msg;
         this.parseOrderList();
-        console.log(this.orderList)
       } else {
         this.userService.changeSystemMsg(_orderList.msg);
         this.globalService.displayMsg('alert-danger', '#manageOrdersMsg');
@@ -212,6 +210,6 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   onSortOrders(term: string): void {
     if (!this.orderList.length) return;
     const elemId = `#${term}OrderList`;
-    const temp = this.handleSortList(term, elemId);
+    this.orderList = this.handleSortList(term, elemId);
   };
 }

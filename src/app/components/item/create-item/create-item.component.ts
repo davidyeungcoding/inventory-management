@@ -97,7 +97,6 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   // =======================
 
   onCreateItem(): void {
-    console.log(this.name.errors)
     $('#createItemMsgContainer').css('display', 'none');
     $('#createItemBtn').prop('disabled', true);
     const token = localStorage.getItem('token');

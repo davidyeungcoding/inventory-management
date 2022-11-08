@@ -96,7 +96,6 @@ export class AdminCreateUserComponent implements OnInit, OnDestroy {
     if (!this.verifyForm(form)) return;
 
     this.userService.adminCreateUser(token, form).subscribe(_user => {
-      console.log(_user)
       if (_user.status === 201) {
         this.addUser(_user.msg);
         this.userService.changeSystemMsg('User added successfully');

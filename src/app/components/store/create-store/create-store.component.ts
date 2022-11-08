@@ -87,7 +87,6 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
 
     this.storeService.createStore(token, form).subscribe(_store => {
       if (_store.status === 200 || _store.status === 201) {
-        if (_store.user) console.log(_store.user)
         if (_store.token) localStorage.setItem('token', _store.token);
         this.userService.changeSystemMsg('Store successfully created');
         this.globalService.displayMsg('alert-success', '#createStoreMsg');
