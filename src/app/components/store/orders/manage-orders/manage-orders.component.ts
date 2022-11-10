@@ -25,6 +25,14 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   storeList?: Store[];
   selectedStoresObj: any = {};
   orderList: any[] = [];
+  selectedOrder?: any;
+  orderCount: number = 0;
+  itemCount: number = 0;
+  itemObj: any = {};
+  ingredientCount: number = 0;
+  ingredientObj: any = {};
+  summaryTotal: string = '$0.00';
+  summaryTarget: string = '';
   orderDetails = new FormGroup({
     month: new FormControl('', Validators.pattern('\\d{2}')),
     day: new FormControl('', Validators.pattern('\\d{2}')),
@@ -94,12 +102,55 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     return temp;
   };
 
+  updateItemObj(list: any[]): void {
+    list.forEach(item => {
+      if (this.itemObj[item.itemId]) {
+        this.itemObj[item.itemId].quantity += item.quantity;
+      } else {
+        this.itemObj[item.itemId] = {
+          name: item.name,
+          quantity: item.quantity
+        };
+      };
+    });
+  };
+
+  updateIngredientObj(list: any[]): void {
+    list.forEach(ingredient => {
+      if (this.ingredientObj[ingredient.ingredientId]) {
+        this.ingredientObj[ingredient.ingredientId].quantity += ingredient.quantity;
+      } else {
+        this.ingredientObj[ingredient.ingredientId] = {
+          name: ingredient.name,
+          quantity: ingredient.quantity
+        };
+      };
+    });
+  };
+
   parseOrderList(): void {
+    this.orderCount = Object.keys(this.orderList).length;
+    let total: any = 0;
+    this.itemObj = {};
+    this.itemCount = 0;
+    this.ingredientObj = {};
+    this.ingredientCount = 0;
+
     this.orderList.forEach(order => {
+      this.updateItemObj(order.orderItems);
+      this.updateIngredientObj(order.orderIngredients);
       order.totalValue = Number(order.orderTotal);
+      total += order.totalValue;
       order.orderTotal = this.globalService.displayPrice(order.orderTotal);
       order.date = this.orderService.parseDateForDisplay(order.date);
     });
+    
+    this.itemCount = Object.keys(this.itemObj).length;
+    this.ingredientCount = Object.keys(this.ingredientObj).length;
+    total = String(total).length === 1 ? `00${total}`
+    : String(total).length === 2 ? `0${total}`
+    : total;
+    this.summaryTotal = this.globalService.displayPrice(String(total));
   };
 
   changeSortIcon(elemId: string, direction: boolean): void {
@@ -197,6 +248,12 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
       if (_orderList.status === 200) {
         if (_orderList.token) localStorage.setItem('token', _orderList.token);
         this.orderList = _orderList.msg;
+
+        if (!this.orderList.length) {
+          this.userService.changeSystemMsg('No orders found');
+          this.globalService.displayMsg('alert-light', '#manageOrdersMsg');
+        };
+
         this.parseOrderList();
       } else {
         this.userService.changeSystemMsg(_orderList.msg);
@@ -211,5 +268,26 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     if (!this.orderList.length) return;
     const elemId = `#${term}OrderList`;
     this.orderList = this.handleSortList(term, elemId);
+  };
+
+  onOrderDetails(order: Order): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#manageOrdersMsg');
+    (<any>$('#orderDetailsModal')).modal('show');
+    this.selectedOrder = order;
+
+    this.selectedOrder.orderItems.forEach((item: any, i: number) => {
+      this.selectedOrder!.orderItems[i].displayCost = this.globalService.displayPrice(item.totalCost);
+    });
+  };
+
+  onShowSummaryDetails(target: string): void {
+    const token = localStorage.getItem('token');
+    if (!token) return this.userService.handleMissingToken('#manageOrdersMsg');
+    (<any>$('#summaryModal')).modal('show');
+    this.summaryTarget = `${target.substring(0, 1).toUpperCase()}${target.substring(1)}`;
+    const current = target === 'item' ? '#itemSummaryTable' : '#ingredientSummaryTable';
+    $('.summary-table-container').css('display', 'none');
+    $(current).css('display', 'inline');
   };
 }
