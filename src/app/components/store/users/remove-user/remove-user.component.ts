@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
@@ -13,6 +13,8 @@ import { User } from 'src/app/interfaces/user';
   styleUrls: ['./remove-user.component.css']
 })
 export class RemoveUserComponent implements OnInit, OnDestroy {
+  @Input() targetUser?: User;
+  @Input() confirmUserRemovalMsg: string = '';
   private subscriptions = new Subscription();
   private activeUser?: User|null;
   private timeout?: number;
@@ -56,23 +58,31 @@ export class RemoveUserComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingTokenModal('#confirmRemovalMsg', '#confirmRemovalModal');
     const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    const payload = this.buildRemovalPayload(this.activeUser!._id, storeId);
+    const payload = this.buildRemovalPayload(this.targetUser!._id, storeId);
 
     this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
       if (_store.status === 200) {
         if (_store.token) localStorage.setItem('token', _store.token);
-        this.userService.changeSystemMsg('You have been removed from this location');
-        this.globalService.displayMsg('alert-success', '#confirmRemovalMsg');
-        
-        setTimeout(() => { 
-          (<any>$('#confirmRemovalModal')).modal('hide');
-          this.globalService.redirectUser('store-list');
-        }, this.timeout);
+
+        if (this.activeUser!._id === this.targetUser!._id) {
+          this.userService.changeSystemMsg('You have been removed from this location');
+          this.globalService.displayMsg('alert-success', '#confirmRemovalMsg');
+
+          setTimeout(() => { 
+            (<any>$('#confirmRemovalModal')).modal('hide');
+            this.globalService.redirectUser('store-list');
+          }, this.timeout);
+        } else {
+          this.globalService.sortList(_store.msg.users, 'username');
+          this.userService.changeStoreUsers(_store.msg.users);
+          this.userService.changeSystemMsg(`${this.targetUser!.username} has been removed`);
+          this.globalService.displayMsg('alert-success', '#confirmRemovalMsg');
+          setTimeout(() => { (<any>$('#confirmRemovalModal')).modal('hide') }, this.timeout);
+        };
       } else {
         this.userService.changeSystemMsg(_store.msg);
         this.globalService.displayMsg('alert-danger', '#confirmRemovalMsg');
       };
     });
   };
-
 }

@@ -46,7 +46,7 @@ export class AddUserComponent implements OnInit, OnDestroy {
 
   handleNoChanges(): void {
     this.userService.changeSystemMsg('No changes detected');
-    this.globalService.displayMsg('alert-danger', '#addUserMsg');
+    this.globalService.displayMsg('alert-light', '#addUserMsg');
     $('#updateStoreUsersBtn').prop('disabled', false);
   };
 

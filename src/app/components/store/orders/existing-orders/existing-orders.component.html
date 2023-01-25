@@ -1,7 +1,7 @@
 <div id="orderHeader">
-  <h3 class="header">Other Orders</h3>
+  <h3 class="text-center title-alt">Other Orders</h3>
 
-  <h5 class="header">{{ orderDate }}</h5>
+  <h5 class="text-center title-alt">{{ orderDate }}</h5>
 </div>
 
 <div class="previous-orders-container" id="previousOrdersContainer">
@@ -20,14 +20,14 @@
             aria-expanded="false"
             [attr.aria-controls]="'Collapse' + i">
             <div class="existing-order-card">
-              <div class="store-info">
-                <h5 class="store-title">{{ order.store.name }}</h5>
+              <div class="text-center">
+                <h5 class="title">{{ order.store.name }}</h5>
   
-                <h6 class="store-title">{{ order.store.street }} {{ order.store.city }}, {{ order.store.state }} {{ order.store.zip }}</h6>
+                <h6 class="sub-title">{{ order.store.street }} {{ order.store.city }}, {{ order.store.state }} {{ order.store.zip }}</h6>
               </div>
   
               <div class="order-info-container">
-                <h6 class="order-card-main">{{ order.date }}</h6>
+                <h6 class="sub-title">{{ order.date }}</h6>
   
                 <div class="order-info">
                   <h6 class="order-card-main">Item Count: {{ order.orderItems.length }}</h6>
@@ -46,43 +46,43 @@
           [attr.aria-labelledby]="'Header' + i"
           data-bs-parent="#previousOrderAccordion">
           <div class="order-details-container">
-            <h5 class="details-header">Items:</h5>
+            <h5 class="summary-details-header">Items:</h5>
 
-            <div class="item-details">
-              <h6 class="details-header">Qty.</h6>
+            <div class="summary-item">
+              <h6 class="summary-details-header text-center">Qty.</h6>
   
-              <h6 class="details-header details-name">Name</h6>
+              <h6 class="summary-details-header">Name</h6>
   
-              <h6 class="details-header">Cost</h6>
+              <h6 class="summary-details-header text-center">Cost</h6>
             </div>
             
             <ng-container *ngFor="let itemList of order.orderItems">
-              <div class="item-details">
-                <span class="order-item">{{ itemList.quantity }}</span>
+              <div class="summary-item">
+                <span class="text-center">{{ itemList.quantity }}</span>
   
-                <span class="order-item details-name">{{ itemList.name }}
+                <span>{{ itemList.name }}
                   <ng-container *ngFor="let ingredient of itemList.ingredients">
-                    <span class="order-item order-name"><br>> {{ ingredient }}</span>
+                    <span><br>> {{ ingredient }}</span>
                   </ng-container>
                 </span>
   
-                <span class="order-item">{{ itemList.totalCost }}</span>
+                <span class="text-center">{{ itemList.totalCost }}</span>
               </div>
             </ng-container>
 
-            <h5 class="details-header">Ingredients:</h5>
+            <h5 class="summary-details-header">Ingredients:</h5>
 
-            <div class="ingredient-details">
-              <h6 class="details-header">Qty.</h6>
+            <div class="summary-ingredient">
+              <h6 class="summary-details-header text-center">Qty.</h6>
 
-              <h6 class="details-header details-name">Name</h6>
+              <h6 class="summary-details-header">Name</h6>
             </div>
 
             <ng-container *ngFor="let ingredientList of order.orderIngredients">
-              <div class="ingredient-details">
-                <span class="order-item">{{ ingredientList.quantity }}</span>
+              <div class="summary-ingredient">
+                <span class="text-center">{{ ingredientList.quantity }}</span>
 
-                <span class="order-item details-name">{{ ingredientList.name }}</span>
+                <span>{{ ingredientList.name }}</span>
               </div>
             </ng-container>
           </div>

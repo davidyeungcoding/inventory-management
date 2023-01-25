@@ -224,7 +224,7 @@ router.put('/reset-password', auth.authenticateToken, auth.personalCheck, (req, 
   };
 });
 
-router.put('/change-account-type', auth.authenticateToken, auth.adminCheck, (req, res, next) => {
+router.put('/change-account-type', auth.authenticateToken, auth.managerCheck, (req, res, next) => {
   try {
     const payload = {
       id: req.body._id,

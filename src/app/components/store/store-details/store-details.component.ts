@@ -62,7 +62,7 @@ export class StoreDetailsComponent implements OnInit, OnDestroy {
     if (!form.name && !form.street && !form.city && !form.zip &&
     this.storeDetails!.state === form.state) {
       this.userService.changeSystemMsg('No changes detected');
-      this.globalService.displayMsg('alert-danger', '#storeDetailsMsg');
+      this.globalService.displayMsg('alert-light', '#storeDetailsMsg');
       $('#storeDetailsBtn').prop('disabled', false);
       return false;
     };

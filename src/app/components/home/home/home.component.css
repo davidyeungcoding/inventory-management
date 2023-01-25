@@ -3,6 +3,7 @@
 /* ========== */
 
 .main-grid {
+  height: 100vh;
   display: grid;
   grid-template-columns: minmax(1rem, 1fr) minmax(0, 25rem) minmax(0, 65rem) minmax(1rem, 1fr);
   grid-template-rows: minmax(1rem, 1fr) auto minmax(1rem, 1fr);
@@ -10,16 +11,65 @@
 }
 
 .side-content {
-  grid-area: 1 / 1 / span 3 / span 2;
+  grid-area: 1 / 1 / span 3 / span 4;
+  background:
+    linear-gradient(
+      to top left,
+      hsla(0, 0%, 0%, .7),
+      hsla(0, 0%, 0%, 0),
+      hsla(0, 0%, 0%, .7)),
+      url('/assets/calum-lewis-vA1L1jRTM70-unsplash_720x1080.jpg');
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-highlight);
+}
+
+#homeTitle {
+  grid-area: 1 / 2 / span 1 / span 2;
+  justify-self: center;
+  align-self: flex-end;
+  text-align: center;
+  color: white;
+  text-shadow: 1px 1px 2px black;
+  font-weight: bolder;
+  font-family: 'Playfair Display', serif;
 }
 
 .main-content {
-  grid-area: 2 / 3 / span 1 / span 1;
-  width: clamp(375px, 60%, 460px);
+  grid-area: 2 / 2 / span 1 / span 2;
+  width: 100%;
   margin: auto;
   padding: 2rem 0;
   background-color: var(--color-primary);
   border: solid 2px var(--color-secondary);
+}
+
+@media screen and (min-width: 426px) {
+  .main-content {
+    width: clamp(375px, 60%, 460px);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .side-content {
+    grid-area: 1 / 1 / span 3 / span 2;
+  }
+
+  #homeTitle {
+    grid-area: 1 / 3 / span 1 / span 1;
+    color: var(--text-color);
+    font-weight: 100;
+  }
+
+  .main-content {
+    grid-area: 2 / 3 / span 1 / span 1;
+  }
+}
+
+@media screen and (min-width: 1441px) {
+  .side-content {
+    grid-area: 1 / 2 / span 3 / span 1;
+  }
 }
 
 /* ========== */
@@ -50,11 +100,13 @@
 .tab-header {
   width: 30%;
   text-align: center;
+  opacity: .5;
 }
 
 .tab-header:hover {
   cursor: pointer;
-  color: var(--color-tertiary);
+  color: var(--color-highlight);
+  opacity: 1;
   transition: .3s;
 }
 
@@ -70,11 +122,11 @@
 
 .tab-header:hover::after {
   width: 100%;
-  background: var(--color-tertiary);
+  background: var(--color-primary);
 }
 
 .active-tab {
-  box-shadow: 0 -3px 0 0 var(--color-tertiary) inset;
-  color: var(--color-tertiary);
-  transition: .3 ease-out;
+  box-shadow: 0 -3px 0 0 var(--color-highlight) inset;
+  color: var(--text-color);
+  opacity: 1;
 }

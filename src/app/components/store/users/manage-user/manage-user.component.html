@@ -90,7 +90,7 @@
         </td>
 
         <td class="table-center">
-          <span>{{ user.accountType }}</span>
+          <span>{{ user.accountType | titlecase }}</span>
         </td>
 
         <td class="table-center">
@@ -104,7 +104,8 @@
   </div>
 
   <div class="row table-end">
-    <button type="button"
+    <button *ngIf="accountType.admin"
+      type="button"
       class="btn btn-secondary table-end-btn"
       (click)="getManageUserList()">Manage Users</button>
 
@@ -118,16 +119,18 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit Account Type</h5>
+        <h5 class="modal-title title">Edit Account Type</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <app-edit-user-account-type [accountTypeForm]="accountTypeForm"></app-edit-user-account-type>
+        <app-edit-user-account-type
+          [accountTypeForm]="accountTypeForm"
+          [activeUser]="targetUser"></app-edit-user-account-type>
       </div>
     </div>
   </div>
@@ -137,16 +140,16 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Remove User</h5>
+        <h5 class="modal-title title">Remove User</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <app-remove-user></app-remove-user>
+        <app-remove-user [targetUser]="targetUser" [confirmUserRemovalMsg]="removeUserMsg"></app-remove-user>
       </div>
     </div>
   </div>
@@ -156,10 +159,10 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Manage Users</h5>
+        <h5 class="modal-title title">Manage Users</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>

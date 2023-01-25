@@ -364,7 +364,7 @@ export class EditOrderComponent implements OnInit, OnDestroy {
     });
   };
 
-  onDateKeyDown(event: any, current: string, next: string|null = null): void {
+  onDateKeyUp(event: any, current: string, next: string|null = null): void {
     const target = current === 'month' ? this.month
     : current === 'day' ? this.day
     : this.year;
@@ -472,6 +472,10 @@ export class EditOrderComponent implements OnInit, OnDestroy {
 
       $('#editOrderBtn').prop('disabled', false);
     });
+  };
+
+  onBack(): void {
+    this.globalService.redirectUser('store-list');
   };
 
   onScroll(direction: string): void {

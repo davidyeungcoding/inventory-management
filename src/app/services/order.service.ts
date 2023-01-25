@@ -122,7 +122,8 @@ export class OrderService {
     temp[4] = hour === 0 ? `12${temp[4].substring(2)}`
     : hour > 12 ? `${hour - 12}${temp[4].substring(2)}`
     : temp[4];
-    return `${temp[0]}. ${temp[1]} ${temp[2]}, ${temp[3]} ${temp[4]} ${modifier}`;
+    const splitTime = temp[4].split(':');
+    return `${temp[0]}. ${temp[1]} ${temp[2]}, ${temp[3]} ${splitTime[0]}:${splitTime[1]} ${modifier}`;
   };
 
   mergeSort(list: any[], field: any, direction: boolean): any[] {

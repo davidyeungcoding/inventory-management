@@ -13,6 +13,7 @@ import { User } from 'src/app/interfaces/user';
 })
 export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
   @Input() accountTypeForm: any;
+  @Input() activeUser?: User;
   private subscriptions = new Subscription();
   private storeUsers?: User[];
   private timeout?: number;
@@ -45,6 +46,17 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     this.userService.changeStoreUsers(temp);
   };
 
+  checkForChanges(form: any): boolean {
+    if (form.accountType === this.activeUser?.accountType) {
+      this.userService.changeSystemMsg('No changes detected');
+      this.globalService.displayMsg('alert-light', '#editUserAccountTypeMsg');
+      $('#editUserAccountTypeBtn').prop('disabled', false);
+      return false;
+    };
+
+    return true;
+  };
+
   // ========================
   // || Generaal Functions ||
   // ========================
@@ -55,6 +67,7 @@ export class EditUserAccountTypeComponent implements OnInit, OnDestroy {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingTokenModal('#editUserAccountTypeMsg', '#editUserAccountTypeModal');
     const form = this.accountTypeForm.value;
+    if (!this.checkForChanges(form)) return;
 
     this.userService.updateAccountType(token, form).subscribe(_user => {
       this.userService.changeSystemMsg(_user.msg);

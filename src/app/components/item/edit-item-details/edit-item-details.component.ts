@@ -95,9 +95,16 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
   };
 
   checkForChanges(form: any, item: any): boolean {
-    return !form.name && !form.price
+    if (!form.name && !form.price
       && item.active === JSON.stringify(this.targetItem!.active)
-      && item.available === JSON.stringify(this.targetItem!.available) ? true : false;
+      && item.available === JSON.stringify(this.targetItem!.available)) {
+      this.userService.changeSystemMsg('No changes detected');
+      this.globalService.displayMsg('alert-light', '#editItemMsg');
+      $('#editItemBtn').prop('disabled', false);
+      return false;
+    };
+
+    return true;
   };
 
   // =======================
@@ -112,13 +119,7 @@ export class EditItemDetailsComponent implements OnInit, OnDestroy {
     const form =  this.editItem.value;
     if (!this.validateForm(form)) return;
     const tempItem = this.buildPayloadItem(form);
-    
-    if (this.checkForChanges(form, tempItem)) {
-      this.userService.changeSystemMsg('No changes detected');
-      this.globalService.displayMsg('alert-danger', '#editItemMsg');
-      $('#editItemBtn').prop('disabled', false);
-      return;
-    };
+    if (!this.checkForChanges(form, tempItem)) return;
     
     const payload = {
       id: this.targetItem!._id,

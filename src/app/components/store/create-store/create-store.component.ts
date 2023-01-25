@@ -20,7 +20,6 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
   states?: string[];
   createStoreMessage?: string;
   selectedState?: string;
-  validState: boolean = true;
 
   constructor(
     private globalService: GlobalService,
@@ -55,11 +54,12 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
   // ======================
 
   validateForm(): boolean {
-    this.validState = !this.state.value ? false : true;
-
-    if (this.name.invalid || this.street.invalid || this.city.invalid || !this.validState || this.zip.invalid) {
-      this.userService.changeSystemMsg('All fields are required');
-      this.globalService.displayMsg('alert-danger', '#createStoreMsg');
+    if (this.name.invalid || this.street.invalid || this.city.invalid || this.state.invalid || this.zip.invalid) {
+      this.name.markAsTouched();
+      this.street.markAsTouched();
+      this.city.markAsTouched();
+      this.state.markAsTouched();
+      this.zip.markAsTouched();
       $('#createStoreBtn').prop('disabled', false);
       return false;
     };
@@ -103,6 +103,5 @@ export class CreateStoreComponent implements OnInit, OnDestroy {
   onChangeSelectedState(state: string): void {
     this.storeService.changeSelectedState(state);
     this.createStore.patchValue({ state: state });
-    this.validState = true;
   };
 }

@@ -47,7 +47,7 @@ export class ManageStoresComponent implements OnInit, OnDestroy {
 
   handleNoChanges(): void {
     this.userService.changeSystemMsg('No changes detected');
-    this.globalService.displayMsg('alert-danger', '#manageStoresMsg');
+    this.globalService.displayMsg('alert-light', '#manageStoresMsg');
     $('#manageStoresBtn').prop('disabled', false);
   };
 

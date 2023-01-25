@@ -1,23 +1,52 @@
 .order-group-container {
+  height: 100vh;
   overflow: auto;
 }
 
 .order-group {
   display: grid;
   grid-template-columns: 0 1fr 24px 1fr 0;
+  max-height: calc(100vh - 192px);
   width: calc(200vw - 24px);
+  margin-top: 32px;
 }
 
 @media screen and (min-width: 576px) {
+  .container {
+    max-width: calc(100vw - 48px);
+  }
+
+  .order-group-container {
+    margin: 0 24px;
+  }
+
   .order-group {
-    width: 150vw;
+    grid-template-columns: 0 calc(100vw - 72px) 72px calc(100vw - 72px) 0;
+    width: calc(200vw - 72px);
   }
 }
 
 @media screen and (min-width: 992px) {
+  .order-group-container {
+    height: calc(100vh - 60px);
+  }
+  
   .order-group {
     grid-template-columns: 0 1fr 24px 2fr 0;
     width: auto;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+    margin: auto;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .container {
+    max-width: 1320px;
   }
 }
 
@@ -30,12 +59,14 @@
   flex-direction: column;
   padding: 8px 16px;
   text-align: center;
-  border: solid 1px red;
+  background-color: var(--color-primary);
+  border: solid 1px var(--color-secondary);
 }
 
 #dateSelection,
 #timeSelection {
   display: flex;
+  align-items: center;
   margin: 4px auto;
 }
 
@@ -69,32 +100,28 @@
 
 #listItemContainer {
   padding: 16px;
-  height: clamp(300px, 60vh, 80vh);
+  height: clamp(300px, 55vh, 80vh);
   overflow: auto;
-  border: solid 1px red;
+  background-color: var(--color-primary);
+  border: solid 1px var(--color-secondary);
+  border-top: 0;
   position: relative;
 }
 
 .line-item-card {
-  border: solid 1px limegreen;
   padding: 16px;
-  margin: 16px 0;
-}
-
-.line-item-card:last-of-type {
-  background-color: aquamarine;
-  margin: 16px 0 0;
-}
-
-.line-item-card:first-of-type,
-.line-item-card:nth-of-type(2) {
-  background-color: aqua;
   margin: 0 0 16px;
+  background-color: var(--color-secondary);
+  box-shadow: var(--shadow);
+}
+
+.line-item-card>.error-text {
+  margin: 5px 0;
 }
 
 @media screen and (min-width: 992px) {
   #listItemContainer {
-    height: clamp(300px, 50vh, 80vh);
+    height: clamp(300px, 46vh, 75vh);
   }
 }
 
@@ -148,6 +175,7 @@
 }
 
 .group-header {
+  font-family: 'Oswald', sans-serif;
   text-decoration: underline;
 }
 
@@ -157,13 +185,26 @@
   justify-content: space-between;
 }
 
-/* ===================== */
-/* || Grid End Button || */
-/* ===================== */
+/* ================= */
+/* || End Buttons || */
+/* ================= */
+
+.table-end {
+  margin: 16px auto;
+}
+
+#addItemBtn {
+  width: 100%;
+  padding: 16px;
+}
 
 .grid-end-btn {
   width: 60%;
   margin-bottom: 8px;
+}
+
+.table-end>*:last-child {
+  margin-bottom: 0;
 }
 
 /* ==================== */

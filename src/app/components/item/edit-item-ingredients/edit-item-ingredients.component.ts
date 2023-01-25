@@ -54,7 +54,7 @@ export class EditItemIngredientsComponent implements OnInit, OnDestroy {
 
   handleNoChanges(): void {
     this.userService.changeSystemMsg('No changes detected');
-    this.globalService.displayMsg('alert-danger', '#editItemIngredientMsg');
+    this.globalService.displayMsg('alert-light', '#editItemIngredientMsg');
     $('#editItemIngredientBtn').prop('disabled', false);
   };
 

@@ -53,7 +53,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     if (!form.username && !form.password
       && this.targetUser!.accountType === form.accountType) {
       this.userService.changeSystemMsg('No changes detected');
-      this.globalService.displayMsg('alert-danger', '#editUserMsg');
+      this.globalService.displayMsg('alert-light', '#editUserMsg');
       $('#editUserBtn').prop('disabled', false);
       return false;
     };

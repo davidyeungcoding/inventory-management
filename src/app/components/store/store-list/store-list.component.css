@@ -21,7 +21,7 @@
 
 .store-container {
   margin: 2rem auto;
-  padding: 16px 0;
+  padding: 16px;
   max-width: var(--base-width-wide);
   background-color: var(--color-primary);
   border: solid 1px var(--color-secondary);
@@ -30,6 +30,7 @@
 .store-details {
   margin-bottom: 1rem;
   text-align: center;
+  outline: var(--double-outline);
 }
 
 @media screen and (min-width: 425px) {
@@ -57,11 +58,12 @@
 .store-action {
   margin: 8px auto;
   list-style: none;
+  font-size: 1.15rem;
 }
 
 .store-action:hover {
   cursor: pointer;
-  color: var(--color-tertiary);
+  color: var(--color-highlight);
 }
 
 /* =================== */

@@ -70,7 +70,7 @@ export class UserAccountComponent implements OnInit, OnDestroy {
 
   validateForm(form: any): boolean {
     if (!form.username && !form.password) {
-      this.displayMessage('No changes detected', 'danger');
+      this.displayMessage('No changes detected', 'light');
       return false;
     };
     
@@ -115,8 +115,9 @@ export class UserAccountComponent implements OnInit, OnDestroy {
       } else {
         this.userService.changeSystemMsg(_user.msg);
         this.globalService.displayMsg('alert-danger', '#userAccountMsg');
-        $('#userAccountBtn').prop('disabled', false);
       };
+      
+      $('#userAccountBtn').prop('disabled', false);
     });
   };
 }

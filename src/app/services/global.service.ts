@@ -18,7 +18,7 @@ export class GlobalService {
   // || Fixed Value ||
   // =================
 
-  private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'user-list', 'user-account']);
+  private navLinksSource = new BehaviorSubject<string[]>(['store-list', 'manage-orders', 'user-list', 'user-account']);
   navLinks = this.navLinksSource.asObservable();
   private statesSource = new BehaviorSubject<string[]>(['AK', 'AL', 'AR', 'AS', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
     'GU', 'HI', 'IA', 'ID', 'IL', 'IN', 'KS', 'KY', 'LA', 'MA', 'MD', 'ME', 'MI',
@@ -57,7 +57,7 @@ export class GlobalService {
   };
 
   displayMsg(add: string, target: string): void {
-    $(`${target}`).removeClass('alert-success alert-danger');
+    $(`${target}`).removeClass('alert-success alert-danger alert-light');
     $(`${target}`).addClass(add);
     $(`${target}Container`).css('display', 'inline');
   };

@@ -2,9 +2,14 @@
 /* || Navbar || */
 /* ============ */
 
+nav {
+  border-bottom: solid 1px var(--color-tertiary);
+}
+
 @media screen and (max-width: 991px) {
   nav {
     padding: 0;
+    border: 0;
   }
 }
 
@@ -18,6 +23,7 @@
 }
 
 .nav-item {
+  font-family: 'Oswald', sans-serif;
   font-size: 24px;
   text-align: center;
   cursor: pointer;
@@ -29,7 +35,7 @@
   }
 
   .nav-item {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 

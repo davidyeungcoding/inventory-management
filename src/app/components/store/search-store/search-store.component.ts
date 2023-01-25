@@ -59,7 +59,7 @@ export class SearchStoreComponent implements OnInit, OnDestroy {
         
         if (!_store.msg.length) {
           this.userService.changeSystemMsg(`No stores found matching term: ${term}`);
-          this.globalService.displayMsg('alert-danger', '#storeMsg');
+          this.globalService.displayMsg('alert-light', '#storeMsg');
         };
       } else {
         this.userService.changeSystemMsg(_store.msg);

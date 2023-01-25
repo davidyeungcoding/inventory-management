@@ -80,11 +80,11 @@
 
   <div class="row store-container" *ngFor="let store of storeList">
     <div class="container store-details">
-      <h3 class="store-title">{{ store.name }}</h3>
+      <h2 class="title">{{ store.name }}</h2>
   
-      <h5 class="store-location">{{ store.street }}</h5>
+      <h5 class="sub-title">{{ store.street }}</h5>
       
-      <h5 class="store-location">{{ store.city }}, {{ store.state }} {{ store.zip }}</h5>
+      <h5 class="sub-title">{{ store.city }}, {{ store.state }} {{ store.zip }}</h5>
     </div>
 
     <div class="container store-actions-container">
@@ -126,10 +126,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Confirm Store Deletion</h5>
+        <h4 class="modal-title title">Confirm Store Deletion</h4>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -145,10 +145,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Create Store</h5>
+        <h4 class="modal-title title">Create Store</h4>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>

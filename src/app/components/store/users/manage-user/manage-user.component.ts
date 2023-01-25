@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 import { GlobalService } from 'src/app/services/global.service';
-import { StoreService } from 'src/app/services/store.service';
 import { UserService } from 'src/app/services/user.service';
 
 import { User } from 'src/app/interfaces/user';
@@ -16,9 +15,11 @@ import { User } from 'src/app/interfaces/user';
 export class ManageUserComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   private activeUser?: User|null;
-  private accountType: any;
   private usernameSort: boolean = true;
   private accountTypeSort: boolean = true;
+  accountType: any;
+  targetUser?: User;
+  removeUserMsg: string = '';
   manageUserMessage?: string;
   storeUsers: User[] = [];
   filteredUserList: User[] = [];
@@ -31,7 +32,6 @@ export class ManageUserComponent implements OnInit, OnDestroy {
 
   constructor(
     private globalService: GlobalService,
-    private storeService: StoreService,
     private userService: UserService
   ) { }
 
@@ -74,22 +74,6 @@ export class ManageUserComponent implements OnInit, OnDestroy {
       $('#editUserAccountTypeBtn').prop('disabled', true);
       this.userService.changeSystemMsg('Cannot modify your own account type');
       this.globalService.displayMsg('alert-danger', '#editUserAccountTypeMsg');
-    };
-  };
-
-  handleRemovePersonal(): void {
-    $('#confirmRemovalBtn').prop('disabled', false);
-    $('#confirmRemovalMsgContainer').css('display', 'none');
-    (<any>$('#confirmRemovalModal')).modal('show');
-    return;
-  };
-
-  buildRemovalPayload(userId: string, storeId: string): any {
-    return {
-      _id: storeId,
-      toChange: {
-        [userId]: 'remove'
-      }
     };
   };
 
@@ -162,6 +146,7 @@ export class ManageUserComponent implements OnInit, OnDestroy {
     $('#manageUserMsgContainer').css('display', 'none');
     this.handlePermissions(user);
     this.handlePersonalAccount(user);
+    this.targetUser = user;
     
     this.accountTypeForm.setValue({
       _id: user._id,
@@ -175,22 +160,12 @@ export class ManageUserComponent implements OnInit, OnDestroy {
   onRemoveUser(user: User): void {
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#manageUserMsg');
-    const storeId = document.URL.substring(document.URL.lastIndexOf('/') + 1);
-    if (this.activeUser!._id === user._id) return this.handleRemovePersonal();
-    const payload = this.buildRemovalPayload(user._id, storeId);
-
-    this.storeService.updateStoreUsers(token, payload).subscribe(_store => {
-      if (_store.status === 200) {
-        if (_store.token) localStorage.setItem('token', _store.token);
-        this.globalService.sortList(_store.msg.users, 'username');
-        this.userService.changeStoreUsers(_store.msg.users);
-        this.userService.changeSystemMsg(`${user.username} has been removed`);
-        this.globalService.displayMsg('alert-success', '#manageUserMsg');
-      } else {
-        this.userService.changeSystemMsg(_store.msg);
-        this.globalService.displayMsg('alert-danger', '#manageUserMsg');
-      };
-    });
+    $('#confirmRemovalMsgContainer').css('display', 'none');
+    $('#confirmRemovalBtn').prop('disabled', false);
+    this.targetUser = user;
+    this.removeUserMsg = user._id === this.activeUser!._id ? 'Are you sure you want to remove yourself from this location?'
+    : `Confirm removal of "${user.username}" from store?`;
+    (<any>$('#confirmRemovalModal')).modal('show');
   };
 
   onBack(): void {

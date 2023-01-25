@@ -1,13 +1,8 @@
-.form-container {
-  margin: auto;
-  padding: 32px 28px;
-  max-width: var(--base-width);
-  background-color: var(--color-primary);
-  border: solid 1px var(--color-secondary);
+.page-title {
+  margin-top: 0;
 }
 
-@media screen and (min-width: 425px) {
-  .form-container {
-    padding: 32px 64px;
-  }
+.page-title::after,
+.page-title::before {
+  content: none;
 }

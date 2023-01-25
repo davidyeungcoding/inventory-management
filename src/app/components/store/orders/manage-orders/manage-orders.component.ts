@@ -51,6 +51,7 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     this.subscriptions.add(this.userService.systemMsg.subscribe(_msg => this.manageOrdersMessage = _msg));
     this.subscriptions.add(this.globalService.ignoreKeys.subscribe(_list => this.ignoreKeys = _list));
     this.getStoreList();
+    this.globalService.makeActiveNav('#navManageOrders');
   }
 
   ngOnDestroy(): void {
@@ -222,10 +223,12 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
   onSelectStore(storeId: string): void {
     if (this.selectedStoresObj[storeId]) {
       this.selectedStoresObj[storeId] = false;
+      $(`#orders${storeId}`).removeClass('btn-outline-selected');
       $(`#minusContainer${storeId}`).css('display', 'none');
       $(`#plusContainer${storeId}`).css('display', 'inline');
     } else {
       this.selectedStoresObj[storeId] = true;
+      $(`#orders${storeId}`).addClass('btn-outline-selected');
       $(`#plusContainer${storeId}`).css('display', 'none');
       $(`#minusContainer${storeId}`).css('display', 'inline');
     };
@@ -236,9 +239,13 @@ export class ManageOrdersComponent implements OnInit, OnDestroy {
     $('#manageOrdersMsgContainer').css('display', 'none');
     const token = localStorage.getItem('token');
     if (!token) return this.userService.handleMissingToken('#manageOrdersMsg');
-    if (!this.month?.valid || !this.day?.valid || !this.year?.valid) return;
-    const searchDate = this.month.value || this.day.value || this.year.value ?  this.buildSearchDate() : '';
     
+    if (!this.month?.valid || !this.day?.valid || !this.year?.valid) {
+      $('#manageOrdersBtn').prop('disabled', false);
+      return;
+    };
+
+    const searchDate = this.month.value || this.day.value || this.year.value ?  this.buildSearchDate() : '';
     const payload = {
       stores: this.buildStoreArray(),
       searchDate: searchDate

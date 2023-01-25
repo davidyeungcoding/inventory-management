@@ -63,7 +63,7 @@ export class EditIngredientComponent implements OnInit, OnDestroy {
   validateName(name: any): boolean {
     if (!name.length) {
       this.userService.changeSystemMsg('No changes detected');
-      this.globalService.displayMsg('alert-danger', '#editIngredientMsg');
+      this.globalService.displayMsg('alert-light', '#editIngredientMsg');
       $('#editIngredientBtn').prop('disabled', false);
       return false;
     };

@@ -1,25 +1,13 @@
-.form-container {
-  margin: auto;
-  padding: 32px 28px;
-  max-width: var(--base-width);
-  background-color: var(--color-primary);
-  border: solid 1px var(--color-secondary);
+.page-title {
+  margin-top: 0;
 }
 
-.dropdown {
-  margin-bottom: 20px;
+.page-title::after,
+.page-title::before {
+  content: none;
 }
 
-@media screen and (min-width: 425px) {
-  .form-container {
-    padding: 32px 64px;
-  }
-
-  .form-group-two {
-    overflow: initial;
-  }
-
-  .dropdown {
-    margin: 19px 0;
-  }
+.form-group-two {
+  overflow: initial;
+  align-items: flex-end;
 }

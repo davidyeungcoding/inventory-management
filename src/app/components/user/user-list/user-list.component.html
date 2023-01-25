@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" id="userListContainer">
   <h1 class="page-title">User List</h1>
 
   <div class="row search-group-container">
@@ -123,7 +123,7 @@
         </td>
 
         <td class="table-center">
-          <span>{{ user.accountType }}</span>
+          <span>{{ user.accountType | titlecase }}</span>
         </td>
 
         <td class="table-center">
@@ -155,10 +155,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Create User</h5>
+        <h5 class="modal-title title">Create User</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -174,10 +174,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Edit User</h5>
+        <h5 class="modal-title title">Edit User</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -194,10 +194,10 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Manage Stores</h5>
+        <h5 class="modal-title title">Manage Stores</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -216,10 +216,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Reset Password</h5>
+        <h5 class="modal-title title">Reset Password</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -235,10 +235,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Delete User</h5>
+        <h5 class="modal-title title">Delete User</h5>
 
         <button type="button"
-          class="btn-close"
+          class="btn-close btn-close-white"
           data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>

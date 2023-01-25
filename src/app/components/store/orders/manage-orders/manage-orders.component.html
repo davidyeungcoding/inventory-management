@@ -12,7 +12,7 @@
           maxlength="2"
           placeholder="MM"
           (keyup)="onDateKeyDown($event, 'month', '#orderDay')"
-          formControlName="month">
+          formControlName="month">/
   
         <input type="text"
           class="form-field two-ch"
@@ -20,7 +20,7 @@
           maxlength="2"
           placeholder="DD"
           (keyup)="onDateKeyDown($event, 'day', '#orderYear')"
-          formControlName="day">
+          formControlName="day">/
   
         <input type="text"
           class="form-field two-ch date-year"
@@ -59,34 +59,34 @@
     <h5 class="alert alert-msg" id="manageOrdersMsg">{{ manageOrdersMessage }}</h5>
   </div>
 
-  <div class="row scrollable table-scrollable">
+  <div class="row scrollable">
     <table>
       <tr id="orderTableHeader">
-        <td class="order-header">
+        <th class="order-header">
           <h6 class="table-header">Order ID</h6>
-        </td>
+        </th>
 
-        <td class="order-header clickable">
+        <th class="order-header clickable">
           <h6 class="table-header" (click)="onSortOrders('date')">
             <i class="fas fa-sort-up" id="dateOrderList"></i>
             <i class="fas fa-sort-down hide" id="dateOrderListReverse"></i>&nbsp;Date</h6>
-        </td>
+        </th>
 
-        <td class="order-header clickable" (click)="onSortOrders('store')">
+        <th class="order-header clickable" (click)="onSortOrders('store')">
           <h6 class="table-header">
             <i class="fas fa-sort-up" id="storeOrderList"></i>
             <i class="fas fa-sort-down hide" id="storeOrderListReverse"></i>&nbsp;Store</h6>
-        </td>
+        </th>
 
-        <td class="order-header clickable order-center" (click)="onSortOrders('totalValue')">
+        <th class="order-header clickable order-center" (click)="onSortOrders('totalValue')">
           <h6 class="table-header">
             <i class="fas fa-sort-up" id="totalValueOrderList"></i>
             <i class="fas fa-sort-down hide" id="totalValueOrderListReverse"></i>&nbsp;Total</h6>
-        </td>
+        </th>
 
-        <td class="order-header order-center">
+        <th class="order-header order-center">
           <h6 class="table-header">Details</h6>
-        </td>
+        </th>
       </tr>
 
       <ng-container *ngFor="let order of orderList">
@@ -119,7 +119,7 @@
             <button class="btn btn-sm btn-outline-secondary summary-details-btn"
               aria-label="Item Summary Details"
               (click)="onShowSummaryDetails('item')">
-              <i class="fas fa-file-alt"></i>&nbsp;
+              <i class="fas fa-file-alt btn-icon"></i>&nbsp;
 
               <h5 class="order-summary-details">Items: {{ itemCount }}</h5>
             </button>
@@ -127,7 +127,7 @@
             <button class="btn btn-sm btn-outline-secondary summary-details-btn"
               aria-label="Ingredient Summary Details"
               (click)="onShowSummaryDetails('ingredient')">
-              <i class="fas fa-file-alt"></i>&nbsp;
+              <i class="fas fa-file-alt btn-icon"></i>&nbsp;
 
               <h5 class="order-summary-details">Ingredients: {{ ingredientCount }}</h5>
             </button>
@@ -148,15 +148,15 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Select Stores</h5>
+        <h5 class="modal-title title">Select Stores</h5>
 
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
         <div id="storeSelectionContainer">
           <ng-container *ngFor="let store of storeList">
-            <button class="btn btn-outline-secondary selection-btn"
+            <button class="btn btn-outline-custom selection-btn"
               id="orders{{ store._id }}"
               (click)="onSelectStore(store._id)">
               <div id="plusContainer{{ store._id }}">
@@ -184,30 +184,31 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header summary-modal-header">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 
-        <div>
-          <h4 class="summary-center order-id">{{ $any(selectedOrder)?._id }}</h4>
+        <div class="modal-order-details">
+          <h4 class="text-center order-id ">{{ $any(selectedOrder)?._id }}</h4>
   
-          <h4 class="summary-center">{{ $any(selectedOrder)?.store[0].name }}</h4>
+          <h4 class="text-center title">{{ $any(selectedOrder)?.store[0].name }}</h4>
   
-          <h5 class="summary-center">{{ $any(selectedOrder)?.store[0].street }} {{ $any(selectedOrder)?.store[0].city }}, {{ $any(selectedOrder)?.store[0].state }} {{ $any(selectedOrder)?.store[0].zip }}</h5>
+          <h5 class="text-center sub-title">{{ $any(selectedOrder)?.store[0].street }} {{ $any(selectedOrder)?.store[0].city }}, {{ $any(selectedOrder)?.store[0].state }} {{ $any(selectedOrder)?.store[0].zip }}</h5>
+
+          <h5 class="text-center sub-title">{{ selectedOrder?.date }}</h5>
         </div>
       </div>
 
       <div class="modal-body">
-
         <div class="summary-item">
-          <h6 class="summary-item-header summary-center">Qty.</h6>
+          <h6 class="summary-details-header text-center">Qty.</h6>
 
-          <h6 class="summary-item-header">Name</h6>
+          <h6 class="summary-details-header">Name</h6>
 
-          <h6 class="summary-item-header summary-center">Cost</h6>
+          <h6 class="summary-details-header text-center">Cost</h6>
         </div>
 
         <ng-container *ngFor="let item of $any(selectedOrder)?.orderItems | keyvalue">
           <div class="summary-item">
-            <div class="summary-center">{{ $any(item)?.value.quantity }}</div>
+            <div class="text-center">{{ $any(item)?.value.quantity }}</div>
   
             <div class="summary-item-details">
               <div>{{ $any(item)?.value.name }}</div>
@@ -217,7 +218,7 @@
               </div>
             </div>
 
-            <div class="summary-center">{{ $any(item)?.value.displayCost }}</div>
+            <div class="text-center">{{ $any(item)?.value.displayCost }}</div>
           </div>
         </ng-container>
       </div>
@@ -233,9 +234,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">{{ summaryTarget }} Summary:</h5>
+        <h5 class="modal-title title">{{ summaryTarget }} Summary</h5>
 
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
@@ -243,20 +244,20 @@
           <div class="summary-table-container" id="itemSummaryTable">
             <table class="summary-table">
               <tr class="modal-table-row">
-                <td class="summary-header">
+                <th class="summary-header">
                   <h6 class="table-header">Name</h6>
-                </td>
+                </th>
   
-                <td class="summary-header">
-                  <h6 class="table-header summary-header-center">Qty.</h6>
-                </td>
+                <th class="summary-header">
+                  <h6 class="table-header justify-center">Qty.</h6>
+                </th>
               </tr>
   
               <ng-container *ngFor="let item of itemObj | keyvalue">
                 <tr class="modal-table-row">
                   <td class="summary-data">{{ $any(item).value.name }}</td>
   
-                  <td class="summary-data summary-quantity">{{ $any(item).value.quantity }}</td>
+                  <td class="summary-data text-center">{{ $any(item).value.quantity }}</td>
                 </tr>
               </ng-container>
             </table>
@@ -265,20 +266,20 @@
           <div class="summary-table-container" id="ingredientSummaryTable">
             <table class="summary-table">
               <tr class="modal-table-row">
-                <td class="summary-header">
+                <th class="summary-header">
                   <h6 class="table-header">Name</h6>
-                </td>
+                </th>
   
-                <td class="summary-header">
-                  <h6 class="table-header summary-header-center">Qty.</h6>
-                </td>
+                <th class="summary-header">
+                  <h6 class="table-header justify-center">Qty.</h6>
+                </th>
               </tr>
   
               <ng-container *ngFor="let ingredient of ingredientObj | keyvalue">
                 <tr class="modal-table-row">
                   <td class="summary-data">{{ $any(ingredient).value.name }}</td>
   
-                  <td class="summary-data summary-quantity">{{ $any(ingredient).value.quantity }}</td>
+                  <td class="summary-data text-center">{{ $any(ingredient).value.quantity }}</td>
                 </tr>
               </ng-container>
             </table>
