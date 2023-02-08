@@ -49,6 +49,10 @@ app.use('/users', users);
 app.use('/stores', stores);
 app.use('/orders', orders);
 
+app.get('/*', (req, res, next) => {
+  res.sendFile(path.join(__dirname, '/dist/inventory-management', 'index.html'));
+});
+
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
