@@ -10,7 +10,8 @@ import { Ingredient } from '../interfaces/ingredient';
   providedIn: 'root'
 })
 export class IngredientService {
-  private api = 'http://localhost:3000/ingredients';
+  // private api = 'http://localhost:3000/ingredients'; // dev
+  private api = 'ingredients'; // production
 
   // =====================
   // || Fixed Variables ||

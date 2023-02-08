@@ -10,7 +10,8 @@ import { User } from '../interfaces/user';
   providedIn: 'root'
 })
 export class UserService {
-  private api = 'http://localhost:3000/users';
+  // private api = 'http://localhost:3000/users'; // dev
+  private api = 'users'; // production
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json'

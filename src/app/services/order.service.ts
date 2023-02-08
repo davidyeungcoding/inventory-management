@@ -10,7 +10,8 @@ import { Order } from '../interfaces/order';
   providedIn: 'root'
 })
 export class OrderService {
-  private api = 'http://localhost:3000/orders';
+  // private api = 'http://localhost:3000/orders'; // dev
+  private api = 'orders'; // production
 
   constructor(
     private globalService: GlobalService,

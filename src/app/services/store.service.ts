@@ -10,7 +10,8 @@ import { Store } from '../interfaces/store';
   providedIn: 'root'
 })
 export class StoreService {
-  private api = 'http://localhost:3000/stores';
+  // private api = 'http://localhost:3000/stores'; // dev
+  private api = 'stores'; // production
 
   constructor(
     private globalService: GlobalService,

@@ -10,7 +10,8 @@ import { Item } from '../interfaces/item';
   providedIn: 'root'
 })
 export class ItemService {
-  private api = 'http://localhost:3000/items';
+  // private api = 'http://localhost:3000/items'; // dev
+  private api = 'items'; // production
   
   // =====================
   // || Fixed Variables ||
