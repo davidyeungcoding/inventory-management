@@ -71,7 +71,8 @@ export class ItemListComponent implements OnInit, OnDestroy {
       if (_list.status === 200) {
         if (_list.token) localStorage.setItem('token', _list.token);
         const list = this.globalService.filterList(this.targetItem!.ingredients, _list.msg, 0);
-        this.ingredientService.changeIngredientList(list);
+        const sortedList = this.globalService.sortList(list, 'name');
+        this.ingredientService.changeIngredientList(sortedList);
         (<any>$('#editItemIngredientsModal')).modal('show');
       } else {
         this.userService.changeSystemMsg(_list.msg);
