@@ -98,7 +98,13 @@ module.exports.searchByDate = (storeId, date, callback) => {
     pipeline: [
       { $match: { _id: storeId } },
       { $project: {
-        store: { name: '$name', street: '$street', city: '$city', state: '$state', zip: '$zip' }
+        store: {
+          name: '$name',
+          street: '$street',
+          city: '$city',
+          state: '$state',
+          zip: '$zip'
+        }
       } },
       { $replaceRoot: { newRoot: '$store' } }
     ],
@@ -118,7 +124,7 @@ module.exports.searchByDateAndStore = (date, stores, callback) => {
     from: 'stores',
     let: { storeId: '$store' },
     pipeline: [
-      { $match: { $expr: { $in: ['$_id', ['$$storeId']] } } },
+      { $match: { $expr: { $in: ['$_id', ['$$storeId'] ] } } },
       { $project: {
         name: '$name',
         street: '$street',

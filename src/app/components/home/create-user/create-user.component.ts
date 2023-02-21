@@ -45,6 +45,9 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       username: '',
       password: ''
     });
+
+    this.addUser.markAsPristine();
+    this.addUser.markAsUntouched();
   };
 
   validateEntry(username: any, type: string): boolean {
