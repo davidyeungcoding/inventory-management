@@ -26,8 +26,8 @@ mongoose.connection.on('error', err => {
 // ================
 
 app.use(cors());
-// app.use(express.static(path.join(__dirname, 'src'))); // dev
-app.use(express.static(path.join(__dirname, '/dist/inventory-management'))); // production
+app.use(express.static(path.join(__dirname, 'src'))); // dev
+// app.use(express.static(path.join(__dirname, '/dist/inventory-management'))); // production
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({
   extended: false
